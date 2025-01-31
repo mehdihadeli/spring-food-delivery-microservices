@@ -1,0 +1,59 @@
+# ref: https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/examples/demo/docker-compose.yaml
+# ref: https://github.com/joaofbantunes/DotNetMicroservicesObservabilitySample/blob/main/docker-compose.yml
+# ref: https://github.com/oskardudycz/EventSourcing.NetCore/blob/main/docker-compose.yml
+# https://github.com/grafana/intro-to-mltp
+
+name: maven-slice-template-infrastructure
+
+services:
+  #######################################################
+  #  rabbitmq
+  #######################################################
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - ${RABBITMQ_HOST_PORT:-5672}:${RABBITMQ_PORT:-5672}
+      - ${RABBITMQ_HOST_API_PORT:-15672}:${RABBITMQ_API_PORT:-15672}
+      # volumes:
+      #   - rabbitmq:/var/lib/rabbitmq
+    networks:
+      - infrastructure
+
+  #######################################################
+  #  postgres
+  #######################################################
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - ${POSTGRES_HOST_PORT:-5432}:${POSTGRES_PORT:-5432}
+    #https://docs.docker.com/compose/environment-variables/env-file/#parameter-expansion
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    networks:
+      - infrastructure
+  
+  #######################################################
+  #  mongo
+  #######################################################
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: unless-stopped
+    # https://docs.docker.com/compose/environment-variables/env-file/#parameter-expansion
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS:-admin}
+    ports:
+      - ${MONGO_HOST_PORT:-27017}:${MONGO_PORT:-27017}
+    networks:
+      - infrastructure
+  
+networks:
+  infrastructure:
+    name: infrastructure
+    driver: bridge

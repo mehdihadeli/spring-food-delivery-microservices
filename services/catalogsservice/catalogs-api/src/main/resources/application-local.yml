@@ -1,0 +1,27 @@
+# Local environment (default)
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    use-in-memory: true
+  jpa:
+    database: h2
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    use-outbox: true
+
+logging:
+  level:
+    org: info
+    com: info

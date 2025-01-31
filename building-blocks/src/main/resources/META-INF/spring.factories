@@ -1,0 +1,4 @@
+# Environment Post Processors
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.github.mehdihadeli.buildingblocks.swagger.SwaggerEnvironmentPostProcessor
+

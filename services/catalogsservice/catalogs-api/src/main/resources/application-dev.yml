@@ -1,0 +1,30 @@
+# Development environment
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres # Replace with the username configured for your PostgreSQL
+    password: postgres # Replace with the password configured for your PostgreSQL
+  jpa:
+    database: postgresql
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    use-outbox: true
+
+logging:
+  level:
+    org: info
+    com: info

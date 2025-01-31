@@ -1,0 +1,24 @@
+# Staging environment
+spring:
+  config:
+    activate:
+      on-profile: staging
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stagingdb
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 300000
+      pool-name: StagingHikariPool
+  jpa:
+    database: postgresql
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+  h2:
+    console:
+      enabled: false

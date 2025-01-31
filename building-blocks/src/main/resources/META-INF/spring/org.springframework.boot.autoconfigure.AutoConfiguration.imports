@@ -1,0 +1,11 @@
+# https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html
+
+com.github.mehdihadeli.buildingblocks.core.CoreAutoConfiguration
+com.github.mehdihadeli.buildingblocks.mediator.MediatorConfiguration
+com.github.mehdihadeli.buildingblocks.swagger.SwaggerAutoConfiguration
+com.github.mehdihadeli.buildingblocks.problemdetails.ProblemDetailsAutoConfiguration
+com.github.mehdihadeli.buildingblocks.validation.ValidationAutoConfiguration
+com.github.mehdihadeli.buildingblocks.jpa.CustomJpaAutoConfiguration
+com.github.mehdihadeli.buildingblocks.postgresmessagepersistence.PostgresMessagePersistenceAutoConfiguration
+com.github.mehdihadeli.buildingblocks.rabbitmq.RabbitMQAutoConfiguration
+com.github.mehdihadeli.buildingblocks.mongo.MongoAutoConfiguration
