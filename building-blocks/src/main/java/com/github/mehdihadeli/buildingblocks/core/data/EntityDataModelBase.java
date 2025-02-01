@@ -35,7 +35,7 @@ public abstract class EntityDataModelBase<TId extends Serializable> implements I
     private int version;
 
     @Transient
-    private boolean isNew = false;
+    protected boolean isNew = false;
 
     protected EntityDataModelBase() {}
 

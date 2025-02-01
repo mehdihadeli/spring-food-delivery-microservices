@@ -31,7 +31,10 @@ import com.github.mehdihadeli.catalogs.products.dtos.ProductVariantDto;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.CreateProductRequest;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.domain.ProductCreated;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public final class ProductMapper {
@@ -147,7 +150,6 @@ public final class ProductMapper {
                 productVariant.getPrice().amount(), productVariant.getPrice().currency()));
         dataModel.setStock(productVariant.getStock().quantity());
         dataModel.setColor(productVariant.getColor().value());
-        dataModel.setAttributes(new HashMap<>(productVariant.getAttributes()));
 
         return dataModel;
     }
@@ -162,8 +164,7 @@ public final class ProductMapper {
                 new SKU(dataModel.getSku()),
                 new Money(dataModel.getPrice().getAmount(), dataModel.getPrice().getCurrency()),
                 new Stock(dataModel.getStock()),
-                new Color(dataModel.getColor()),
-                new HashMap<>(dataModel.getAttributes()));
+                new Color(dataModel.getColor()));
     }
 
     public static Set<ProductVariant> toProductVariants(Set<ProductVariantDataModel> dataModels) {
@@ -204,9 +205,8 @@ public final class ProductMapper {
         Money price = new Money(dto.amount(), dto.currency());
         Stock stock = new Stock(dto.stock());
         Color color = new Color(dto.color());
-        Map<String, String> attributes = dto.attributes() != null ? new HashMap<>(dto.attributes()) : new HashMap<>();
 
-        return new ProductVariant(variantId, sku, price, stock, color, attributes);
+        return new ProductVariant(variantId, sku, price, stock, color);
     }
 
     public static Set<ProductVariantDto> toProductVariantsDto(Set<ProductVariant> variants) {
@@ -227,8 +227,7 @@ public final class ProductMapper {
                 productVariant.getPrice().amount(),
                 productVariant.getPrice().currency(),
                 productVariant.getStock().quantity(),
-                productVariant.getColor().value(),
-                productVariant.getAttributes());
+                productVariant.getColor().value());
     }
 
     public static Set<ProductVariantDto> projectionToProductVariantsDto(
@@ -252,8 +251,7 @@ public final class ProductMapper {
                 productVariant.getPrice().getAmount(),
                 "",
                 productVariant.getStock(),
-                productVariant.getColor(),
-                productVariant.getAttributes());
+                productVariant.getColor());
     }
 
     // product review
@@ -426,7 +424,6 @@ public final class ProductMapper {
                         productVariant.getPrice().amount(),
                         productVariant.getPrice().currency()),
                 productVariant.getStock().quantity(),
-                productVariant.getColor().value(),
-                productVariant.getAttributes());
+                productVariant.getColor().value());
     }
 }

@@ -104,3 +104,8 @@ check-style-spotless:
 .PHONY: apply-style-spotless
 apply-style-spotless:
 	$(MVN_EXEC) spotless:apply
+
+# apply migrations
+.PHONY: flyway-migrate
+flyway-migrate:
+	mvn flyway:migrate

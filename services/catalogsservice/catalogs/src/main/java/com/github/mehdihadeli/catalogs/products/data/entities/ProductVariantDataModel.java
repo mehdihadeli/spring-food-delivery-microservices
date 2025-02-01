@@ -1,11 +1,8 @@
 package com.github.mehdihadeli.catalogs.products.data.entities;
 
-import com.github.mehdihadeli.catalogs.products.data.valueobjects.MoneyVO;
 import com.github.mehdihadeli.buildingblocks.core.data.AuditableEntityDataModel;
+import com.github.mehdihadeli.catalogs.products.data.valueobjects.MoneyVO;
 import jakarta.persistence.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Table(name = "product_variants")
@@ -19,6 +16,14 @@ public class ProductVariantDataModel extends AuditableEntityDataModel {
     @Column(nullable = false, unique = true)
     private String sku;
 
+    // - By default, JPA does not prepend the embedded field’s name (e.g., price_ for PriceVO). Instead, it directly
+    // uses the field names inside PriceVO, leading to amount and currency instead of price_amount and price_currency.
+    // The @AttributeOverrides annotation explicitly tells JPA how to map these fields.
+    @AttributeOverrides(
+            value = {
+                @AttributeOverride(name = "amount", column = @Column(name = "money_amount")),
+                @AttributeOverride(name = "currency", column = @Column(name = "money_currency"))
+            })
     @Column(nullable = false)
     @Embedded
     private MoneyVO price;
@@ -28,13 +33,6 @@ public class ProductVariantDataModel extends AuditableEntityDataModel {
 
     @Column(nullable = false)
     private String color;
-
-    // https://www.callicoder.com/hibernate-spring-boot-jpa-element-collection-demo/
-    @ElementCollection
-    @CollectionTable(name = "product_variant_attributes", joinColumns = @JoinColumn(name = "variant_id"))
-    @MapKeyColumn(name = "attribute_key")
-    @Column(name = "attribute_value")
-    private Map<String, String> attributes = new HashMap<>();
 
     // Default constructor for JPA
     public ProductVariantDataModel() {}
@@ -77,13 +75,5 @@ public class ProductVariantDataModel extends AuditableEntityDataModel {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, String> attributes) {
-        this.attributes = attributes;
     }
 }

@@ -92,6 +92,7 @@ public class DomainEventPublisherImpl implements DomainEventPublisher {
             logger.atError()
                     .addKeyValue("domainEvent", SerializerUtils.serialize(domainEvent))
                     .log("Error dispatching domain event: " + e.getMessage());
+            throw e;
         }
     }
 

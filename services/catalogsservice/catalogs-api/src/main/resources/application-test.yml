@@ -17,7 +17,8 @@ spring:
     database: h2
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      # when we use flyway we should turn of hibernate `ddl-auto`
+      ddl-auto: none
   h2:
     console:
       enabled: true

@@ -4,8 +4,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEve
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.*;
 
-import java.util.Map;
-
 import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 // - it is better we pass necessary properties instead of passing full entity and tightly couple to it.
@@ -18,8 +16,7 @@ public record ProductVariantCreated(
         SKU sku,
         Money price,
         Stock stock,
-        Color color,
-        Map<String, String> attributes)
+        Color color)
         implements IDomainEvent {
 
     public ProductVariantCreated {

@@ -6,8 +6,8 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.message
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage_;
 import com.github.mehdihadeli.buildingblocks.core.data.CriteriaQueryUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +23,7 @@ public class PostgresMessagePersistenceRepositoryImpl implements MessagePersiste
     @Override
     @Transactional
     public void add(PersistMessage persistMessage) {
+        persistMessage.markAsNew();
         entityManager.persist(persistMessage);
     }
 
@@ -43,16 +44,19 @@ public class PostgresMessagePersistenceRepositoryImpl implements MessagePersiste
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PersistMessage> getAll() {
         return CriteriaQueryUtils.findAll(this.entityManager, PersistMessage.class, null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification) {
         return CriteriaQueryUtils.findAll(this.entityManager, PersistMessage.class, specification);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<PersistMessage> getById(UUID id) {
         return CriteriaQueryUtils.findOne(
                 entityManager, PersistMessage.class, (root, query, cb) -> cb.equal(root.get(PersistMessage_.id), id));

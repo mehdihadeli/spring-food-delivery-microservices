@@ -18,7 +18,6 @@ public class ObservabilityProperties {
     private boolean useOtlpGrpcExporter = true;
     private boolean useOtlpHttpExporter = false;
     private boolean useAspireOtlpExporter = true;
-    private boolean useGrafanaExporter;
     private boolean useConsoleExporter;
     private boolean useJaegerExporter;
     private boolean useZipkinExporter;
@@ -92,14 +91,6 @@ public class ObservabilityProperties {
 
     public void setUseAspireOtlpExporter(boolean useAspireOtlpExporter) {
         this.useAspireOtlpExporter = useAspireOtlpExporter;
-    }
-
-    public boolean isUseGrafanaExporter() {
-        return useGrafanaExporter;
-    }
-
-    public void setUseGrafanaExporter(boolean useGrafanaExporter) {
-        this.useGrafanaExporter = useGrafanaExporter;
     }
 
     public boolean isUseConsoleExporter() {

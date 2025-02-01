@@ -19,6 +19,7 @@ spring:
     show-sql: false
     generate-ddl: false
     hibernate:
+      # when we use flyway we should turn of hibernate `ddl-auto`
       ddl-auto: none
   h2:
     console:

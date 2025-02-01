@@ -11,7 +11,8 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      # when we use flyway we should turn of hibernate `ddl-auto`
+      ddl-auto: none
 
   rabbitmq:
     host: localhost
@@ -25,3 +26,7 @@ logging:
   level:
     org: info
     com: info
+
+message-persistence:
+  interval: 30
+  message-persist-provider-type: inmemory

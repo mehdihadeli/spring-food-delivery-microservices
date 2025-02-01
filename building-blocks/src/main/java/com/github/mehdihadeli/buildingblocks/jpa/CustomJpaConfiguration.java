@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.ManagedClassNameFilter;
@@ -48,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// root path from project resources
-// @PropertySource("classpath:/jpa.yml")
 @Configuration
 @ConditionalOnClass({DataSource.class})
 @EnableConfigurationProperties({CustomDataSourceProperties.class, CustomHibernateProperties.class})
@@ -66,12 +65,6 @@ public class CustomJpaConfiguration {
         this.jpaProperties = jpaProperties;
         this.hibernateProperties = hibernateProperties;
     }
-
-    //    @Bean
-    //    public void enableSoftDeleteFilter(EntityManager entityManager) {
-    //        var session = entityManager.unwrap(Session.class);
-    //        session.enableFilter("deletedFilter").setParameter("isDeleted", false);
-    //    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -155,6 +148,11 @@ public class CustomJpaConfiguration {
         }
 
         return hikariConfig;
+    }
+
+    @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
 
     @Bean

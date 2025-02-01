@@ -1,5 +1,11 @@
 package com.github.mehdihadeli.catalogs.products.domain.models.entities;
 
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
+import com.github.mehdihadeli.buildingblocks.core.domain.Aggregate;
+import com.github.mehdihadeli.buildingblocks.core.exceptions.DomainException;
+import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
 import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryId;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.*;
 import com.github.mehdihadeli.catalogs.products.exceptions.DuplicateReviewException;
@@ -12,12 +18,6 @@ import com.github.mehdihadeli.catalogs.products.features.creatingproductvariant.
 import com.github.mehdihadeli.catalogs.products.features.removingproductvariant.v1.events.domain.ProductVariantRemoved;
 import com.github.mehdihadeli.catalogs.products.features.updatingproductdetails.v1.events.domain.ProductDetailsUpdated;
 import com.github.mehdihadeli.catalogs.products.features.verifyingproductreview.v1.events.domain.ProductReviewVerified;
-import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
-import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
-import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
-import com.github.mehdihadeli.buildingblocks.core.domain.Aggregate;
-import com.github.mehdihadeli.buildingblocks.core.exceptions.DomainException;
-import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
 import org.springframework.lang.Nullable;
 
 import java.util.*;
@@ -113,12 +113,11 @@ public class Product extends Aggregate<ProductId> {
     }
 
     // Variant Management
-    public void addVariant(
-            VariantId variantId, SKU sku, Money price, Stock stock, Color color, Map<String, String> attributes)
+    public void addVariant(VariantId variantId, SKU sku, Money price, Stock stock, Color color)
             throws DuplicateSkuException {
 
         validateVariantSku(sku);
-        ProductVariant variant = new ProductVariant(variantId, sku, price, stock, color, attributes);
+        ProductVariant variant = new ProductVariant(variantId, sku, price, stock, color);
         variants.add(variant);
 
         this.addDomainEvent(new ProductVariantCreated(
@@ -127,8 +126,7 @@ public class Product extends Aggregate<ProductId> {
                 variant.getSku(),
                 variant.getPrice(),
                 variant.getStock(),
-                variant.getColor(),
-                variant.getAttributes()));
+                variant.getColor()));
     }
 
     public void removeVariant(VariantId variantId) throws DomainException {

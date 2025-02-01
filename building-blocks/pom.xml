@@ -193,10 +193,10 @@
             <artifactId>opentelemetry-exporter-prometheus</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.opentelemetry</groupId>-->
-<!--            <artifactId>opentelemetry-sdk-extension-logging</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>io.opentelemetry</groupId>-->
+        <!--            <artifactId>opentelemetry-sdk-extension-logging</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- Guava: Google Core Libraries For Java-->
         <dependency>
@@ -229,6 +229,20 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- flyway-->
+        <!-- https://docs.spring.io/spring-boot/how-to/data-initialization.html#howto.data-initialization.migration-tool-->
+        <!-- https://blog.jetbrains.com/idea/2024/11/how-to-use-flyway-for-database-migrations-in-spring-boot-applications/-->
+        <!-- In-memory migration support-->
+        <!-- To automatically run Flyway database migrations on startup-->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
     </dependencies>
 

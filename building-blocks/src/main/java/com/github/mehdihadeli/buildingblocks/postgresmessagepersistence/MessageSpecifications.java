@@ -13,7 +13,7 @@ public class MessageSpecifications {
     }
 
     public static Specification<PersistMessage> createdAfter(LocalDateTime date) {
-        return (root, query, cb) -> cb.greaterThan(root.get(PersistMessage_.CREATED), date);
+        return (root, query, cb) -> cb.greaterThan(root.get(PersistMessage_.CREATED_DATE), date);
     }
 
     // Specification for not processed messages

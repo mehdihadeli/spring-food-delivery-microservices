@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 
 import java.math.BigDecimal;
 
+
 @Embeddable
 public class MoneyVO {
 

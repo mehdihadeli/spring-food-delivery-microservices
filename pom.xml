@@ -68,6 +68,9 @@
         <opentelemetry-instrumentation-bom-alpha.version>2.12.0-alpha</opentelemetry-instrumentation-bom-alpha.version>
         <opentelemetry-bom.version>1.46.0</opentelemetry-bom.version>
         <opentelemetry-bom-alpha.version>1.46.0-alpha</opentelemetry-bom-alpha.version>
+        <flyway-maven-plugin.version>11.3.0</flyway-maven-plugin.version>
+        <flyway-core.version>11.3.0</flyway-core.version>
+        <flyway-database-postgresql.version>11.3.0</flyway-database-postgresql.version>
     </properties>
 
     <dependencyManagement>
@@ -231,6 +234,21 @@
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson-datatype-jsr310.version}</version>
             </dependency>
+            <!-- flyway-->
+            <!-- https://docs.spring.io/spring-boot/how-to/data-initialization.html#howto.data-initialization.migration-tool-->
+            <!-- https://blog.jetbrains.com/idea/2024/11/how-to-use-flyway-for-database-migrations-in-spring-boot-applications/-->
+            <!-- In-memory migration support-->
+            <!-- To automatically run Flyway database migrations on startup-->
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway-database-postgresql.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -312,6 +330,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- https://documentation.red-gate.com/fd/quickstart-maven-184127578.html-->
+            <!-- https://blog.jetbrains.com/idea/2024/11/how-to-use-flyway-for-database-migrations-in-spring-boot-applications/-->
+            <!-- for apply migration with mvn command `mvn flyway:migrate` we use `flyway-maven-plugin`-->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

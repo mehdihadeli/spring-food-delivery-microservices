@@ -1,26 +1,21 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence;
 
+import com.github.mehdihadeli.buildingblocks.core.data.AuditableEntityDataModel;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "persist_messages")
-public class PersistMessage {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+public class PersistMessage extends AuditableEntityDataModel {
     @Column(nullable = false)
     private String dataType;
 
-    @Column(nullable = false)
+    // for long text without length limit we should use `@Lob` which is equal `TEXT` in postgres
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String data;
-
-    @Column(nullable = false)
-    private LocalDateTime created = LocalDateTime.now();
 
     @Column(nullable = false)
     private int retryCount = 0;
@@ -37,21 +32,13 @@ public class PersistMessage {
     public PersistMessage() {}
 
     public PersistMessage(UUID id, String dataType, String data, MessageDeliveryType deliveryType) {
-        this.id = id;
+        this.setId(id);
         this.dataType = dataType;
         this.data = data;
         this.deliveryType = deliveryType;
     }
 
     // Getters and setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public String getDataType() {
         return dataType;
     }
@@ -66,14 +53,6 @@ public class PersistMessage {
 
     public void setData(String data) {
         this.data = data;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
     }
 
     public int getRetryCount() {
