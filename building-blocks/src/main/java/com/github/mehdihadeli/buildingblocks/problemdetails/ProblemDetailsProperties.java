@@ -1,10 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.problemdetails;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "problem-details")
-@ConditionalOnBean({ProblemDetailsConfiguration.class})
 public class ProblemDetailsProperties {
 
     private boolean enabled = true;
