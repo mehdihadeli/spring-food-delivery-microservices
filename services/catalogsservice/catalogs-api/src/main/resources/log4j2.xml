@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<!-- log4j.appender opentelemetry package installed implicitly by `opentelemetry-spring-boot-starter` package-->
+<Configuration status="INFO" packages="io.opentelemetry.instrumentation.log4j.appender.v2_17">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
             <!--            &lt;!&ndash; Console Appender with JSON output &ndash;&gt;-->
@@ -18,7 +19,7 @@
 
     <Loggers>
         <Root level="info">
-            <AppenderRef ref="OpenTelemetryAppender"/>
+            <AppenderRef ref="OpenTelemetryAppender" level="All"/>
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

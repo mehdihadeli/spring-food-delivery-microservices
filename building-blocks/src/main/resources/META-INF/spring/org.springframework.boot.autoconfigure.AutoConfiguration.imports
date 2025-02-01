@@ -9,3 +9,4 @@ com.github.mehdihadeli.buildingblocks.jpa.CustomJpaAutoConfiguration
 com.github.mehdihadeli.buildingblocks.postgresmessagepersistence.PostgresMessagePersistenceAutoConfiguration
 com.github.mehdihadeli.buildingblocks.rabbitmq.RabbitMQAutoConfiguration
 com.github.mehdihadeli.buildingblocks.mongo.MongoAutoConfiguration
+com.github.mehdihadeli.buildingblocks.observability.ObservabilityAutoConfiguration

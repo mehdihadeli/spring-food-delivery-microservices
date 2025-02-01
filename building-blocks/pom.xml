@@ -158,26 +158,45 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk-extension-logging</artifactId>
-        </dependency>
-
+        <!-- OpenTelemetry-->
+        <!-- https://opentelemetry.io/docs/zero-code/java/spring-boot-starter/getting-started/#opentelemetry-starter-dependency-->
         <!-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/instrumentation/log4j/log4j-appender-2.17/library/README.md-->
+        <!-- https://github.com/open-telemetry/opentelemetry-java-->
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-log4j-appender-2.17</artifactId>
+            <artifactId>opentelemetry-spring-boot-starter</artifactId>
         </dependency>
+
+        <!-- https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/zipkin-->
+        <!-- https://opentelemetry.io/docs/languages/java/intro/#dependencies-and-boms-->
+        <!--exists in the `opentelemetry-bom` pom.xml-->
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-zipkin</artifactId>
+        </dependency>
+
+        <!-- https://opentelemetry.io/docs/languages/java/intro/#dependencies-and-boms-->
+        <!-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/rabbitmq-2.7-->
+        <!--exists in the `opentelemetry-instrumentation-bom-alpha` pom.xml-->
+        <!-- auto instrumentation of rabbitmq-->
+        <dependency>
+            <groupId>io.opentelemetry.javaagent.instrumentation</groupId>
+            <artifactId>opentelemetry-javaagent-rabbitmq-2.7</artifactId>
+        </dependency>
+
+        <!-- OpenTelemetry Prometheus Exporter -->
+        <!-- https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/prometheus/src/main/java/io/opentelemetry/example/prometheus/ExampleConfiguration.java-->
+        <!-- https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/prometheus-->
+        <!--exists in the `opentelemetry-bom-alpha` pom.xml-->
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-prometheus</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>io.opentelemetry</groupId>-->
+<!--            <artifactId>opentelemetry-sdk-extension-logging</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Guava: Google Core Libraries For Java-->
         <dependency>
