@@ -1,0 +1,72 @@
+server:
+  port: 9000 # Port for the service
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: catalogs
+          uri: http://localhost:5000
+          # uri: lb://catalogs-service # Use lb:// for load balancing
+          predicates:
+            - Path=/api/{version}/catalogs/**
+          filters:
+            - RewritePath=/api/(?<version>.*)/catalogs/(?<remainder>.*), /api/$\{version}/$\{remainder}
+            - CorrelationId
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - PreserveHostHeader
+          metadata:
+            response-timeout: 20000
+            connect-timeout: 20000
+
+        - id: identity
+          uri: http://localhost:7000
+          # uri: lb://identity-service # Use lb:// for load balancing
+          predicates:
+            - Path=/api/{version}/identity/**
+          filters:
+            - RewritePath=/api/(?<version>.*)/identity/(?<remainder>.*), /api/$\{version}/$\{remainder}
+            - CorrelationId
+            - PreserveHostHeader
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+          metadata:
+            response-timeout: 20000
+            connect-timeout: 20000
+
+        - id: customers
+          uri: http://localhost:8000
+          # uri: lb://customers-service # Use lb:// for load balancing
+          predicates:
+            - Path=/api/{version}/customers/**
+          filters:
+            - RewritePath=/api/(?<version>.*)/customers/(?<remainder>.*), /api/$\{version}/$\{remainder}
+            - CorrelationId
+            - PreserveHostHeader
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+          metadata:
+            response-timeout: 20000
+            connect-timeout: 20000
+
+#    # Consul Configuration
+#    consul:
+#      host: localhost # Consul server host
+#      port: 8500 # Consul server port
+#      discovery:
+#        health-check-path: /actuator/health # Health check endpoint
+#        health-check-interval: 10s # Health check interval
+#        instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+# Actuator Configuration (for health checks)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info # Expose health and info endpoints
+  endpoint:
+    health:
+      show-details: always # Show detailed health information
+logging:
+  level:
+    org: info
+    com: info
