@@ -72,6 +72,7 @@
         <flyway-core.version>11.3.0</flyway-core.version>
         <flyway-database-postgresql.version>11.3.0</flyway-database-postgresql.version>
         <spring-cloud-dependencies-pom.version>2024.0.0</spring-cloud-dependencies-pom.version>
+        <wiremock.version>3.11.0</wiremock.version>
     </properties>
 
     <dependencyManagement>
@@ -195,6 +196,7 @@
                 <version>${mapstruct.version}</version>
             </dependency>
             <!-- TestContainer-->
+            <!-- https://java.testcontainers.org/-->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
@@ -207,6 +209,11 @@
                 <artifactId>rest-assured</artifactId>
                 <scope>test</scope>
                 <version>${rest-assured.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wiremock</groupId>
+                <artifactId>wiremock</artifactId>
+                <version>${wiremock.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.instancio</groupId>
