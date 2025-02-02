@@ -1,16 +1,13 @@
 package com.github.mehdihadeli.catalogs.products.domain.models.entities;
 
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
+import com.github.mehdihadeli.buildingblocks.core.domain.EntityBase;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Color;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.SKU;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Stock;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.VariantId;
-import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
-import com.github.mehdihadeli.buildingblocks.core.domain.EntityBase;
-import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
@@ -24,7 +21,6 @@ import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.n
 public class ProductVariant extends EntityBase<VariantId> {
     private final SKU sku;
 
-    private final Map<String, String> attributes;
     private Money price;
 
     private Stock stock;
@@ -35,20 +31,17 @@ public class ProductVariant extends EntityBase<VariantId> {
             SKU sku,
             Money price,
             Stock stock,
-            Color color,
-            @Nullable Map<String, String> attributes) {
+            Color color) {
         this.setId(notBeNull(variantId, "variantId"));
         this.sku = notBeNull(sku, "sku");
         this.price = notBeNull(price, "price");
         this.stock = notBeNull(stock, "stock");
         this.color = notBeNull(color, "color");
-        this.attributes = attributes == null ? new HashMap<>() : attributes;
     }
 
     // Private default constructor for Jackson serializer
     private ProductVariant() {
         this.sku = null;
-        this.attributes = new HashMap<>();
     }
 
     public void updateStock(int quantity) {
@@ -72,10 +65,6 @@ public class ProductVariant extends EntityBase<VariantId> {
         this.price = new Money(this.price.amount().multiply(discountFactor), this.price.currency());
     }
 
-    public void addAttribute(String key, String value) {
-        attributes.put(key, value);
-    }
-
     public SKU getSku() {
         return sku;
     }
@@ -90,10 +79,6 @@ public class ProductVariant extends EntityBase<VariantId> {
 
     public Color getColor() {
         return color;
-    }
-
-    public Map<String, String> getAttributes() {
-        return new HashMap<>(attributes);
     }
 
     // Identity-based equals and hashCode

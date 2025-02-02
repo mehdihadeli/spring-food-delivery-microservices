@@ -1,6 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.jpa.interceptors;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.data.IAuditableEntityDataModelBase;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.data.IEntityDataModelBase;
 import jakarta.persistence.PreRemove;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -37,7 +37,7 @@ public class DeleteInterceptor {
 
     @PreRemove
     public void handlePreRemove(Object entity) {
-        if (entity instanceof IAuditableEntityDataModelBase<?> entityObject) {
+        if (entity instanceof IEntityDataModelBase<?> entityObject) {
             // Prevent physical delete, mark as deleted
             entityObject.setDeleted(true);
             entityObject.setDeletedDate(LocalDateTime.now());

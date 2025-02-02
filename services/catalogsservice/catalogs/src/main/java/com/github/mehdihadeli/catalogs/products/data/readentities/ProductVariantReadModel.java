@@ -1,9 +1,8 @@
 package com.github.mehdihadeli.catalogs.products.data.readentities;
 
-import com.github.mehdihadeli.catalogs.products.data.valueobjects.MoneyVO;
 import com.github.mehdihadeli.buildingblocks.core.data.AuditableReadEntity;
+import com.github.mehdihadeli.catalogs.products.data.valueobjects.MoneyVO;
 
-import java.util.Map;
 import java.util.UUID;
 
 public class ProductVariantReadModel extends AuditableReadEntity {
@@ -12,24 +11,15 @@ public class ProductVariantReadModel extends AuditableReadEntity {
     private MoneyVO price;
     private Integer stock;
     private String color;
-    private Map<String, String> attributes;
 
     // Constructor for mapping from ProductVariantDataModel
-    public ProductVariantReadModel(
-            UUID id,
-            UUID productId,
-            String sku,
-            MoneyVO price,
-            Integer stock,
-            String color,
-            Map<String, String> attributes) {
+    public ProductVariantReadModel(UUID id, UUID productId, String sku, MoneyVO price, Integer stock, String color) {
         this.setId(id);
         this.productId = productId;
         this.sku = sku;
         this.price = price;
         this.stock = stock;
         this.color = color;
-        this.attributes = attributes;
     }
 
     // Private default constructor for jpa mongo and Jackson serializer
@@ -66,14 +56,6 @@ public class ProductVariantReadModel extends AuditableReadEntity {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, String> attributes) {
-        this.attributes = attributes;
     }
 
     public UUID getProductId() {

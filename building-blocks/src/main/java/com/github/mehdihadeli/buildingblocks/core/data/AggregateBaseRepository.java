@@ -14,7 +14,6 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,7 +54,6 @@ public abstract class AggregateBaseRepository<
     }
 
     // Regular CRUD operations
-    @Transactional
     public TAggregate add(TAggregate aggregate) {
         if (customJpaRepository.existsById(aggregate.getId().id())) {
             throw new ConflictException("Entity with ID " + aggregate.getId() + " already exists.");
@@ -67,7 +65,6 @@ public abstract class AggregateBaseRepository<
         return toAggregate(entity);
     }
 
-    @Transactional
     public void update(TAggregate aggregate) {
         var entity = customJpaRepository.findById(aggregate.getId().id());
         if (entity.isEmpty()) {
@@ -77,7 +74,6 @@ public abstract class AggregateBaseRepository<
         customJpaRepository.save(dataModel);
     }
 
-    @Transactional
     public TAggregate save(TAggregate aggregate) {
         TDataModelEntity entity = toDataModel(aggregate);
         entity = customJpaRepository.save(entity);
@@ -88,7 +84,6 @@ public abstract class AggregateBaseRepository<
         return customJpaRepository.findById(id.id()).map(this::toAggregate);
     }
 
-    @Transactional
     public void deleteById(TAggregateId id) {
         customJpaRepository.deleteById(id.id());
     }

@@ -28,9 +28,7 @@ public class TransactionBehaviorPipeline<TRequest extends IRequest<TResponse>, T
             PlatformTransactionManager transactionManager) {
         this.domainEventPublisher = domainEventPublisher;
         this.domainEventsAccessor = domainEventsAccessor;
-
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.setTimeout(1000);
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     @Override
@@ -54,40 +52,45 @@ public class TransactionBehaviorPipeline<TRequest extends IRequest<TResponse>, T
                         getClass().getSimpleName(),
                         request.getClass().getSimpleName());
 
-        var result = transactionTemplate.execute(status -> {
-            try {
-                logger.atInfo()
-                        .addKeyValue("request", SerializerUtils.serializePretty(request))
-                        .log(
-                                "[{}] Opening transaction for {}",
-                                getClass().getSimpleName(),
-                                request.getClass().getSimpleName());
+        try {
+            var result = transactionTemplate.execute(status -> {
+                try {
+                    TResponse response = next.handle();
 
-                TResponse response = next.handle();
+                    var domainEvents = domainEventsAccessor.dequeueUncommittedDomainEvents();
+                    domainEventPublisher.Publish(domainEvents);
 
-                var domainEvents = domainEventsAccessor.dequeueUncommittedDomainEvents();
-                domainEventPublisher.Publish(domainEvents);
+                    return response;
+                } catch (Exception e) {
+                    logger.atError()
+                            .addKeyValue("request", SerializerUtils.serializePretty(request))
+                            .setCause(e)
+                            .log(
+                                    "[{}] Error processing request {}: {}",
+                                    getClass().getSimpleName(),
+                                    request.getClass().getSimpleName(),
+                                    e.getMessage());
+                    throw e;
+                }
+            });
 
-                return response;
-            } catch (Exception e) {
-                logger.atInfo()
-                        .addKeyValue("request", SerializerUtils.serializePretty(request))
-                        .log(
-                                "[{}] Transaction rolled back for {}",
-                                getClass().getSimpleName(),
-                                request.getClass().getSimpleName());
-                status.setRollbackOnly();
-                throw e;
-            }
-        });
+            logger.atInfo()
+                    .addKeyValue("request", SerializerUtils.serializePretty(request))
+                    .log(
+                            "[{}] Transaction completed for {}",
+                            getClass().getSimpleName(),
+                            request.getClass().getSimpleName());
 
-        logger.atInfo()
-                .addKeyValue("request", SerializerUtils.serializePretty(request))
-                .log(
-                        "[{}] Transaction completed for {}",
-                        getClass().getSimpleName(),
-                        request.getClass().getSimpleName());
-
-        return result;
+            return result;
+        } catch (Exception e) {
+            logger.atError()
+                    .addKeyValue("request", SerializerUtils.serializePretty(request))
+                    .setCause(e)
+                    .log(
+                            "[{}] Transaction failed for {}",
+                            getClass().getSimpleName(),
+                            request.getClass().getSimpleName());
+            throw e;
+        }
     }
 }

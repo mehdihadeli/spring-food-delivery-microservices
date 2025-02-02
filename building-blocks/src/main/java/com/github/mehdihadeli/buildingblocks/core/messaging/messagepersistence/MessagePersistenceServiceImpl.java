@@ -42,7 +42,8 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
 
     @Override
     public List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification) {
-        return messagePersistenceRepository.getByFilterSpec(specification);
+        return messagePersistenceRepository.getByFilterSpec(specification).stream()
+                .toList();
     }
 
     @Override
@@ -127,7 +128,8 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
     @Override
     public void processAllMessages() {
         List<PersistMessage> messages =
-                messagePersistenceRepository.getByFilterSpec(MessageSpecifications.notDelivered());
+                messagePersistenceRepository.getByFilterSpec(MessageSpecifications.notDelivered()).stream()
+                        .toList();
 
         for (PersistMessage message : messages) {
             processMessage(message.getId());

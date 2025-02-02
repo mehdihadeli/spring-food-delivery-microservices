@@ -1,7 +1,9 @@
 package com.github.mehdihadeli.catalogs.products.data.valueobjects;
 
 import jakarta.persistence.Embeddable;
+
 import java.math.BigDecimal;
+
 
 @Embeddable
 public class PriceVO {

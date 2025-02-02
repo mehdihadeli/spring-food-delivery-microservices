@@ -1,10 +1,10 @@
 package com.github.mehdihadeli.catalogs.products.data.entities;
 
+import com.github.mehdihadeli.buildingblocks.core.data.AuditableAggregateDataModel;
 import com.github.mehdihadeli.catalogs.products.data.valueobjects.DimensionsVO;
 import com.github.mehdihadeli.catalogs.products.data.valueobjects.PriceVO;
 import com.github.mehdihadeli.catalogs.products.data.valueobjects.SizeVO;
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ProductStatus;
-import com.github.mehdihadeli.buildingblocks.core.data.AuditableAggregateDataModel;
 import jakarta.persistence.*;
 import org.springframework.lang.Nullable;
 
@@ -23,14 +23,30 @@ public class ProductDataModel extends AuditableAggregateDataModel {
     @Nullable
     private String description; // Nullable by default since `nullable = false` is not specified
 
+    // - By default, JPA does not prepend the embedded field’s name (e.g., price_ for PriceVO). Instead, it directly
+    // uses the field names inside PriceVO, leading to amount and currency instead of price_amount and price_currency.
+    // The @AttributeOverrides annotation explicitly tells JPA how to map these fields.
+    @AttributeOverrides({
+        @AttributeOverride(name = "amount", column = @Column(name = "price_amount")),
+        @AttributeOverride(name = "currency", column = @Column(name = "price_currency"))
+    })
     @Column(nullable = false)
     @Embedded
     private PriceVO price;
 
+    @AttributeOverrides({
+        @AttributeOverride(name = "size", column = @Column(name = "size_size")),
+        @AttributeOverride(name = "unit", column = @Column(name = "size_unit"))
+    })
     @Column(nullable = false)
     @Embedded
     private SizeVO size;
 
+    @AttributeOverrides({
+        @AttributeOverride(name = "width", column = @Column(name = "dimensions_width")),
+        @AttributeOverride(name = "height", column = @Column(name = "dimensions_height")),
+        @AttributeOverride(name = "depth", column = @Column(name = "dimensions_depth"))
+    })
     @Column(nullable = false)
     @Embedded
     private DimensionsVO dimensions;

@@ -2,6 +2,7 @@ package com.github.mehdihadeli.catalogs.products.data.valueobjects;
 
 import jakarta.persistence.Embeddable;
 
+
 @Embeddable
 public class DimensionsVO {
     private double width;

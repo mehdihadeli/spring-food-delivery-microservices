@@ -1,0 +1,1 @@
+CREATE DATABASE catalogs_service;

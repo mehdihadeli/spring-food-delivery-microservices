@@ -5,16 +5,20 @@ spring:
     activate:
       on-profile: dev
 
+  # create `catalogs_service` database in `init-postgres.sql` file of postgres container
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres # Replace with the username configured for your PostgreSQL
-    password: postgres # Replace with the password configured for your PostgreSQL
+    url: jdbc:postgresql://localhost:5432/catalogs_service
+    username: postgres
+    password: postgres
+    name: catalogs-connection
+
   jpa:
     database: postgresql
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      # when we use flyway we should turn of hibernate `ddl-auto`
+      ddl-auto: none
 
   rabbitmq:
     host: localhost
@@ -28,3 +32,7 @@ logging:
   level:
     org: info
     com: info
+
+message-persistence:
+  interval: 30
+  message-persist-provider-type: postgresql
