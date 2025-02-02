@@ -1,11 +1,11 @@
 package com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1;
 
-import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryId;
-import com.github.mehdihadeli.catalogs.products.ProductMapper;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.id.IdGenerator;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
+import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryId;
+import com.github.mehdihadeli.catalogs.products.ProductMapper;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Dimensions;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Price;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.ProductId;

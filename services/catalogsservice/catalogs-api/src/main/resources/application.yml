@@ -7,15 +7,13 @@
 # -Dspring.profiles.active=development
 
 server:
-  port: 5000
-
+  port: 5000 # Port for the service
 spring:
   profiles:
     group:
       local: "dev-tools,dev-db,dev-config,default, local"
       development: "dev-tools,dev-db,dev-config"
       test: "test-db,test-config"
-      staging: "stage-db,stage-config"
       production: "prod-db,prod-config"
     active: dev  # Set the default active profile
     default: local # Set the default profile if none specified
