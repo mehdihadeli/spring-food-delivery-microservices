@@ -6,6 +6,9 @@ import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.Comm
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.QueryHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.PipelineBehaviorComponent;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.RequestHandlerComponent;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.domain.EntityScanPackages;
@@ -21,10 +24,6 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 public class MediatorRegisteredTypesScanner {
     private static final Set<AnnotationTypeFilter> mediatorTypeFilters = Set.of(

@@ -1,17 +1,17 @@
 package com.github.mehdihadeli.catalogs.products.features.gettingproductbyid.v1;
 
-import com.github.mehdihadeli.catalogs.products.ProductMapper;
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.core.exceptions.NotFoundException;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.IQuery;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.IQueryHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.QueryHandler;
 import com.github.mehdihadeli.buildingblocks.validation.Validator;
+import com.github.mehdihadeli.catalogs.products.ProductMapper;
 import com.github.mehdihadeli.catalogs.products.data.contracts.ProductAggregateRepository;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.products.dtos.ProductDto;
 import org.springframework.stereotype.Component;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 public record GetProductById(ProductId productId) implements IQuery<GetProductByIdResult> {
     public GetProductById {

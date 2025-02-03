@@ -1,12 +1,11 @@
 package com.github.mehdihadeli.buildingblocks.core.data;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 public class AuditableReadEntityBase<TId extends Serializable> extends ReadEntityBase<TId> {
 

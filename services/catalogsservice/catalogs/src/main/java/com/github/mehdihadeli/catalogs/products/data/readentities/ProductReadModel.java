@@ -1,16 +1,15 @@
 package com.github.mehdihadeli.catalogs.products.data.readentities;
 
+import com.github.mehdihadeli.buildingblocks.core.data.AuditableReadEntity;
 import com.github.mehdihadeli.catalogs.products.data.valueobjects.DimensionsVO;
 import com.github.mehdihadeli.catalogs.products.data.valueobjects.PriceVO;
 import com.github.mehdihadeli.catalogs.products.data.valueobjects.SizeVO;
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ProductStatus;
-import com.github.mehdihadeli.buildingblocks.core.data.AuditableReadEntity;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.lang.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
 
 // MongoDB is schema-less by design, so it doesn't enforce schema constraints like relational databases do, we can
 // still enforce constraints at the application level like uisng `@Nullable` because we don't have `column= not null`

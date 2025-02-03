@@ -1,9 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.core.exceptions;
 
-import org.springframework.http.HttpStatus;
-
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 
 public class CustomException extends RuntimeException {
     private final List<String> errorMessages;

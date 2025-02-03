@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.ITxCommand;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
@@ -15,16 +17,13 @@ import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Dimen
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Price;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Size;
+import java.util.Set;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-
-import java.util.Set;
-import java.util.UUID;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 public record CreateProduct(
         ProductId productId,

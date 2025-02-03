@@ -2,7 +2,6 @@ package com.github.mehdihadeli.buildingblocks.core;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.AbstractionRoot;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.*;
-import com.github.mehdihadeli.buildingblocks.core.events.*;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.id.IdGenerator;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceRepository;
@@ -12,6 +11,7 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBu
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.MessageSerializer;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.Serializer;
 import com.github.mehdihadeli.buildingblocks.core.data.AuditorAwareUUID;
+import com.github.mehdihadeli.buildingblocks.core.events.*;
 import com.github.mehdihadeli.buildingblocks.core.id.UlIdIdGenerator;
 import com.github.mehdihadeli.buildingblocks.core.messaging.MessageMetadataAccessorImpl;
 import com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence.InMemoryMessagePersistenceRepository;
@@ -23,6 +23,7 @@ import com.github.mehdihadeli.buildingblocks.core.request.CommandBusImpl;
 import com.github.mehdihadeli.buildingblocks.core.serialization.JacksonMessageSerializerImpl;
 import com.github.mehdihadeli.buildingblocks.core.serialization.JacksonSerializerImpl;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -39,8 +40,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.UUID;
 
 @Configuration
 @EnableConfigurationProperties(MessagePersistenceProperties.class)

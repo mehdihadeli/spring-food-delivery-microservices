@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.core.messaging;
 
 import com.github.f4b6a3.ulid.UlidCreator;
-
 import java.util.UUID;
 
 public class MessageUtils {

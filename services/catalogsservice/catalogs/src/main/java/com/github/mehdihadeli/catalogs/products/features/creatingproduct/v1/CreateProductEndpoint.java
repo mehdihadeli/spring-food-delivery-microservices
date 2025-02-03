@@ -13,15 +13,14 @@ import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Size;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.UUID;
 
 @Validated
 @RestController
@@ -40,12 +39,13 @@ public class CreateProductEndpoint {
     @ApiResponse(responseCode = "201", description = "Created")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-        // https://docs.spring.io/spring-framework/reference/web/webflux/controller/ann-methods/responsebody.html
-    ResponseEntity<CreateProductResponse> createProduct(@RequestBody CreateProductRequest request) throws URISyntaxException {
+    // https://docs.spring.io/spring-framework/reference/web/webflux/controller/ann-methods/responsebody.html
+    ResponseEntity<CreateProductResponse> createProduct(@RequestBody CreateProductRequest request)
+            throws URISyntaxException {
         var productId = this.idGenerator.generateId();
 
         // https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/responseentity.html
-        try (MDC.MDCCloseable _ = MDC.putCloseable("productId", productId.toString())) {
+        try (MDC.MDCCloseable md = MDC.putCloseable("productId", productId.toString())) {
             var productVariants = ProductMapper.toProductVariants(request.productVariants(), idGenerator);
 
             var createProduct = new CreateProduct(
@@ -65,6 +65,5 @@ public class CreateProductEndpoint {
         }
     }
 }
-
 
 record CreateProductResponse(UUID id) {}

@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.catalogs.products.dtos;
 
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ReviewStatus;
-
 import java.util.UUID;
 
 public record ProductReviewDto(

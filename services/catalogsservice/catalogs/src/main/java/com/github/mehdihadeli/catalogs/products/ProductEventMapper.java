@@ -8,7 +8,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IIntegr
 import com.github.mehdihadeli.buildingblocks.core.messaging.MessageUtils;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.domain.ProductCreated;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.notification.ProductCreatedNotification;
-
 import java.time.LocalDateTime;
 
 @Mapper
@@ -18,7 +17,8 @@ public class ProductEventMapper implements EventMapper {
     public IIntegrationEvent mapToIntegrationEvent(IDomainEvent domainEvent) {
         return switch (domainEvent) {
                 // Materialize domain event to integration event
-            case ProductCreated productCreated -> new com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.integration.ProductCreated(
+            case ProductCreated productCreated -> new com.github.mehdihadeli.catalogs.products.features.creatingproduct
+                    .v1.events.integration.ProductCreated(
                     MessageUtils.generateMessageId(),
                     productCreated.productId().id(),
                     productCreated.categoryId().id(),

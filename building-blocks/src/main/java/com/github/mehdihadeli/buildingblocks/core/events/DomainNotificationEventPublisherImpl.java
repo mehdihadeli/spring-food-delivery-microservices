@@ -5,7 +5,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEve
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNotificationEvent;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
 import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
-
 import java.util.List;
 
 public class DomainNotificationEventPublisherImpl implements DomainNotificationEventPublisher {

@@ -2,7 +2,6 @@ package com.github.mehdihadeli.buildingblocks.abstractions.observability;
 
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.SpanKind;
-
 import java.util.HashMap;
 import java.util.Map;
 

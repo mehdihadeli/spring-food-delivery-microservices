@@ -1,12 +1,10 @@
 package com.github.mehdihadeli.buildingblocks.core.utils;
 
+import java.util.Arrays;
 import org.springframework.core.env.Environment;
 
-import java.util.Arrays;
-
 public final class EnvironmentUtils {
-    private EnvironmentUtils() {
-    }
+    private EnvironmentUtils() {}
 
     /**
      * Check if the current environment is "dev".
@@ -17,8 +15,7 @@ public final class EnvironmentUtils {
         if (env == null) {
             throw new IllegalStateException("EnvironmentUtils has not been initialized by Spring.");
         }
-        return Arrays.stream(env.getActiveProfiles())
-                .anyMatch(profile -> profile.equalsIgnoreCase("dev"));
+        return Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equalsIgnoreCase("dev"));
     }
 
     /**
@@ -30,7 +27,6 @@ public final class EnvironmentUtils {
         if (env == null) {
             throw new IllegalStateException("EnvironmentUtils has not been initialized by Spring.");
         }
-        return Arrays.stream(env.getActiveProfiles())
-                .anyMatch(profile -> profile.equalsIgnoreCase("prod"));
+        return Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equalsIgnoreCase("prod"));
     }
 }

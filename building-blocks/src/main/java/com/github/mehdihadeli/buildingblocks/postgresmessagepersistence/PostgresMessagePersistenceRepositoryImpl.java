@@ -6,12 +6,11 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.message
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage_;
 import com.github.mehdihadeli.buildingblocks.core.data.CriteriaQueryUtils;
 import jakarta.persistence.EntityManager;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 public class PostgresMessagePersistenceRepositoryImpl implements MessagePersistenceRepository {
     private final EntityManager entityManager;

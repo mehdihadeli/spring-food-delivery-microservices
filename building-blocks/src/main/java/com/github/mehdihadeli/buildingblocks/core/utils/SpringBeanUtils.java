@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.core.utils;
 
+import java.util.*;
+import java.util.stream.Collectors;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -7,14 +9,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.ClassUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 public final class SpringBeanUtils {
     private SpringBeanUtils() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
-    
+
     /**
      * Resolves bean names by handling mixed scoped and non-scoped scenarios.
      * For the same bean type, prefers non-scoped over scoped.

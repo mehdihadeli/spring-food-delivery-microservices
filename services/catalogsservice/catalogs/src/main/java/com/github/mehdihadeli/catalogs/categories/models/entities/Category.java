@@ -1,15 +1,14 @@
 package com.github.mehdihadeli.catalogs.categories.models.entities;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
+import com.github.mehdihadeli.buildingblocks.core.domain.Aggregate;
 import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryCode;
 import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryDescription;
 import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryId;
 import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryName;
-import com.github.mehdihadeli.buildingblocks.core.domain.Aggregate;
-import org.springframework.lang.Nullable;
-
 import java.util.Optional;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+import org.springframework.lang.Nullable;
 
 public class Category extends Aggregate<CategoryId> {
     private CategoryName name;
@@ -25,7 +24,6 @@ public class Category extends Aggregate<CategoryId> {
         this.name = name;
         this.code = code;
         this.description = description;
-
     }
 
     public static Category create(

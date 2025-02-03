@@ -3,7 +3,6 @@ package com.github.mehdihadeli.buildingblocks.core.events;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.domain.IAggregateBase;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.AggregatesDomainEventsRequestStorage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

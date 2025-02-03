@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.catalogs.products.data.projections;
 
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ReviewStatus;
-
 import java.util.UUID;
 
 public interface ProductReviewProjection {

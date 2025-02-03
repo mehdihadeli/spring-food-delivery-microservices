@@ -1,12 +1,11 @@
 package com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1;
 
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ProductStatus;
-import org.springframework.lang.Nullable;
-
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.springframework.lang.Nullable;
 
 public record CreateProductRequest(
         UUID categoryId,

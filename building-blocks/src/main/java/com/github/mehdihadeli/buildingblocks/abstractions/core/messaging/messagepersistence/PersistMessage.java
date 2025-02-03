@@ -2,7 +2,6 @@ package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messag
 
 import com.github.mehdihadeli.buildingblocks.core.data.AuditableEntityDataModel;
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 @Entity

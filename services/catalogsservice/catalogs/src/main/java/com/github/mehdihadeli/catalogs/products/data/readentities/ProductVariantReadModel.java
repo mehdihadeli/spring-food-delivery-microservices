@@ -2,7 +2,6 @@ package com.github.mehdihadeli.catalogs.products.data.readentities;
 
 import com.github.mehdihadeli.buildingblocks.core.data.AuditableReadEntity;
 import com.github.mehdihadeli.catalogs.products.data.valueobjects.MoneyVO;
-
 import java.util.UUID;
 
 public class ProductVariantReadModel extends AuditableReadEntity {

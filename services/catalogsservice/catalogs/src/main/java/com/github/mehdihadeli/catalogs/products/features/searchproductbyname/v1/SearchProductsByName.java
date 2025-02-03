@@ -1,5 +1,8 @@
 package com.github.mehdihadeli.catalogs.products.features.searchproductbyname.v1;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNullOrEmpty;
+
 import com.github.mehdihadeli.buildingblocks.core.pagination.PageList;
 import com.github.mehdihadeli.buildingblocks.core.pagination.PageRequest;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.IQuery;
@@ -12,9 +15,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNullOrEmpty;
 
 public record SearchProductsByName(PageRequest pageRequest, String searchTerm)
         implements IQuery<SearchProductByNameResult> {

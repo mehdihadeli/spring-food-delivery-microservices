@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.catalogs.products.data.projections;
 
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ProductStatus;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;

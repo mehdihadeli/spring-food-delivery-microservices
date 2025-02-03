@@ -1,14 +1,13 @@
 package com.github.mehdihadeli.buildingblocks.jpa;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 
 @ConfigurationProperties("spring.jpa.hibernate")
 public class CustomHibernateProperties {

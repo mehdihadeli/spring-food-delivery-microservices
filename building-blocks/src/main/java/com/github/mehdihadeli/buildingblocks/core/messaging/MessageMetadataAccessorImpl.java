@@ -2,9 +2,8 @@ package com.github.mehdihadeli.buildingblocks.core.messaging;
 
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.MessageMetadataAccessor;
-import org.springframework.lang.Nullable;
-
 import java.util.UUID;
+import org.springframework.lang.Nullable;
 
 public class MessageMetadataAccessorImpl implements MessageMetadataAccessor {
     @Override

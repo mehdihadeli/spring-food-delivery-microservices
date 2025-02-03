@@ -5,7 +5,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.domain.IBusinessR
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
 import com.github.mehdihadeli.buildingblocks.core.exceptions.BusinessRuleValidationException;
 import com.github.mehdihadeli.buildingblocks.core.exceptions.DomainException;
-
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 

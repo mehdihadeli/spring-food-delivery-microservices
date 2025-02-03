@@ -2,7 +2,6 @@ package com.github.mehdihadeli.buildingblocks.observability;
 
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.SpanKind;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;

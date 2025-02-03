@@ -24,7 +24,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 @EnableConfigurationProperties(SwaggerProperties.class)
 @ConditionalOnClass({SwaggerConfig.class, OpenAPI.class, PropertiesService.class})
 @ConditionalOnBean({PropertiesService.class})
-//@ConditionalOnProperty(prefix = "swagger", name = "enabled", havingValue = "true", matchIfMissing = true)
+// @ConditionalOnProperty(prefix = "swagger", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerConfiguration {
 
     private final PropertiesService propertiesService;

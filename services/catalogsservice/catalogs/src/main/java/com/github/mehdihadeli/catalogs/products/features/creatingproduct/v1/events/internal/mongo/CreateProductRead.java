@@ -1,16 +1,15 @@
 package com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.internal.mongo;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeEmpty;
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.CommandHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommandHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.Unit;
 import com.github.mehdihadeli.catalogs.products.data.contracts.ProductReadJpaRepository;
 import com.github.mehdihadeli.catalogs.products.data.readentities.ProductReadModel;
-
 import java.util.UUID;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeEmpty;
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 public record CreateProductRead(UUID internalCommandId, ProductReadModel productReadModel) implements IInternalCommand {
     public CreateProductRead {

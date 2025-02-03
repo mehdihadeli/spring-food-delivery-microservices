@@ -5,7 +5,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNot
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNotificationEventHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.notifications.NotificationHandler;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.domain.ProductCreated;
-
 import java.util.UUID;
 
 public record ProductCreatedNotification(ProductCreated domainEvent, UUID notificationId)

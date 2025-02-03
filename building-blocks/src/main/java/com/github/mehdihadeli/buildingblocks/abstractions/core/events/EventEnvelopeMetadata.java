@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
 
 import com.github.mehdihadeli.buildingblocks.core.utils.DateTimeUtils;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.domain.IAggregateBase;
-
 import java.util.List;
 
 public interface AggregatesDomainEventsRequestStorage {

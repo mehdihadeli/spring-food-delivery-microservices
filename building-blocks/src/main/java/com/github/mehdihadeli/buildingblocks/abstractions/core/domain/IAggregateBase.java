@@ -2,7 +2,6 @@ package com.github.mehdihadeli.buildingblocks.abstractions.core.domain;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
 import com.github.mehdihadeli.buildingblocks.core.exceptions.DomainException;
-
 import java.util.List;
 
 public interface IAggregateBase {

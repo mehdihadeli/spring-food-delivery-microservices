@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.observability;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.logs.Logger;
 import io.opentelemetry.api.metrics.*;
@@ -8,16 +10,13 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.semconv.ExceptionAttributes;
 import io.opentelemetry.semconv.OtelAttributes;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * utility class for creating and managing OpenTelemetry tracing, metrics, and logs.
@@ -349,8 +348,8 @@ public final class OtelUtils {
      * @param span The Span to which the metadata should be added.
      */
     public static void addMetadataAsTags(Map<String, Object> metadata, Span span) {
-        notBeNull(metadata,"metadata");
-        notBeNull(span,"span");
+        notBeNull(metadata, "metadata");
+        notBeNull(span, "span");
 
         metadata.forEach((key, value) -> span.setAttribute(key, value.toString()));
     }

@@ -1,12 +1,12 @@
 package com.github.mehdihadeli.catalogs.products.features.gettingproducts.v1;
 
-import com.github.mehdihadeli.catalogs.products.ProductMapper;
 import com.github.mehdihadeli.buildingblocks.core.pagination.PageList;
 import com.github.mehdihadeli.buildingblocks.core.pagination.PageRequest;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.IQuery;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.IQueryHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.QueryHandler;
 import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
+import com.github.mehdihadeli.catalogs.products.ProductMapper;
 import com.github.mehdihadeli.catalogs.products.data.contracts.ProductAggregateRepository;
 import com.github.mehdihadeli.catalogs.products.dtos.ProductInfoDto;
 import jakarta.persistence.EntityManager;

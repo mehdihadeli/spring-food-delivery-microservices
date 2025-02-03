@@ -38,7 +38,7 @@ services:
       - ./../configs/init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
     networks:
       - infrastructure
-  
+
   #######################################################
   #  mongo
   #######################################################
@@ -56,7 +56,7 @@ services:
       - infrastructure
   #######################################################
   #  aspire dashboard
-  #######################################################     
+  #######################################################
   # https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/standalone
   # https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/overview
   # https://devblogs.microsoft.com/dotnet/dotnet-aspire-general-availability/
@@ -75,10 +75,10 @@ services:
     networks:
       - infrastructure
   #######################################################
-  #  jaeger 
+  #  jaeger
   # https://www.jaegertracing.io/docs/1.64/deployment/
   # https://www.jaegertracing.io/docs/1.6/deployment/
-  #######################################################     
+  #######################################################
   jaeger-all-in-one:
     image: jaegertracing/all-in-one:latest
     container_name: jaeger-all-in-one
@@ -86,7 +86,7 @@ services:
     ports:
       - "6831:6831/udp" # UDP port for Jaeger agent
       - "16686:16686" # endpoints and Jaeger UI
-      - "14268:14268" # HTTP port for accept trace spans directly from clients 
+      - "14268:14268" # HTTP port for accept trace spans directly from clients
       - "14317:4317" # OTLP gRPC receiver for jaeger
       - "14318:4318" # OTLP http receiver for jaeger
       # - "9411" # Accepts Zipkin spans - /api/v2/spans
@@ -94,9 +94,9 @@ services:
       - infrastructure
 
   #######################################################
-  #  zipkin 
+  #  zipkin
   # https://zipkin.io/pages/quickstart
-  #######################################################  
+  #######################################################
   zipkin-all-in-one:
     image: openzipkin/zipkin:latest
     container_name: zipkin-all-in-one
@@ -106,13 +106,13 @@ services:
     networks:
       - infrastructure
   #######################################################
-  #  otel-collector 
+  #  otel-collector
   # https://opentelemetry.io/docs/collector/installation/
   # https://github.com/open-telemetry/opentelemetry-collector
   # https://github.com/open-telemetry/opentelemetry-collector-contrib
   # we can use none contrib docker `otel/opentelemetry-collector` version from `https://github.com/open-telemetry/opentelemetry-collector` repository but,
-  # if we need more components like `elasticsearch` we should use `otel/opentelemetry-collector-contrib` image of `https://github.com/open-telemetry/opentelemetry-collector-contrib` repository.  
-  #######################################################  
+  # if we need more components like `elasticsearch` we should use `otel/opentelemetry-collector-contrib` image of `https://github.com/open-telemetry/opentelemetry-collector-contrib` repository.
+  #######################################################
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     container_name: otel-collector
@@ -138,7 +138,7 @@ services:
   # https://prometheus.io/docs/introduction/first_steps/
   # https://prometheus.io/docs/prometheus/3.1/installation/
   # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
-  #######################################################  
+  #######################################################
   prometheus:
     image: prom/prometheus:latest
     restart: unless-stopped
@@ -161,7 +161,7 @@ services:
   # node-exporter
   # https://prometheus.io/docs/guides/node-exporter/
   # https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/prometheus-config-examples/docker-compose-linux/
-  #######################################################     
+  #######################################################
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
@@ -184,7 +184,7 @@ services:
   # https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/
   # https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
   # https://github.com/grafana/intro-to-mltp/blob/main/grafana/provisioning/datasources/datasources.yaml
-  #######################################################   
+  #######################################################
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -214,7 +214,7 @@ services:
   # https://github.com/grafana/tempo/blob/main/example/docker-compose/shared
   # https://github.com/grafana/tempo/blob/main/example/docker-compose/local
   # https://github.com/grafana/tempo/tree/main/example/docker-compose
-  #######################################################     
+  #######################################################
   tempo:
     image: grafana/tempo:latest
     container_name: tempo
@@ -245,7 +245,7 @@ services:
       - ./../configs/loki-config.yaml:/etc/loki/local-config.yaml
     networks:
       - infrastructure
-  
+
    #######################################################
    # elasticsearch
    # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docker.html#docker-compose-file
@@ -293,7 +293,7 @@ services:
      depends_on:
        - elasticsearch
      networks:
-       - infrastructure 
+       - infrastructure
    #######################################################
    #  Redis
    # https://developer.redis.com/howtos/quick-start
@@ -306,11 +306,11 @@ services:
        - infrastructure
      ports:
        - 6379:6379
-       
+
 networks:
   infrastructure:
     name: infrastructure
     driver: bridge
-    
+
 volumes:
   elastic-data:
