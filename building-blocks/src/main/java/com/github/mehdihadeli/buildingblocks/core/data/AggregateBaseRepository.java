@@ -12,13 +12,12 @@ import com.querydsl.core.types.Predicate;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 
 // Enhanced base repository supporting both specification types
 public abstract class AggregateBaseRepository<

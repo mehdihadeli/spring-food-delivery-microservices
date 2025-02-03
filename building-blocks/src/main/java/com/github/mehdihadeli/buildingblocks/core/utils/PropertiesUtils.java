@@ -1,11 +1,10 @@
 package com.github.mehdihadeli.buildingblocks.core.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class PropertiesUtils {
 

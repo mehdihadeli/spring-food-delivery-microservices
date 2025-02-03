@@ -9,7 +9,6 @@ import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;

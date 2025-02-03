@@ -1,16 +1,15 @@
 package com.github.mehdihadeli.catalogs.products.domain.models.entities;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
 import com.github.mehdihadeli.buildingblocks.core.domain.EntityBase;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Color;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.SKU;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Stock;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.VariantId;
-
 import java.math.BigDecimal;
 import java.util.Objects;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 // - It has a distinct identity (variantId) that remains constant throughout its lifecycle
 // - Even if two variants have identical attributes (same price, SKU, stock level), they are still different objects
@@ -26,12 +25,7 @@ public class ProductVariant extends EntityBase<VariantId> {
     private Stock stock;
     private Color color;
 
-    public ProductVariant(
-            VariantId variantId,
-            SKU sku,
-            Money price,
-            Stock stock,
-            Color color) {
+    public ProductVariant(VariantId variantId, SKU sku, Money price, Stock stock, Color color) {
         this.setId(notBeNull(variantId, "variantId"));
         this.sku = notBeNull(sku, "sku");
         this.price = notBeNull(price, "price");

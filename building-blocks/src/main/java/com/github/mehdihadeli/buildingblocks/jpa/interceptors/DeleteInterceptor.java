@@ -2,15 +2,14 @@ package com.github.mehdihadeli.buildingblocks.jpa.interceptors;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.data.IEntityDataModelBase;
 import jakarta.persistence.PreRemove;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.domain.AuditorAware;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class DeleteInterceptor {
     private static ApplicationContext applicationContext;

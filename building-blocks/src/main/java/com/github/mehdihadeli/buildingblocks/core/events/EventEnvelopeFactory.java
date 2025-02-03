@@ -1,12 +1,11 @@
 package com.github.mehdihadeli.buildingblocks.core.events;
 
-import com.google.common.base.CaseFormat;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.EventEnvelopeMetadata;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelopeBase;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
 import com.github.mehdihadeli.buildingblocks.core.utils.TypeMapperUtils;
-
+import com.google.common.base.CaseFormat;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;

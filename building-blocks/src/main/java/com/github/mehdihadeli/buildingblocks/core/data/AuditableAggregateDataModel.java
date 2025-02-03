@@ -7,7 +7,6 @@ import com.github.mehdihadeli.buildingblocks.jpa.interceptors.AuditInterceptor;
 import com.github.mehdihadeli.buildingblocks.jpa.interceptors.DeleteInterceptor;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-
 import java.util.UUID;
 
 @EntityListeners({AuditInterceptor.class, DeleteInterceptor.class, AggregatesDomainEventsStorageInterceptor.class})

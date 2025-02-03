@@ -3,7 +3,6 @@ package com.github.mehdihadeli.buildingblocks.abstractions.observability;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 

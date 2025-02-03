@@ -6,7 +6,6 @@ import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.metrics.LongUpDownCounter;
 import io.opentelemetry.api.metrics.Meter;
-
 import java.util.concurrent.TimeUnit;
 
 public class QueryHandlerMetrics {

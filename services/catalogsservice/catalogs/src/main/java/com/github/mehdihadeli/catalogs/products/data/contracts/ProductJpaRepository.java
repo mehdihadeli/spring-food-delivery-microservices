@@ -1,14 +1,13 @@
 package com.github.mehdihadeli.catalogs.products.data.contracts;
 
+import com.github.mehdihadeli.buildingblocks.abstractions.core.data.CustomJpaRepository;
 import com.github.mehdihadeli.catalogs.products.data.entities.ProductDataModel;
 import com.github.mehdihadeli.catalogs.products.data.projections.ProductSummaryProjection;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.data.CustomJpaRepository;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.UUID;
 
 @Repository
 public interface ProductJpaRepository extends CustomJpaRepository<ProductDataModel, UUID> {

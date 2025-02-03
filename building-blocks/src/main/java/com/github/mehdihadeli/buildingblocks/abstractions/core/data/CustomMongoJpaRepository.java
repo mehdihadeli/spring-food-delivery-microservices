@@ -1,9 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.data;
 
+import java.io.Serializable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.NoRepositoryBean;
-
-import java.io.Serializable;
 
 // https://docs.spring.io/spring-data/mongodb/reference/repositories/definition.html
 // https://docs.spring.io/spring-data/mongodb/reference/mongodb/repositories/repositories.html

@@ -1,5 +1,14 @@
 package com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.domain;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
+import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEventHandler;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBus;
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
+import com.github.mehdihadeli.buildingblocks.core.messaging.MessageUtils;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.notifications.NotificationHandler;
 import com.github.mehdihadeli.catalogs.categories.models.valueobjects.CategoryId;
 import com.github.mehdihadeli.catalogs.products.ProductMapper;
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ProductReview;
@@ -10,19 +19,9 @@ import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Price
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Size;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.internal.mongo.CreateProductRead;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEventHandler;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBus;
-import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
-import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
-import com.github.mehdihadeli.buildingblocks.core.messaging.MessageUtils;
-import com.github.mehdihadeli.buildingblocks.mediator.abstractions.notifications.NotificationHandler;
-import org.springframework.lang.Nullable;
-
 import java.util.List;
 import java.util.Set;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+import org.springframework.lang.Nullable;
 
 // https://event-driven.io/en/explicit_validation_in_csharp_just_got_simpler/
 // https://event-driven.io/en/how_to_validate_business_logic/

@@ -4,6 +4,7 @@ import com.github.mehdihadeli.buildingblocks.abstractions.problemdetails.IProble
 import com.github.mehdihadeli.buildingblocks.core.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -38,8 +39,6 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
-import java.util.List;
 
 // when `proxyBeanMethods = false`, avoids the direct method call problem that would occur when one @Bean method calls
 // another internally.

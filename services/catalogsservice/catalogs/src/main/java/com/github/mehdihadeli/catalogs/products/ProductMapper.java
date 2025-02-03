@@ -30,7 +30,6 @@ import com.github.mehdihadeli.catalogs.products.dtos.ProductReviewDto;
 import com.github.mehdihadeli.catalogs.products.dtos.ProductVariantDto;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.CreateProductRequest;
 import com.github.mehdihadeli.catalogs.products.features.creatingproduct.v1.events.domain.ProductCreated;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

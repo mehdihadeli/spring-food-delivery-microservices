@@ -1,5 +1,10 @@
 package com.github.mehdihadeli.catalogs.products.data;
 
+import static com.github.mehdihadeli.catalogs.products.data.entities.QProductDataModel.productDataModel;
+import static com.github.mehdihadeli.catalogs.products.data.entities.QProductReviewDataModel.productReviewDataModel;
+import static com.github.mehdihadeli.catalogs.products.data.entities.QProductVariantDataModel.productVariantDataModel;
+
+import com.github.mehdihadeli.buildingblocks.core.data.AggregateBaseRepository;
 import com.github.mehdihadeli.catalogs.products.ProductMapper;
 import com.github.mehdihadeli.catalogs.products.data.contracts.ProductAggregateRepository;
 import com.github.mehdihadeli.catalogs.products.data.contracts.ProductJpaRepository;
@@ -8,20 +13,14 @@ import com.github.mehdihadeli.catalogs.products.data.projections.ProductSummaryP
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.Product;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.products.dtos.ProductSummaryDTO;
-import com.github.mehdihadeli.buildingblocks.core.data.AggregateBaseRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.UUID;
-
-import static com.github.mehdihadeli.catalogs.products.data.entities.QProductDataModel.productDataModel;
-import static com.github.mehdihadeli.catalogs.products.data.entities.QProductReviewDataModel.productReviewDataModel;
-import static com.github.mehdihadeli.catalogs.products.data.entities.QProductVariantDataModel.productVariantDataModel;
 
 // The `@Repository` annotation needs to be on the concrete class not interface and after that interface is accessible
 // on dependency injection

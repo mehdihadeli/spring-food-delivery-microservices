@@ -1,0 +1,61 @@
+// https://github.com/devcontainers/images/blob/main/src/java/.devcontainer/devcontainer.json
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/java
+// https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/setting-up-your-java-project-for-codespaces
+// https://audacioustux.notion.site/Getting-Started-with-Devcontainer-c727dbf9d56f4d6b9b0ef87b3111693f
+{
+  "name": "Spring Food Delivery Microservices",
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none"
+    },
+    "containerEnv": {
+      "JAVA_HOME": "/usr/lib/jvm/msopenjdk-current"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "2"
+    },
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "configureZshAsDefaultShell": true
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "explorer.autoReveal": true,
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.defaultFormatter": "redhat.java",
+        "[java]": {
+          "editor.defaultFormatter": "redhat.java"
+        }
+      },
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-gradle",
+        "redhat.java",
+        "ms-azuretools.vscode-docker",
+        "EditorConfig.EditorConfig",
+        "DavidAnson.vscode-markdownlint",
+        "esbenp.prettier-vscode",
+        "vscode-icons-team.vscode-icons",
+        "redhat.vscode-yaml",
+        "kennylong.kubernetes-yaml-formatter"
+      ]
+    }
+  },
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb",
+    "storage": "32gb"
+  },
+  "updateContentCommand": "chmod +x .devcontainer/scripts/update.sh",
+  "postCreateCommand": "chmod +x .devcontainer/scripts/post-create.sh"
+}

@@ -1,8 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
 
-import org.springframework.lang.Nullable;
-
 import java.util.UUID;
+import org.springframework.lang.Nullable;
 
 public interface MessageMetadataAccessor {
     /// <summary>

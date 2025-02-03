@@ -2,6 +2,10 @@ package com.github.mehdihadeli.buildingblocks.core.data;
 
 import com.fasterxml.jackson.databind.util.Converter;
 import com.mysema.commons.lang.Assert;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.bson.Document;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ExecutableFindOperation;
@@ -12,11 +16,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 // https://docs.spring.io/spring-data/mongodb/reference/mongodb/template-crud-operations.html
 

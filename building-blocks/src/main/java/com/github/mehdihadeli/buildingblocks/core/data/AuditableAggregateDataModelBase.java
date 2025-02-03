@@ -6,7 +6,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEve
 import com.github.mehdihadeli.buildingblocks.core.exceptions.DomainException;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;

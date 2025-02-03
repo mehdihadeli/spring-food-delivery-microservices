@@ -1,11 +1,10 @@
 package com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries;
 
+import java.lang.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.lang.annotation.*;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

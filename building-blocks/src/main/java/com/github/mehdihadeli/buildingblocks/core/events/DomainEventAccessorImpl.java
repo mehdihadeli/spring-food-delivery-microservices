@@ -3,7 +3,6 @@ package com.github.mehdihadeli.buildingblocks.core.events;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.AggregatesDomainEventsRequestStorage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.DomainEventsAccessor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
-
 import java.util.List;
 
 public class DomainEventAccessorImpl implements DomainEventsAccessor {

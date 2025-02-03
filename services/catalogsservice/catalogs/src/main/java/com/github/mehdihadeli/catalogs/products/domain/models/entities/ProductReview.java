@@ -1,14 +1,13 @@
 package com.github.mehdihadeli.catalogs.products.domain.models.entities;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
+import com.github.mehdihadeli.buildingblocks.core.domain.EntityBase;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Comment;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.CustomerId;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.ProductReviewId;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.Rating;
-import com.github.mehdihadeli.buildingblocks.core.domain.EntityBase;
-
 import java.util.Objects;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 /**
  * Represents a product review entity in the e-commerce system.

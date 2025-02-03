@@ -1,12 +1,11 @@
 package com.github.mehdihadeli.catalogs.products.dtos;
 
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.ProductStatus;
-import org.springframework.lang.Nullable;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.springframework.lang.Nullable;
 
 public record ProductDto(
         UUID Id,

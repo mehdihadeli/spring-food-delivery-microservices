@@ -3,11 +3,10 @@ package com.github.mehdihadeli.catalogs.categories.contracts;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.data.CustomJpaRepository;
 import com.github.mehdihadeli.catalogs.categories.data.entities.CategoryDataModel;
 import com.github.mehdihadeli.catalogs.categories.data.projections.CategoryInfoProjection;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.UUID;
 
 @Repository
 public interface CategoryJpaRepository extends CustomJpaRepository<CategoryDataModel, UUID> {

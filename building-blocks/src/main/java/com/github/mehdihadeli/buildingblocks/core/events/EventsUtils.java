@@ -6,11 +6,10 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IHaveExter
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IHaveNotificationEvent;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IIntegrationEvent;
 import com.github.mehdihadeli.buildingblocks.core.messaging.MessageUtils;
-
-import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import javax.annotation.Nullable;
 
 public class EventsUtils {
     public static <T extends IDomainEvent> @Nullable IDomainNotificationEvent<T> getWrappedDomainNotificationEvent(

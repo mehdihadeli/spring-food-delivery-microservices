@@ -13,7 +13,7 @@ public class ObjectRuleBuilder<T, P> extends RuleBuilder<T, P> {
 
     public ObjectRuleBuilder<T, P> notNull() {
         validator.addRule(new ValidationRule<>(
-                property, x-> x!=null, fieldName, String.format("filed %s should not be null.", fieldName)));
+                property, x -> x != null, fieldName, String.format("filed %s should not be null.", fieldName)));
         return this;
     }
 

@@ -6,7 +6,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBu
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommand;
-
 import java.util.List;
 
 public class CommandBusImpl extends AsyncCommandBusImpl implements CommandBus {

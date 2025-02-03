@@ -6,7 +6,6 @@ import com.github.mehdihadeli.buildingblocks.observability.ObservabilityConstant
 import com.github.mehdihadeli.buildingblocks.observability.TelemetryTags;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;

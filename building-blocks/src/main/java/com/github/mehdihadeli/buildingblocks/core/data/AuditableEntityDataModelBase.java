@@ -3,15 +3,14 @@ package com.github.mehdihadeli.buildingblocks.core.data;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.data.IAuditableEntityDataModelBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.lang.Nullable;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 // https://docs.spring.io/spring-data/jpa/reference/auditing.html
 

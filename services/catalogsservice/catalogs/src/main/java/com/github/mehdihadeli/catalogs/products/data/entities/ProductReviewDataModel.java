@@ -1,9 +1,8 @@
 package com.github.mehdihadeli.catalogs.products.data.entities;
 
-import com.github.mehdihadeli.catalogs.products.domain.models.entities.ReviewStatus;
 import com.github.mehdihadeli.buildingblocks.core.data.AuditableEntityDataModel;
+import com.github.mehdihadeli.catalogs.products.domain.models.entities.ReviewStatus;
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 @Entity

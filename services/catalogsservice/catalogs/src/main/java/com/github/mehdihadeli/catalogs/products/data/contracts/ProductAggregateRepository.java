@@ -4,10 +4,9 @@ import com.github.mehdihadeli.catalogs.products.data.projections.ProductSummaryP
 import com.github.mehdihadeli.catalogs.products.domain.models.entities.Product;
 import com.github.mehdihadeli.catalogs.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.products.dtos.ProductSummaryDTO;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 public interface ProductAggregateRepository {
     Optional<Product> findById(ProductId productId);

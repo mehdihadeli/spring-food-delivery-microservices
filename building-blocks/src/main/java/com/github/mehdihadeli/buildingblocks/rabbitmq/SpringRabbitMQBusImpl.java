@@ -9,7 +9,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.message
 import com.github.mehdihadeli.buildingblocks.core.events.EventEnvelopeFactory;
 import com.github.mehdihadeli.buildingblocks.core.messaging.MessageHeaders;
 import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

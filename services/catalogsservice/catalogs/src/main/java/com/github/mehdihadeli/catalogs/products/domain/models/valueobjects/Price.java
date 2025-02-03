@@ -1,9 +1,9 @@
 package com.github.mehdihadeli.catalogs.products.domain.models.valueobjects;
 
-import java.math.BigDecimal;
-
 import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNegativeOrZero;
 import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNullOrEmpty;
+
+import java.math.BigDecimal;
 
 public record Price(BigDecimal amount, String currency) {
     public Price {

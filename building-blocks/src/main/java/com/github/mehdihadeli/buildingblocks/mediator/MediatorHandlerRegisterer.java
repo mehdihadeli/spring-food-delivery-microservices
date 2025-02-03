@@ -1,6 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.mediator;
 
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.EnableMediatorHandlers;
+import java.lang.annotation.Annotation;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -12,8 +13,6 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
-
-import java.lang.annotation.Annotation;
 
 // registerers that implements `ImportBeanDefinitionRegistrar`, use for adding beans to the spring dependency container
 // at runtime

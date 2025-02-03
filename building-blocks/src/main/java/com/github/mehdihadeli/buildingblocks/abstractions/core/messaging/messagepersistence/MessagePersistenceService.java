@@ -5,10 +5,9 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNot
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
-import org.springframework.data.jpa.domain.Specification;
-
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.Specification;
 
 public interface MessagePersistenceService {
 

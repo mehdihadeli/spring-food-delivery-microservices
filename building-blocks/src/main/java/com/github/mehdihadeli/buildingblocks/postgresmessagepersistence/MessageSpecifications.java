@@ -3,9 +3,8 @@ package com.github.mehdihadeli.buildingblocks.postgresmessagepersistence;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageStatus;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage_;
-import org.springframework.data.jpa.domain.Specification;
-
 import java.time.LocalDateTime;
+import org.springframework.data.jpa.domain.Specification;
 
 public class MessageSpecifications {
     public static Specification<PersistMessage> hasStatus(MessageStatus status) {

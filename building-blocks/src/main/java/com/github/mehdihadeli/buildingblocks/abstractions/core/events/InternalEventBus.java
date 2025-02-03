@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
 
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.events.IEvent;
-
 import java.util.List;
 
 public interface InternalEventBus {

@@ -1,12 +1,11 @@
 package com.github.mehdihadeli.buildingblocks.validation;
 
 import com.github.mehdihadeli.buildingblocks.core.exceptions.ValidationException;
-import org.springframework.lang.Nullable;
-
 import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import org.springframework.lang.Nullable;
 
 public final class ValidationUtils {
 

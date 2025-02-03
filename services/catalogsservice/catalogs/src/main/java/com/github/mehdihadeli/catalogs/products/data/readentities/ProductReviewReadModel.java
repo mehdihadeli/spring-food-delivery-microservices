@@ -1,8 +1,7 @@
 package com.github.mehdihadeli.catalogs.products.data.readentities;
 
-import com.github.mehdihadeli.catalogs.products.domain.models.entities.ReviewStatus;
 import com.github.mehdihadeli.buildingblocks.core.data.AuditableReadEntity;
-
+import com.github.mehdihadeli.catalogs.products.domain.models.entities.ReviewStatus;
 import java.util.UUID;
 
 public class ProductReviewReadModel extends AuditableReadEntity {
