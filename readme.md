@@ -30,6 +30,7 @@
   - [The Domain And Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
   - [Application Structure](#application-structure)
     - [High Level Structure](#high-level-structure)
+  - [How to Run](#how-to-run)
   - [Contribution](#contribution)
   - [Project References](#project-references)
   - [License](#license)
@@ -149,6 +150,78 @@ Keeping such a split works great with CQRS. It segregates our operations and sli
 ### High Level Structure
 
 TODO
+
+## How to Run
+
+Run the [docker-compose.infrastructure.yaml](deployments/docker-compose/docker-compose.infrastructure.yaml) file in the root of project, for running required infrastructures to run microservices with bellow command:
+
+```bash
+docker-compose -f ./deployments/docker-compose/docker-compose.infrastructure.yaml up -d
+```
+
+Now we can run our microservices with using `mvn` and `make` command and some predefined commands in our [Makefile](./Makefile):
+
+**Run Services:**
+
+```bash
+# run catalogs
+make run-catalogs
+
+# run api-gateway
+make run-api-gateway
+```
+
+**Build Services:**
+
+```bash
+# build catalogs
+make build-catalogs
+
+# build api-gateway
+make build-api-gateway
+
+# build-all services
+make build-all
+```
+
+**Test Services:**
+
+```bash
+# test catalogs
+make test-catalogs
+
+# test api-gateway
+make test-api-gateway
+
+# test-all services
+make test-all
+```
+
+**Install Services:**
+
+```bash
+# install catalogs
+make install-catalogs
+
+# install api-gateway
+make install-api-gateway
+
+# install-all services
+make install-all
+```
+
+Some useful commands with using `make` and `mvn`:
+
+```bash
+# Clean all microservices
+make clean-all
+
+# check style rules with spotless
+make check-spotless
+
+# apply style rules with spotless
+make apply-spotless
+```
 
 ## Contribution
 
