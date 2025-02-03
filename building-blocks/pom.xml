@@ -6,10 +6,10 @@
   <parent>
     <groupId>com.github.mehdihadeli</groupId>
     <artifactId>spring-food-delivery-microservices</artifactId>
-    <relativePath>../pom.xml</relativePath>
-    <version>1.0.0</version>
+    <relativePath>../pom.xml</relativePath> <!-- Point to the root POM -->
+    <version>1.0-SNAPSHOT</version>
   </parent>
-  <name>building-blocks</name>
+
   <artifactId>building-blocks</artifactId>
 
   <properties>
@@ -236,14 +236,6 @@
 
   <build>
     <plugins>
-      <!--      https://stackoverflow.com/questions/32368328/unable-to-find-a-suitable-main-class-please-add-a-mainclass-property-spring-->
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
       <!-- https://mapstruct.org/documentation/installation/-->
       <!-- maven-compiler-plugin use for generating mapping implementation on build time as source generator-->
       <plugin>

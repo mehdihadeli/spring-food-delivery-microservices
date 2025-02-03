@@ -2,69 +2,179 @@
 PROJECT_GROUP := com.github.mehdihadeli
 CATALOGS_API := $(PROJECT_GROUP):catalogs-api
 CATALOGS := $(PROJECT_GROUP):catalogs
+CATALOGS_API_DIR=services/catalogs/api
+CATALOGS_DIR=services/catalogs
+API_GATEWAY_DIR=api-gateway
 BUILDING_BLOCKS := $(PROJECT_GROUP):building-blocks
+BUILDING_BLOCKS_DIR := building-blocks
 
-.PHONY: catalogs-build
-catalogs-build:
-	mvn package -pl $(CATALOGS_API) -pl $(CATALOGS) -pl $(BUILDING_BLOCKS)
+#################################################################
+# Building-Blocks
+#################################################################
+.PHONY: building-blocks-dependency-tree
+building-blocks-dependency-tree:
+	@echo "Writing dependency tree..."
+	@mvn -f $(BUILDING_BLOCKS_DIR)/pom.xml  dependency:tree -Dverbose
+#	@mvn dependency:tree -Dverbose -pl $(BUILDING_BLOCKS_DIR)
 
-.PHONY: catalogs-compile
-catalogs-build:
-	mvn compile -pl $(CATALOGS_API) -pl $(CATALOGS) -pl $(BUILDING_BLOCKS) -am
+# Build building-blocks
+.PHONY: build-building-blocks
+build-building-blocks:
+	@echo "Building building-blocks..."
+	@mvn -f $(BUILDING_BLOCKS_DIR)/pom.xml clean package
+#	@mvn clean package -pl $(BUILDING_BLOCKS_DIR)
 
+# Clean building-blocks
+.PHONY: clean-building-blocks
+clean-building-blocks:
+	@echo "Cleaning building-blocks..."
+	@mvn -f $(BUILDING_BLOCKS_DIR)/pom.xml clean
+#	@mvn clean -pl $(BUILDING_BLOCKS_DIR)
+
+# install building-blocks
+.PHONY: install-building-blocks
+install-building-blocks:
+	@echo "Installing building-blocks..."
+	@mvn -f $(BUILDING_BLOCKS_DIR)/pom.xml clean install
+#	@mvn clean install -pl $(BUILDING_BLOCKS_DIR)
+
+#################################################################
+# Catalogs
+#################################################################
 .PHONY: catalogs-dependency-tree
 catalogs-dependency-tree:
-	mvn dependency:tree -Dverbose -pl $(CATALOGS_API) -pl $(CATALOGS) -pl $(BUILDING_BLOCKS)
+	@echo "Writing dependency tree..."
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml  dependency:tree -Dverbose
+#	@mvn dependency:tree -Dverbose -pl $(CATALOGS_API_DIR)
 
-.PHONY: catalogs-install
-catalogs-install:
-	mvn install -pl $(CATALOGS_API) -pl $(CATALOGS) -pl $(BUILDING_BLOCKS) -am
+# Run catalogs
+.PHONY: run-catalogs
+run-catalogs:
+	@echo "Starting catalogs service..."
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean spring-boot:run
+#	@mvn spring-boot:run -pl $(CATALOGS_API_DIR)
 
-# Run the API using mvn
-# https://docs.spring.io/spring-boot/maven-plugin/run.html#run.run-goal
-.PHONY: catalogs-run-spring
-catalogs-run-spring:
-	mvn spring-boot:run -pl $(CATALOGS_API) -pl $(CATALOGS) -pl $(BUILDING_BLOCKS)
+# Build catalogs
+.PHONY: build-catalogs
+build-catalogs:
+	@echo "Building catalogs service..."
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean package
+#	@mvn clean package -pl $(CATALOGS_API_DIR)
 
-# Clean build artifacts
-.PHONY: catalogs-clean
-catalogs-clean:
-	mvn clean -pl $(CATALOGS_API) -pl $(CATALOGS) -pl $(BUILDING_BLOCKS)
+# Clean catalogs
+.PHONY: clean-catalogs
+clean-catalogs:
+	@echo "Cleaning catalogs service..."
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean
+#	@mvn clean -pl $(CATALOGS_API_DIR)
 
-.PHONY: install
-install:
-	mvn install
+# install catalogs
+.PHONY: install-catalogs
+install-catalogs:
+	@echo "Installing catalogs service..."
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean install
+#	@mvn clean install -pl $(CATALOGS_API_DIR)
 
-# Run with jar file with `java` command
-.PHONY: run-jar-java
-run-jar-java:
-	java -jar ./java-food-delivery-microservices/target/java-food-delivery-microservices-0.0.1-SNAPSHOT.jar
+# test catalogs
+.PHONY: test-catalogs
+test-catalogs:
+	@echo "Testing catalogs service..."
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean test
+#	@mvn clean test -pl $(CATALOGS_API_DIR)
 
-# Run the API using mvn
-# https://www.mojohaus.org/exec-maven-plugin/usage.html
-# https://stackoverflow.com/questions/1089285/maven-run-project
-.PHONY: run
-run:
-	mvn exec:java  -pl ./java-food-delivery-microservices
+# apply migrations catalogs
+.PHONY: flyway-migrate-catalogs
+flyway-migrate-catalogs:
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml flyway:migrate
 
-# Clean build artifacts
-.PHONY: clean
-clean:
-	mvn clean
+#################################################################
+# Api-Gateway
+#################################################################
+
+# Run api-gateway
+.PHONY: run-api-gateway
+run-api-gateway:
+	@echo "Starting api-gateway..."
+	@mvn -f $(API_GATEWAY_DIR)/pom.xml clean spring-boot:run
+#	@mvn spring-boot:run -pl $(API_GATEWAY_DIR)
+
+# Build api-gateway
+.PHONY: build-api-gateway
+build-api-gateway:
+	@echo "Building api-gateway..."
+	@mvn -f $(API_GATEWAY_DIR)/pom.xml clean package
+#	@mvn clean package -pl $(API_GATEWAY_DIR)
+
+# install api-gateway
+.PHONY: install-api-gateway
+install-api-gateway:
+	@echo "Installing api-gateway..."
+	@mvn -f $(API_GATEWAY_DIR)/pom.xml clean install
+#	@mvn clean install -pl $(API_GATEWAY_DIR)
+
+# Clean api-gateway
+.PHONY: clean-api-gateway
+clean-api-gateway:
+	@echo "Cleaning api-gateway..."
+	@mvn -f $(API_GATEWAY_DIR)/pom.xml clean
+#	@mvn clean -pl $(API_GATEWAY_DIR)
+
+# api-gateway dependency-tree
+.PHONY: api-gateway-dependency-tree
+api-gateway-dependency-tree:
+	@echo "Writing dependency tree..."
+	@mvn -f $(API_GATEWAY_DIR)/pom.xml  dependency:tree -Dverbose
+#	@mvn dependency:tree -Dverbose -pl $(API_GATEWAY_DIR)
+
+# test api-gateway
+.PHONY: test-api-gateway
+test-api-gateway:
+	@echo "Testing api-gateway..."
+	@mvn -f $(API_GATEWAY_DIR)/pom.xml clean test
+#	@mvn clean test -pl $(API_GATEWAY_DIR)
+
+#################################################################
+# All Services
+#################################################################
+
+# install all microservices
+.PHONY: install-all
+install-all:
+	@echo "Installing all microservices..."
+	@mvn clean install
+
+# build all microservices
+# package does everything that `mvn package` does AND installs the built artifact into your local Maven repository (~/.m2/repository).
+.PHONY: build-all
+build-all:
+	@echo "Building all microservices..."
+	@mvn clean package
+
+# Clean all microservices
+.PHONY: clean-all
+clean-all:
+	@echo "Cleaning all microservices..."
+	@mvn clean
+
+# test all microservices
+.PHONY: test-all
+test-all:
+	@echo "Testing all microservices..."
+	@mvn clean test
 
 # https://dev.to/ankityadav33/standardize-code-formatting-with-spotless-2bdh
 # https://github.com/diffplug/spotless/tree/main/plugin-maven
-# check google style rules with spotless
-.PHONY: check-style-spotless
-check-style-spotless:
-	mvn spotless:check
+# check style rules with spotless
+.PHONY: check-spotless
+check-spotless:
+	@mvn spotless:check
 
-# apply google style rules with spotless
-.PHONY: apply-style-spotless
-apply-style-spotless:
-	mvn spotless:apply
+# apply style rules with spotless
+.PHONY: apply-spotless
+apply-spotless:
+	@mvn spotless:apply
 
 # apply migrations
 .PHONY: flyway-migrate
 flyway-migrate:
-	mvn flyway:migrate
+	@mvn flyway:migrate
