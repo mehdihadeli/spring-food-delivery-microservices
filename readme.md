@@ -69,7 +69,7 @@ Thanks a bunch for supporting me!
 | ---------------- | -------------------- | -------------- | ----- |
 | Building Blocks  | -                    | ✅ Completed   | -     |
 | API Gateway      | -                    | ✅ Completed   | -     |
-| Catalogs Service | -                    | 👷 In-Progress | -     |
+| Catalogs Service | -                    | ✅ Completed   | -     |
 | Identity Service | -                    | ❌ Not Started | -     |
 | Customer Service | -                    | ❌ Not Started | -     |
 | Order Service    | -                    | ❌ Not Started | -     |
