@@ -1,4 +1,4 @@
-# 🍔 Java Food Delivery Microservices
+# 🍔 Spring Food Delivery Microservices
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?logoColor=white&style=for-the-badge)](http://commitizen.github.io/cz-cli/)
 
@@ -13,7 +13,7 @@
 > This project is in progress. I add new features over the time. You can check the [Release Notes](https://github.com/mehdihadeli/spring-food-delivery-microservices/releases).
 
 > [!IMPORTANT]
-> Other versions of this project are available in these repositories, We can choose best fit architecture for our projects > based on production needs:
+> Other versions of this project like golang and .net are available in these repositories:
 >
 > - [https://github.com/mehdihadeli/go-food-delivery-microservices](https://github.com/mehdihadeli/go-food-delivery-microservices)
 > - [https://github.com/mehdihadeli/food-delivery-microservices](https://github.com/mehdihadeli/food-delivery-microservices)
