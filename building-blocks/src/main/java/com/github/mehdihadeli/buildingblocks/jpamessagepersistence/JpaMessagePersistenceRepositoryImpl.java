@@ -1,21 +1,19 @@
-package com.github.mehdihadeli.buildingblocks.postgresmessagepersistence;
+package com.github.mehdihadeli.buildingblocks.jpamessagepersistence;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceRepository;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageStatus;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage_;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.*;
 import com.github.mehdihadeli.buildingblocks.core.data.CriteriaQueryUtils;
 import jakarta.persistence.EntityManager;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
-public class PostgresMessagePersistenceRepositoryImpl implements MessagePersistenceRepository {
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public class JpaMessagePersistenceRepositoryImpl implements MessagePersistenceRepository {
     private final EntityManager entityManager;
 
-    public PostgresMessagePersistenceRepositoryImpl(EntityManager entityManager) {
+    public JpaMessagePersistenceRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -52,6 +50,22 @@ public class PostgresMessagePersistenceRepositoryImpl implements MessagePersiste
     @Transactional(readOnly = true)
     public List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification) {
         return CriteriaQueryUtils.findAll(this.entityManager, PersistMessage.class, specification);
+    }
+
+    @Override
+    public List<PersistMessage> filterByState(MessageStatus messageStatus) {
+        return CriteriaQueryUtils.findAll(
+                this.entityManager, PersistMessage.class, MessageSpecifications.hasStatus(messageStatus));
+    }
+
+    @Override
+    public List<PersistMessage> filterByStateAndDeliveryType(
+            MessageStatus messageStatus, MessageDeliveryType deliveryType) {
+        return CriteriaQueryUtils.findAll(
+                this.entityManager,
+                PersistMessage.class,
+                MessageSpecifications.hasStatus(messageStatus)
+                        .and(MessageSpecifications.hasDeliveryType(deliveryType)));
     }
 
     @Override

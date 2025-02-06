@@ -2,21 +2,21 @@ package com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNotificationEvent;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.*;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.MessageSerializer;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.Serializer;
 import com.github.mehdihadeli.buildingblocks.core.utils.TypeMapperUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
-import com.github.mehdihadeli.buildingblocks.postgresmessagepersistence.MessageSpecifications;
-import java.util.List;
-import java.util.UUID;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.jpa.domain.Specification;
+
+import java.util.List;
+import java.util.UUID;
 
 public class MessagePersistenceServiceImpl implements MessagePersistenceService {
     private static final Logger logger = LoggerFactory.getLogger(MessagePersistenceServiceImpl.class);
@@ -40,18 +40,12 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
     }
 
     @Override
-    public List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification) {
-        return messagePersistenceRepository.getByFilterSpec(specification).stream()
-                .toList();
-    }
-
-    @Override
-    public <TMessage extends IMessage> void addPublishMessage(IEventEnvelope<? extends TMessage> eventEnvelope) {
+    public <TMessage extends IMessage> void addPublishMessage(IMessageEnvelope<? extends TMessage> eventEnvelope) {
         addMessageCore(eventEnvelope, MessageDeliveryType.Outbox);
     }
 
     @Override
-    public <TMessage extends IMessage> void addReceivedMessage(IEventEnvelope<? extends TMessage> eventEnvelope) {
+    public <TMessage extends IMessage> void addReceivedMessage(IMessageEnvelope<? extends TMessage> eventEnvelope) {
         addMessageCore(eventEnvelope, MessageDeliveryType.Inbox);
     }
 
@@ -81,7 +75,7 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
     }
 
     private <TMessage extends IMessage> void addMessageCore(
-            IEventEnvelope<TMessage> eventEnvelope, MessageDeliveryType deliveryType) {
+            IMessageEnvelope<TMessage> eventEnvelope, MessageDeliveryType deliveryType) {
         if (eventEnvelope.message() == null) {
             throw new IllegalArgumentException("Event envelope message must not be null");
         }
@@ -126,9 +120,7 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
 
     @Override
     public void processAllMessages() {
-        List<PersistMessage> messages =
-                messagePersistenceRepository.getByFilterSpec(MessageSpecifications.notDelivered()).stream()
-                        .toList();
+        List<PersistMessage> messages = messagePersistenceRepository.filterByState(MessageStatus.Stored);
 
         for (PersistMessage message : messages) {
             processMessage(message.getId());
@@ -138,7 +130,7 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
     private void processOutbox(PersistMessage persistMessage) {
         Class<?> messageType = TypeMapperUtils.getType(persistMessage.getDataType());
 
-        IEventEnvelope<?> eventEnvelope = messageSerializer.deserialize(persistMessage.getData(), messageType);
+        IMessageEnvelope<?> eventEnvelope = messageSerializer.deserialize(persistMessage.getData(), messageType);
 
         if (eventEnvelope == null) return;
 
@@ -184,9 +176,20 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
 
     private void processInbox(PersistMessage persistMessage) {
         Class<?> messageType = TypeMapperUtils.getType(persistMessage.getDataType());
+        IMessageEnvelopeBase messageEnvelope = messageSerializer.deserialize(persistMessage.getData(), messageType);
 
-        Object messageEnvelope = messageSerializer.deserialize(persistMessage.getData(), messageType);
+        // if there is any delivery message as inbox we should skip the message
+        List<PersistMessage> messages =
+                messagePersistenceRepository
+                        .filterByStateAndDeliveryType(MessageStatus.Delivered, MessageDeliveryType.Inbox)
+                        .stream()
+                        .filter(m -> m.getId() == persistMessage.getId())
+                        .toList();
 
-        // No additional processing is defined for Inbox in the original code.
+        if ((long) messages.size() > 0) {
+            return;
+        }
+
+        mediator.publish(messageEnvelope);
     }
 }

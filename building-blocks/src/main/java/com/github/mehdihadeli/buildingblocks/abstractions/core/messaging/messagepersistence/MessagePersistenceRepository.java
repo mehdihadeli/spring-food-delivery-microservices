@@ -1,9 +1,10 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence;
 
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.data.jpa.domain.Specification;
 
 public interface MessagePersistenceRepository {
     void add(PersistMessage persistMessage);
@@ -15,6 +16,10 @@ public interface MessagePersistenceRepository {
     List<PersistMessage> getAll();
 
     List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification);
+
+    List<PersistMessage> filterByState(MessageStatus messageStatus);
+
+    List<PersistMessage> filterByStateAndDeliveryType(MessageStatus messageStatus, MessageDeliveryType deliveryType);
 
     Optional<PersistMessage> getById(UUID id);
 

@@ -1,4 +1,4 @@
-package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
+package com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages;
 
 /**
  * The Envelope Wrapper Pattern standardizes and enhances message handling by wrapping messages with metadata
@@ -11,18 +11,12 @@ package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
  *
  * Ref: https://www.enterpriseintegrationpatterns.com/patterns/messaging/EnvelopeWrapper.html
  */
-public interface IEventEnvelopeBase {
+public interface IMessageEnvelope<T> extends IMessageEnvelopeBase {
     /**
      * Get the message contained in the envelope.
      *
      * @return the message
      */
-    Object message();
-
-    /**
-     * Get the metadata associated with the envelope.
-     *
-     * @return the metadata
-     */
-    EventEnvelopeMetadata metadata();
+    @Override
+    T message();
 }

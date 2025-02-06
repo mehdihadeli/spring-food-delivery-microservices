@@ -1,8 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.serialization;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelopeBase;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
 
 public interface MessageSerializer {
 
@@ -14,9 +14,9 @@ public interface MessageSerializer {
      * @param eventEnvelope a message envelope that implements the IMessage interface.
      * @return a JSON string for the serialized message envelope.
      */
-    String serialize(IEventEnvelopeBase eventEnvelope);
+    String serialize(IMessageEnvelopeBase eventEnvelope);
 
-    <T extends IMessage> String serialize(IEventEnvelope<T> eventEnvelope);
+    <T extends IMessage> String serialize(IMessageEnvelope<T> eventEnvelope);
 
     /**
      * Deserialize the given payload into an IEventEnvelope.
@@ -25,5 +25,5 @@ public interface MessageSerializer {
      * @param <T>          the type of message expected in the envelope.
      * @return returns an IEventEnvelope of type T.
      */
-    <T extends IMessage> IEventEnvelope<T> deserialize(String eventEnvelope, Class<?> messageType);
+    <T extends IMessage> IMessageEnvelope<T> deserialize(String eventEnvelope, Class<?> messageType);
 }

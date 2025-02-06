@@ -1,18 +1,17 @@
 package com.github.mehdihadeli.buildingblocks.rabbitmq;
 
+import com.github.mehdihadeli.buildingblocks.abstractions.core.bean.BeanScopeExecutor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.ExternalEventBus;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.MessageMetadataAccessor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessageHandler;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.MessageHandler;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.MessageSerializer;
 import com.github.mehdihadeli.buildingblocks.core.utils.ReflectionUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.SerializerUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
-import java.util.Map;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
@@ -41,6 +40,8 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.Map;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({RabbitTemplate.class})
@@ -153,12 +154,15 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     // https://docs.spring.io/spring-amqp/reference/amqp/receiving-messages/async-consumer.html
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar rabbitListenerEndpointRegistrar) {
-        // Find handlers using @MessageHandler annotation
-        Map<String, Object> handlers = applicationContext.getBeansWithAnnotation(MessageHandler.class);
+        var handlers = applicationContext.getBeansOfType(IMessageEnvelopeHandler.class);
 
         for (Object handler : handlers.values()) {
-            if (handler instanceof IMessageHandler) {
-                registerMessageHandlerEndpoint(rabbitListenerEndpointRegistrar, (IMessageHandler<?>) handler);
+            if (handler instanceof IMessageEnvelopeHandler) {
+
+                Class<?> messageType = ReflectionUtils.getGenericInterfaceTypeParameter(handler.getClass());
+                if (messageType == null) continue;
+                registerMessageHandlerEndpoint(
+                        rabbitListenerEndpointRegistrar, (IMessageEnvelopeHandler<?>) handler, messageType);
             }
         }
     }
@@ -171,10 +175,8 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
      * - Individual configuration possible
      * - Easier to add/remove handlers
      */
-    private void registerMessageHandlerEndpoint(RabbitListenerEndpointRegistrar registrar, IMessageHandler<?> handler) {
-
-        Class<?> messageType = ReflectionUtils.getGenericInterfaceTypeParameter(handler.getClass());
-        if (messageType == null) return;
+    private void registerMessageHandlerEndpoint(
+            RabbitListenerEndpointRegistrar registrar, IMessageEnvelopeHandler<?> handler, Class<?> messageType) {
 
         var rabbitAdmin = applicationContext.getBean(RabbitAdmin.class);
 
@@ -195,7 +197,15 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
                         .log("message {} received", message.getClass().getSimpleName());
 
                 var envelope = convertMessageToEventEnvelope(message, messageType);
-                handler.HandleInternal(envelope);
+
+                var beanScopeExecutor = applicationContext.getBean(BeanScopeExecutor.class);
+
+                // handling inbox pattern
+                beanScopeExecutor.executeInScope(scopedContext -> {
+                    // Get a new instance of the service for each execution
+                    MessagePersistenceService scopedService = scopedContext.getBean(MessagePersistenceService.class);
+                    scopedService.addReceivedMessage(envelope);
+                });
             } catch (Exception e) {
                 // Add proper error handling here
                 throw new AmqpRejectAndDontRequeueException("Failed to process message", e);
@@ -230,7 +240,7 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
         rabbitAdmin.declareBinding(binding);
     }
 
-    private String getHandlerIdentifier(IMessageHandler<?> handler, Class<?> messageType) {
+    private String getHandlerIdentifier(IMessageEnvelopeHandler<?> handler, Class<?> messageType) {
 
         return "%s-%s-listener"
                 .formatted(
@@ -238,7 +248,7 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
                         StringUtils.toKebabCase(messageType.getSimpleName()));
     }
 
-    private <TMessage extends IMessage> IEventEnvelope<TMessage> convertMessageToEventEnvelope(
+    private <TMessage extends IMessage> IMessageEnvelope<TMessage> convertMessageToEventEnvelope(
             Message message, Class<?> messageType) {
 
         var messageSerializer = applicationContext.getBean(MessageSerializer.class);
@@ -247,7 +257,7 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
 
         // Object messageBody = messageConverter.fromMessage(message);
         // our message body is EventEnvelope
-        IEventEnvelope<TMessage> result = messageSerializer.deserialize(new String(message.getBody()), messageType);
+        IMessageEnvelope<TMessage> result = messageSerializer.deserialize(new String(message.getBody()), messageType);
         if (result.metadata().headers() != null) {
             result.metadata().headers().putAll(headers);
         }

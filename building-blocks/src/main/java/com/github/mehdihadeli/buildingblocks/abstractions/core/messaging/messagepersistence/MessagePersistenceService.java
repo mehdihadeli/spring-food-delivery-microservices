@@ -2,20 +2,17 @@ package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messag
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNotificationEvent;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
-import java.util.List;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+
 import java.util.UUID;
-import org.springframework.data.jpa.domain.Specification;
 
 public interface MessagePersistenceService {
 
-    List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification);
+    <TMessage extends IMessage> void addPublishMessage(IMessageEnvelope<? extends TMessage> eventEnvelope);
 
-    <TMessage extends IMessage> void addPublishMessage(IEventEnvelope<? extends TMessage> eventEnvelope);
-
-    <TMessage extends IMessage> void addReceivedMessage(IEventEnvelope<? extends TMessage> eventEnvelope);
+    <TMessage extends IMessage> void addReceivedMessage(IMessageEnvelope<? extends TMessage> eventEnvelope);
 
     <TInternalCommand extends IInternalCommand> void addInternalMessage(TInternalCommand internalCommand);
 

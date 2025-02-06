@@ -1,3 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging;
 
-public interface IIntegrationEventHandler<TMessage extends IIntegrationEvent> extends IMessageHandler<TMessage> {}
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeHandler;
+
+public interface IIntegrationEventHandler<TMessage extends IIntegrationEvent>
+        extends IMessageEnvelopeHandler<TMessage> {}

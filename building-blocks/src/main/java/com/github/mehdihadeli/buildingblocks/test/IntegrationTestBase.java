@@ -11,8 +11,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 @SpringBootTest(
@@ -22,13 +20,15 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
-public class ApplicationTestBase {
+public abstract class IntegrationTestBase {
 
     private static SharedFixture sharedFixture;
 
-    public ApplicationTestBase(ApplicationContext applicationContext) {
-        sharedFixture = new SharedFixture(applicationContext);
+    public IntegrationTestBase(ApplicationContext applicationContext) {
+        sharedFixture = new SharedFixture(applicationContext, getApiUrl());
     }
+
+    protected String apiPrefix = "";
 
     @LocalServerPort
     protected int port;
@@ -41,6 +41,10 @@ public class ApplicationTestBase {
 
     @MockitoSpyBean
     protected Mediator spyMediator;
+
+    public String getApiUrl() {
+        return "http://localhost:%s/%s".formatted(port, apiPrefix);
+    }
 
     @BeforeAll
     static void beforeAllHook() {
@@ -55,15 +59,11 @@ public class ApplicationTestBase {
     @AfterEach
     public void afterEachHook() {
         sharedFixture.resetDatabasesAsync();
+        sharedFixture.cleanupMessaging();
     }
 
     @BeforeEach
     public void beforeEachHook() {}
-
-    @DynamicPropertySource
-    static void configureTestDatabase(DynamicPropertyRegistry registry) {
-        sharedFixture.configureProperties(registry);
-    }
 
     // - Provides test-specific bean configurations
     // - Allows overriding of production beans for testing

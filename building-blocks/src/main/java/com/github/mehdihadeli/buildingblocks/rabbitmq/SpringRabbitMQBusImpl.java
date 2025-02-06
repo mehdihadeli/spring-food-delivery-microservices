@@ -1,14 +1,15 @@
 package com.github.mehdihadeli.buildingblocks.rabbitmq;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.ExternalEventBus;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.MessageMetadataAccessor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
-import com.github.mehdihadeli.buildingblocks.core.events.EventEnvelopeFactory;
 import com.github.mehdihadeli.buildingblocks.core.messaging.MessageHeaders;
 import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.MessageEnvelopeFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,13 +37,13 @@ public class SpringRabbitMQBusImpl implements ExternalEventBus {
         UUID cautionId = messageMetadataAccessor.cautionId();
         String messageTypeName = StringUtils.toKebabCase(message.getClass().getSimpleName());
 
-        IEventEnvelope<TMessage> eventEnvelope = EventEnvelopeFactory.from(
+        IMessageEnvelope<TMessage> eventEnvelope = MessageEnvelopeFactory.from(
                 message, correlationId, cautionId, createHeaders(messageTypeName, null, null));
 
         publish(eventEnvelope);
     }
 
-    public <TMessage extends IMessage> void publish(IEventEnvelope<TMessage> eventEnvelope) {
+    public <TMessage extends IMessage> void publish(IMessageEnvelope<TMessage> eventEnvelope) {
         if (this.customRabbitMQProperties.isUseOutbox()) {
             messagePersistenceService.addPublishMessage(eventEnvelope);
             return;
@@ -56,7 +57,7 @@ public class SpringRabbitMQBusImpl implements ExternalEventBus {
         UUID cautionId = messageMetadataAccessor.cautionId();
         String messageTypeName = StringUtils.toKebabCase(message.getClass().getSimpleName());
 
-        IEventEnvelope<TMessage> eventEnvelope = EventEnvelopeFactory.from(
+        IMessageEnvelope<TMessage> eventEnvelope = MessageEnvelopeFactory.from(
                 message,
                 correlationId,
                 cautionId,
@@ -74,7 +75,7 @@ public class SpringRabbitMQBusImpl implements ExternalEventBus {
     }
 
     public <TMessage extends IMessage> void publish(
-            IEventEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
+      IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
         String messageTypeName =
                 StringUtils.toKebabCase(eventEnvelope.message().getClass().getSimpleName());
 

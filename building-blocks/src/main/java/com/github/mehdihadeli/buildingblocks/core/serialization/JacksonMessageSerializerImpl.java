@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelopeBase;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.MessageSerializer;
-import com.github.mehdihadeli.buildingblocks.core.events.EventEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.MessageEnvelope;
 
 public class JacksonMessageSerializerImpl implements MessageSerializer {
     private final ObjectMapper objectMapper;
@@ -30,7 +30,7 @@ public class JacksonMessageSerializerImpl implements MessageSerializer {
     }
 
     @Override
-    public String serialize(IEventEnvelopeBase eventEnvelope) {
+    public String serialize(IMessageEnvelopeBase eventEnvelope) {
         try {
             return objectMapper.writeValueAsString(eventEnvelope);
         } catch (JsonProcessingException e) {
@@ -39,7 +39,7 @@ public class JacksonMessageSerializerImpl implements MessageSerializer {
     }
 
     @Override
-    public <T extends IMessage> String serialize(IEventEnvelope<T> eventEnvelope) {
+    public <T extends IMessage> String serialize(IMessageEnvelope<T> eventEnvelope) {
         try {
             return objectMapper.writeValueAsString(eventEnvelope);
         } catch (JsonProcessingException e) {
@@ -48,11 +48,11 @@ public class JacksonMessageSerializerImpl implements MessageSerializer {
     }
 
     @Override
-    public <T extends IMessage> IEventEnvelope<T> deserialize(String eventEnvelope, Class<?> messageType) {
+    public <T extends IMessage> IMessageEnvelope<T> deserialize(String eventEnvelope, Class<?> messageType) {
         try {
             return objectMapper.readValue(
                     eventEnvelope,
-                    objectMapper.getTypeFactory().constructParametricType(EventEnvelope.class, messageType));
+                    objectMapper.getTypeFactory().constructParametricType(MessageEnvelope.class, messageType));
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error deserializing event envelope", e);
         }
