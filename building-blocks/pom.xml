@@ -107,6 +107,10 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
+      <artifactId>mongodb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
       <artifactId>junit-jupiter</artifactId>
     </dependency>
     <dependency>
@@ -213,6 +217,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-amqp</artifactId>
     </dependency>
+    <!-- https://docs.spring.io/spring-amqp/reference/testing.html-->
+    <dependency>
+      <groupId>org.springframework.amqp</groupId>
+      <artifactId>spring-rabbit-test</artifactId>
+    </dependency>
+
     <!-- Spring Boot already includes jackson packages via spring-boot-starter-json (which is part of spring-boot-starter-web): jackson-databind,jackson-core, jackson-annotations-->
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>

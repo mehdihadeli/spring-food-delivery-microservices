@@ -1,12 +1,12 @@
 package com.github.mehdihadeli.buildingblocks.rabbitmq;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelopeBase;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.MessageSerializer;
 import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.TypeMapperUtils;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
 import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -25,7 +25,7 @@ public class RabbitMQDirectPublisher implements BusDirectPublisher {
     }
 
     @Override
-    public <TMessage extends IMessage> void publish(IEventEnvelope<TMessage> eventEnvelope) {
+    public <TMessage extends IMessage> void publish(IMessageEnvelope<TMessage> eventEnvelope) {
         Class<?> messageType = eventEnvelope.message().getClass();
         String exchangeName = StringUtils.toKebabCase(messageType.getSimpleName()) + "-exchange";
         String routingKey = StringUtils.toKebabCase(messageType.getSimpleName());
@@ -34,7 +34,7 @@ public class RabbitMQDirectPublisher implements BusDirectPublisher {
     }
 
     @Override
-    public void publish(IEventEnvelopeBase eventEnvelope) {
+    public void publish(IMessageEnvelopeBase eventEnvelope) {
         Class<?> messageType = eventEnvelope.message().getClass();
         String exchangeName = StringUtils.toKebabCase(messageType.getSimpleName()) + "-exchange";
         String routingKey = StringUtils.toKebabCase(messageType.getSimpleName());
@@ -44,18 +44,18 @@ public class RabbitMQDirectPublisher implements BusDirectPublisher {
 
     @Override
     public <TMessage extends IMessage> void publish(
-            IEventEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
+      IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
         ensureExchangeAndQueueExist(exchangeOrTopic, queue);
         publishInternal(eventEnvelope, exchangeOrTopic, queue);
     }
 
     @Override
-    public void publish(IEventEnvelopeBase eventEnvelope, String exchangeOrTopic, String queue) {
+    public void publish(IMessageEnvelopeBase eventEnvelope, String exchangeOrTopic, String queue) {
         ensureExchangeAndQueueExist(exchangeOrTopic, queue);
         publishInternal(eventEnvelope, exchangeOrTopic, queue);
     }
 
-    private void publishInternal(IEventEnvelopeBase eventEnvelope, String exchange, String routingKey) {
+    private void publishInternal(IMessageEnvelopeBase eventEnvelope, String exchange, String routingKey) {
         try {
             ValidationUtils.notBeNull(eventEnvelope.metadata(), "eventEnvelope.metadata");
             // get messageType from short-type name that we've added in our type-mapper in EventEnvelopeFactory

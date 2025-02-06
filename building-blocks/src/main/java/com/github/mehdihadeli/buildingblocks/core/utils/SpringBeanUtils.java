@@ -1,13 +1,19 @@
 package com.github.mehdihadeli.buildingblocks.core.utils;
 
-import java.util.*;
-import java.util.stream.Collectors;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.ResolvableType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public final class SpringBeanUtils {
     private SpringBeanUtils() {
@@ -144,6 +150,46 @@ public final class SpringBeanUtils {
         }
 
         return new ArrayList<>(scannedPackages);
+    }
+
+    /**
+     * Executes the provided action within a scoped context.
+     *
+     * @param action The action to execute, which accepts a service provider and performs an operation.
+     */
+    public static void executeInScope(ApplicationContext applicationContext, Consumer<ApplicationContext> action) {
+        // Create a mock request and set it in the RequestContextHolder
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(mockRequest));
+
+        try {
+            // Execute the action within the scope
+            action.accept(applicationContext);
+        } finally {
+            // Reset the request attributes to clean up the scope
+            RequestContextHolder.resetRequestAttributes();
+        }
+    }
+
+    /**
+     * Executes the provided action within a scoped context.
+     *
+     * @param action The action to execute, which accepts a service provider and returns a result.
+     * @param <T>    The type of the result.
+     * @return The result of the action.
+     */
+    public static <T> T executeInScope(ApplicationContext applicationContext, Supplier<T> action) {
+        // Create a mock request and set it in the RequestContextHolder
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(mockRequest));
+
+        try {
+            // Execute the action within the scope
+            return action.get();
+        } finally {
+            // Reset the request attributes to clean up the scope
+            RequestContextHolder.resetRequestAttributes();
+        }
     }
 
     /**

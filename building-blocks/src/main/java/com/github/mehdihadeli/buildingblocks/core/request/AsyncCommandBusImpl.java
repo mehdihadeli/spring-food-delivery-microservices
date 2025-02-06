@@ -4,7 +4,7 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.MessageMet
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IAsyncCommand;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.AsyncCommandBus;
-import com.github.mehdihadeli.buildingblocks.core.events.EventEnvelopeFactory;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.MessageEnvelopeFactory;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class AsyncCommandBusImpl implements AsyncCommandBus {
     public <TCommand extends IAsyncCommand> void sendExternal(TCommand command) {
         UUID correlationId = messageMetadataAccessor.correlationId();
         UUID cautionId = messageMetadataAccessor.cautionId();
-        var eventEnvelope = EventEnvelopeFactory.from(command, correlationId, cautionId, new HashMap<>());
+        var eventEnvelope = MessageEnvelopeFactory.from(command, correlationId, cautionId, new HashMap<>());
 
         // add message to outbox to run
         messagePersistenceService.addPublishMessage(eventEnvelope);

@@ -5,6 +5,7 @@ import com.github.mehdihadeli.buildingblocks.core.utils.SpringBeanUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommand;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommandHandler;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.*;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.notifications.INotification;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.notifications.INotificationHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.notifications.INotificationPipelineBehavior;
@@ -16,14 +17,15 @@ import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.IReq
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.IRequestHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.RequestHandlerDelegate;
 import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.ResolvableType;
+import org.springframework.lang.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.ResolvableType;
-import org.springframework.lang.Nullable;
 
 class MediatorImpl implements Mediator {
 
@@ -35,6 +37,9 @@ class MediatorImpl implements Mediator {
     private final ConcurrentHashMap<Class<?>, IRequestHandler<?, ?>> requestHandlerCache = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, ICommandHandler<?, ?>> commandHandlerCache = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, IQueryHandler<?, ?>> queryHandlerCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Class<?>, IMessageHandler<?>> messageHandlerCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Class<?>, IMessageEnvelopeHandler<?>> messageEnvelopeHandlerCache =
+            new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, List<IPipelineBehavior<?, ?>>> requestPipelineCache =
             new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, List<INotificationPipelineBehavior<?>>> notificationPipelineCache =
@@ -95,6 +100,34 @@ class MediatorImpl implements Mediator {
     }
 
     @Override
+    public void publish(IMessage message) throws RuntimeException {
+        ValidationUtils.notBeNull(message, "message");
+
+        var messageHandler = resolveMessageHandler(message, applicationContext);
+
+        messageHandler.handle(message);
+    }
+
+    @Override
+    public <TMessage extends IMessage> void publish(IMessageEnvelope<TMessage> messageEnvelope)
+            throws RuntimeException {
+        ValidationUtils.notBeNull(messageEnvelope, "messageEnvelope");
+
+        var messageHandler = resolveMessageEnvelopeHandler(messageEnvelope, applicationContext);
+
+        messageHandler.handle(messageEnvelope);
+    }
+
+    @Override
+    public void publish(IMessageEnvelopeBase messageEnvelopeBase) throws RuntimeException {
+        ValidationUtils.notBeNull(messageEnvelopeBase, "messageEnvelope");
+
+        var messageHandler = resolveMessageEnvelopeHandler(messageEnvelopeBase, applicationContext);
+
+        messageHandler.HandleInternal(messageEnvelopeBase);
+    }
+
+    @Override
     public <TNotification extends INotification> void publish(TNotification notification) throws RuntimeException {
         ValidationUtils.notBeNull(notification, "notification");
 
@@ -116,14 +149,16 @@ class MediatorImpl implements Mediator {
     }
 
     @Override
-    public void publish(Object notification) throws RuntimeException {
-        ValidationUtils.notBeNull(notification, "notification");
+    public void publish(Object object) throws RuntimeException {
+        ValidationUtils.notBeNull(object, "object");
 
-        if (notification instanceof INotification instance) {
+        if (object instanceof INotification instance) {
             this.publish(instance);
+        } else if (object instanceof IMessage message) {
+            this.publish(message);
         } else {
-            throw new IllegalArgumentException(
-                    "notification does not implement " + INotification.class.getSimpleName());
+            throw new IllegalArgumentException("object does not implement %s or %s"
+                    .formatted(INotification.class.getSimpleName(), IMessage.class.getSimpleName()));
         }
     }
 
@@ -243,6 +278,82 @@ class MediatorImpl implements Mediator {
 
                     // Use applicationContext to retrieve the bean
                     IQueryHandler<?, ?> handler = (IQueryHandler<?, ?>) applicationContext.getBean(beanNames[0]);
+
+                    return handler;
+                });
+    }
+
+    private <TMessage extends IMessage> IMessageHandler<TMessage> resolveMessageHandler(
+            TMessage message, ApplicationContext applicationContext) {
+        return (IMessageHandler<TMessage>) messageHandlerCache.computeIfAbsent(
+                // query hashmap key (Class<?>)
+                message.getClass(),
+                // try to get our hash map key data in existing dictionary if not exist get it with this lambda
+                requestType -> {
+                    ResolvableType resolvableType =
+                            ResolvableType.forClassWithGenerics(IMessageHandler.class, message.getClass());
+                    var beanNames = SpringBeanUtils.resolveBeans(applicationContext, resolvableType);
+
+                    // message sending strategy should have `zero` or `more` handlers, so it should run without any
+                    // error if we can't find a corresponding handler
+                    if (beanNames.length == 0) {
+                        return null;
+                    }
+
+                    // Use applicationContext to retrieve the bean
+                    IMessageHandler<?> handler = (IMessageHandler<?>) applicationContext.getBean(beanNames[0]);
+
+                    return handler;
+                });
+    }
+
+    private <TMessageEnvelope extends IMessageEnvelopeBase, TMessage extends IMessage>
+            IMessageEnvelopeHandler<TMessage> resolveMessageEnvelopeHandler(
+                    TMessageEnvelope messageEnvelope, ApplicationContext applicationContext) {
+        return (IMessageEnvelopeHandler<TMessage>) messageEnvelopeHandlerCache.computeIfAbsent(
+                messageEnvelope.getClass(),
+                // try to get our hash map key data in existing dictionary if not exist get it with this lambda
+                requestType -> {
+                    ResolvableType resolvableType = ResolvableType.forClassWithGenerics(
+                            IMessageEnvelopeHandler.class,
+                            messageEnvelope.message().getClass());
+                    var beanNames = SpringBeanUtils.resolveBeans(applicationContext, resolvableType);
+
+                    // messageEnvelope sending strategy should have `zero` or `more` handlers, so it should run without
+                    // any error if we can't find a corresponding handler
+                    if (beanNames.length == 0) {
+                        return null;
+                    }
+
+                    // Use applicationContext to retrieve the bean
+                    IMessageEnvelopeHandler<?> handler =
+                            (IMessageEnvelopeHandler<?>) applicationContext.getBean(beanNames[0]);
+
+                    return handler;
+                });
+    }
+
+    private <TMessageEnvelope extends IMessageEnvelope<TMessage>, TMessage extends IMessage>
+            IMessageEnvelopeHandler<TMessage> resolveMessageEnvelopeHandler(
+                    TMessageEnvelope messageEnvelope, ApplicationContext applicationContext) {
+        return (IMessageEnvelopeHandler<TMessage>) messageEnvelopeHandlerCache.computeIfAbsent(
+                messageEnvelope.getClass(),
+                // try to get our hash map key data in existing dictionary if not exist get it with this lambda
+                requestType -> {
+                    ResolvableType resolvableType = ResolvableType.forClassWithGenerics(
+                            IMessageEnvelopeHandler.class,
+                            messageEnvelope.message().getClass());
+                    var beanNames = SpringBeanUtils.resolveBeans(applicationContext, resolvableType);
+
+                    // messageEnvelope sending strategy should have `zero` or `more` handlers, so it should run without
+                    // any error if we can't find a corresponding handler
+                    if (beanNames.length == 0) {
+                        return null;
+                    }
+
+                    // Use applicationContext to retrieve the bean
+                    IMessageEnvelopeHandler<?> handler =
+                            (IMessageEnvelopeHandler<?>) applicationContext.getBean(beanNames[0]);
 
                     return handler;
                 });

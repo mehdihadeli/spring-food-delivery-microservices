@@ -1,6 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.core;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.AbstractionRoot;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.bean.BeanScopeExecutor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.*;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.id.IdGenerator;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
@@ -8,25 +9,26 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.message
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.AsyncCommandBus;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBus;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.request.QueryBus;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.MessageSerializer;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.Serializer;
+import com.github.mehdihadeli.buildingblocks.core.bean.BeanScopeExecutorImpl;
 import com.github.mehdihadeli.buildingblocks.core.data.AuditorAwareUUID;
 import com.github.mehdihadeli.buildingblocks.core.events.*;
 import com.github.mehdihadeli.buildingblocks.core.id.UlIdIdGenerator;
 import com.github.mehdihadeli.buildingblocks.core.messaging.MessageMetadataAccessorImpl;
 import com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence.InMemoryMessagePersistenceRepository;
+import com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence.MessagePersistenceBackgroundService;
 import com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence.MessagePersistenceProperties;
-import com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence.MessagePersistenceServiceBackgroundService;
 import com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence.MessagePersistenceServiceImpl;
 import com.github.mehdihadeli.buildingblocks.core.request.AsyncCommandBusImpl;
 import com.github.mehdihadeli.buildingblocks.core.request.CommandBusImpl;
+import com.github.mehdihadeli.buildingblocks.core.request.QueryBusImpl;
 import com.github.mehdihadeli.buildingblocks.core.serialization.JacksonMessageSerializerImpl;
 import com.github.mehdihadeli.buildingblocks.core.serialization.JacksonSerializerImpl;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -40,6 +42,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.UUID;
 
 @Configuration
 @EnableConfigurationProperties(MessagePersistenceProperties.class)
@@ -166,11 +170,10 @@ public class CoreConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    MessagePersistenceServiceBackgroundService messagePersistenceServiceBackgroundService(
+    MessagePersistenceBackgroundService messagePersistenceServiceBackgroundService(
             MessagePersistenceProperties messagePersistenceProperties,
-            ObjectProvider<MessagePersistenceService> messagePersistenceServiceProvider) {
-        return new MessagePersistenceServiceBackgroundService(
-                messagePersistenceServiceProvider, messagePersistenceProperties);
+            BeanScopeExecutor beanScopeExecutor) {
+        return new MessagePersistenceBackgroundService(beanScopeExecutor, messagePersistenceProperties);
     }
 
     @Bean
@@ -186,8 +189,21 @@ public class CoreConfiguration {
     @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean
+    QueryBus queryBus(Mediator mediator) {
+        return new QueryBusImpl(mediator);
+    }
+
+    @Bean
+    @Scope("prototype")
+    @ConditionalOnMissingBean
     AsyncCommandBus asyncCommandBus(
             MessagePersistenceService messagePersistenceService, MessageMetadataAccessor messageMetadataAccessor) {
         return new AsyncCommandBusImpl(messagePersistenceService, messageMetadataAccessor);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    BeanScopeExecutor beanScopeExecutor(ApplicationContext applicationContext) {
+        return new BeanScopeExecutorImpl(applicationContext);
     }
 }

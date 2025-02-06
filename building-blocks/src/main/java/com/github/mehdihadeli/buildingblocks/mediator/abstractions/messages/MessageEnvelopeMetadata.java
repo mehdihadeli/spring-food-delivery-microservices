@@ -1,4 +1,4 @@
-package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
+package com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages;
 
 import com.github.mehdihadeli.buildingblocks.core.utils.DateTimeUtils;
 import java.time.LocalDateTime;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public record EventEnvelopeMetadata(
+public record MessageEnvelopeMetadata(
         UUID messageId,
         UUID correlationId,
         String messageType,
@@ -15,7 +15,7 @@ public record EventEnvelopeMetadata(
         Map<String, Object> headers,
         LocalDateTime created,
         long createdUnixTime) {
-    public EventEnvelopeMetadata(
+    public MessageEnvelopeMetadata(
             UUID messageId, UUID correlationId, String messageType, String name, UUID causationId) {
         this(
                 messageId,
@@ -28,7 +28,7 @@ public record EventEnvelopeMetadata(
                 DateTimeUtils.getCurrentEpochSecond());
     }
 
-    public EventEnvelopeMetadata(
+    public MessageEnvelopeMetadata(
             UUID messageId,
             UUID correlationId,
             String messageType,

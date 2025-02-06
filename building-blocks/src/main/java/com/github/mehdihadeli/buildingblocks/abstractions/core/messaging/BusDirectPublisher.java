@@ -1,15 +1,16 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelopeBase;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
 
 public interface BusDirectPublisher {
-    <TMessage extends IMessage> void publish(IEventEnvelope<TMessage> eventEnvelope);
+    <TMessage extends IMessage> void publish(IMessageEnvelope<TMessage> eventEnvelope);
 
-    void publish(IEventEnvelopeBase eventEnvelope);
+    void publish(IMessageEnvelopeBase eventEnvelope);
 
     <TMessage extends IMessage> void publish(
-            IEventEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue);
+      IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue);
 
-    void publish(IEventEnvelopeBase eventEnvelope, String exchangeOrTopic, String queue);
+    void publish(IMessageEnvelopeBase eventEnvelope, String exchangeOrTopic, String queue);
 }

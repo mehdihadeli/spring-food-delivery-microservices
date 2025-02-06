@@ -1,11 +1,14 @@
 package com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence;
 
+import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageDeliveryType;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceRepository;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageStatus;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.data.jpa.domain.Specification;
+import java.util.stream.Collectors;
 
 public class InMemoryMessagePersistenceRepository implements MessagePersistenceRepository {
     private final Map<UUID, PersistMessage> messageStore = new ConcurrentHashMap<>();
@@ -36,8 +39,23 @@ public class InMemoryMessagePersistenceRepository implements MessagePersistenceR
 
     @Override
     public List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification) {
-        // Implement filtering logic if needed
-        return getAll(); // Placeholder implementation
+        return getAll();
+    }
+
+    @Override
+    public List<PersistMessage> filterByState(MessageStatus messageStatus) {
+        return messageStore.values().stream()
+                .filter(m -> m.getMessageStatus() == messageStatus)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PersistMessage> filterByStateAndDeliveryType(
+            MessageStatus messageStatus, MessageDeliveryType deliveryType) {
+        return messageStore.values().stream()
+                .filter(m -> m.getMessageStatus() == messageStatus)
+                .filter(m -> m.getDeliveryType() == deliveryType)
+                .collect(Collectors.toList());
     }
 
     @Override

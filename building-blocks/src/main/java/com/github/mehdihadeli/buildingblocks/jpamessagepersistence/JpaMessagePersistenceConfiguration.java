@@ -1,4 +1,4 @@
-package com.github.mehdihadeli.buildingblocks.postgresmessagepersistence;
+package com.github.mehdihadeli.buildingblocks.jpamessagepersistence;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceRepository;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnMissingBean({MessagePersistenceService.class})
 @ConditionalOnClass({MessagePersistenceService.class})
-public class PostgresMessagePersistenceConfiguration {
+public class JpaMessagePersistenceConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(
@@ -21,6 +21,6 @@ public class PostgresMessagePersistenceConfiguration {
             havingValue = "postgresql",
             matchIfMissing = false)
     MessagePersistenceRepository messagePersistenceRepository(EntityManager entityManager) {
-        return new PostgresMessagePersistenceRepositoryImpl(entityManager);
+        return new JpaMessagePersistenceRepositoryImpl(entityManager);
     }
 }

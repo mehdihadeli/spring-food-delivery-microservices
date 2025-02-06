@@ -1,6 +1,9 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
 
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.events.IEvent;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
+
 import java.util.List;
 
 public interface InternalEventBus {
@@ -26,7 +29,7 @@ public interface InternalEventBus {
      * @param eventEnvelope the event envelope containing the event data
      * @throws RuntimeException if the operation is interrupted
      */
-    void publish(IEventEnvelopeBase eventEnvelope) throws RuntimeException;
+    void publish(IMessageEnvelopeBase eventEnvelope) throws RuntimeException;
 
     /**
      * Publish an in-memory event based on a consumed event from the messaging system.
@@ -35,5 +38,5 @@ public interface InternalEventBus {
      * @param eventEnvelope the event envelope containing the event data
      * @throws RuntimeException if the operation is interrupted
      */
-    <T> void publish(IEventEnvelope<T> eventEnvelope) throws RuntimeException;
+    <T> void publish(IMessageEnvelope<T> eventEnvelope) throws RuntimeException;
 }

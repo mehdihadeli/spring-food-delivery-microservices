@@ -1,10 +1,11 @@
 package com.github.mehdihadeli.buildingblocks.core.events;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelope;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IEventEnvelopeBase;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.InternalEventBus;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.events.IEvent;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class InternalEventBusImpl implements InternalEventBus {
     }
 
     @Override
-    public void publish(IEventEnvelopeBase eventEnvelope) throws RuntimeException {
+    public void publish(IMessageEnvelopeBase eventEnvelope) throws RuntimeException {
         var genricMethod =
                 publishMethods.computeIfAbsent(eventEnvelope.message().getClass(), eventType -> {
                     try {
@@ -48,7 +49,7 @@ public class InternalEventBusImpl implements InternalEventBus {
     }
 
     @Override
-    public <T> void publish(IEventEnvelope<T> eventEnvelope) throws RuntimeException {
+    public <T> void publish(IMessageEnvelope<T> eventEnvelope) throws RuntimeException {
         mediator.publish(eventEnvelope.message());
     }
 

@@ -15,7 +15,7 @@ spring:
       development: "dev-tools,dev-db,dev-config"
       test: "test-db,test-config"
       production: "prod-db,prod-config"
-    active: dev  # Set the default active profile
+    active: local  # Set the default active profile
     default: local # Set the default profile if none specified
 
   main:

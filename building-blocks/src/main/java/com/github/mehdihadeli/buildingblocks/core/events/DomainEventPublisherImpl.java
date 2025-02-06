@@ -4,14 +4,16 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.*;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IIntegrationEvent;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
 import com.github.mehdihadeli.buildingblocks.core.utils.SerializerUtils;
+import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.MessageEnvelopeFactory;
 import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 public class DomainEventPublisherImpl implements DomainEventPublisher {
     private static final Logger logger = LoggerFactory.getLogger(DomainEventPublisherImpl.class);
@@ -59,10 +61,10 @@ public class DomainEventPublisherImpl implements DomainEventPublisher {
             if (wrappedIntegrationEvent != null) {
                 var correlationId = messageMetadataAccessor.correlationId();
                 var cautionId = messageMetadataAccessor.cautionId();
-                var integrationEventEnvelope =
-                        EventEnvelopeFactory.from(wrappedIntegrationEvent, correlationId, cautionId, new HashMap<>());
+                var integrationMessageEnvelope =
+                        MessageEnvelopeFactory.from(wrappedIntegrationEvent, correlationId, cautionId, new HashMap<>());
                 // Save event mapper events into outbox for further processing after commit
-                messagePersistenceService.addPublishMessage(integrationEventEnvelope);
+                messagePersistenceService.addPublishMessage(integrationMessageEnvelope);
             }
 
             // Find handlers using @Mapper annotation
@@ -73,7 +75,7 @@ public class DomainEventPublisherImpl implements DomainEventPublisher {
                     var correlationId = messageMetadataAccessor.correlationId();
                     var cautionId = messageMetadataAccessor.cautionId();
                     var integrationEventEnvelope =
-                            EventEnvelopeFactory.from(integrationEvent, correlationId, cautionId, new HashMap<>());
+                            MessageEnvelopeFactory.from(integrationEvent, correlationId, cautionId, new HashMap<>());
                     // Save event mapper events into outbox for further processing after commit
                     messagePersistenceService.addPublishMessage(integrationEventEnvelope);
                 }
