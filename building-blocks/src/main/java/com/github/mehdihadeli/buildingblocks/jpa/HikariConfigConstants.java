@@ -6,7 +6,7 @@ public final class HikariConfigConstants {
     public static final long CONNECTION_TIMEOUT = 30000L; // 30 seconds
     public static final long VALIDATION_TIMEOUT = 5000L; // 5 seconds
     public static final long IDLE_TIMEOUT = 300000L; // 5 minutes
-    public static final long LEAK_DETECTION_THRESHOLD = 2000L; // 2 seconds
+    public static final long LEAK_DETECTION_THRESHOLD = 30000L; // 30 seconds
     public static final long MAX_LIFETIME = 1800000L; // 30 minutes
 
     // Pool configurations

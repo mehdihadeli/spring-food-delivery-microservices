@@ -3,22 +3,21 @@ spring:
   config:
     activate:
       on-profile: test
-  datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: password
-    driver-class-name: org.h2.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-      minimum-idle: 3
-      maximum-pool-size: 5
-      pool-name: TestHikariPool
+
   jpa:
-    database: h2
+    database: postgresql
     show-sql: true
+    generate-ddl: false
     hibernate:
+      generate-statistics: false
       # when we use flyway we should turn of hibernate `ddl-auto`
       ddl-auto: none
-  h2:
-    console:
-      enabled: true
+
+logging:
+  level:
+    org: info
+    com: info
+
+message-persistence:
+  interval: 3
+  message-persist-provider-type: postgresql

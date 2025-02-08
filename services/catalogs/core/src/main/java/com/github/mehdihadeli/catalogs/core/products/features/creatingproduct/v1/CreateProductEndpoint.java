@@ -13,14 +13,14 @@ import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.UUID;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Validated
 @RestController
@@ -66,4 +66,3 @@ public class CreateProductEndpoint {
     }
 }
 
-record CreateProductResponse(UUID id) {}

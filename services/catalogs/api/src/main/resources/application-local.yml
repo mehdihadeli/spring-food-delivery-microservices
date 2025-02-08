@@ -11,6 +11,7 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
+      generate-statistics: false
       # when we use flyway we should turn of hibernate `ddl-auto`
       ddl-auto: none
 
@@ -28,5 +29,5 @@ logging:
     com: info
 
 message-persistence:
-  interval: 30
+  interval: 3
   message-persist-provider-type: inmemory

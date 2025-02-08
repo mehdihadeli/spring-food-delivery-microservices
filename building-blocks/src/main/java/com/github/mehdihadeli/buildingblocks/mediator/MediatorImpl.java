@@ -105,7 +105,9 @@ class MediatorImpl implements Mediator {
 
         var messageHandler = resolveMessageHandler(message, applicationContext);
 
-        messageHandler.handle(message);
+        if (messageHandler != null) {
+            messageHandler.handle(message);
+        }
     }
 
     @Override
@@ -115,7 +117,9 @@ class MediatorImpl implements Mediator {
 
         var messageHandler = resolveMessageEnvelopeHandler(messageEnvelope, applicationContext);
 
-        messageHandler.handle(messageEnvelope);
+        if (messageHandler != null) {
+            messageHandler.handle(messageEnvelope);
+        }
     }
 
     @Override
@@ -124,7 +128,9 @@ class MediatorImpl implements Mediator {
 
         var messageHandler = resolveMessageEnvelopeHandler(messageEnvelopeBase, applicationContext);
 
-        messageHandler.HandleInternal(messageEnvelopeBase);
+        if (messageHandler != null) {
+            messageHandler.HandleInternal(messageEnvelopeBase);
+        }
     }
 
     @Override
@@ -284,7 +290,7 @@ class MediatorImpl implements Mediator {
     }
 
     private <TMessage extends IMessage> IMessageHandler<TMessage> resolveMessageHandler(
-            TMessage message, ApplicationContext applicationContext) {
+            @Nullable TMessage message, ApplicationContext applicationContext) {
         return (IMessageHandler<TMessage>) messageHandlerCache.computeIfAbsent(
                 // query hashmap key (Class<?>)
                 message.getClass(),
@@ -307,7 +313,7 @@ class MediatorImpl implements Mediator {
                 });
     }
 
-    private <TMessageEnvelope extends IMessageEnvelopeBase, TMessage extends IMessage>
+    private <TMessageEnvelope extends IMessageEnvelopeBase, TMessage extends IMessage> @Nullable
             IMessageEnvelopeHandler<TMessage> resolveMessageEnvelopeHandler(
                     TMessageEnvelope messageEnvelope, ApplicationContext applicationContext) {
         return (IMessageEnvelopeHandler<TMessage>) messageEnvelopeHandlerCache.computeIfAbsent(
@@ -333,7 +339,7 @@ class MediatorImpl implements Mediator {
                 });
     }
 
-    private <TMessageEnvelope extends IMessageEnvelope<TMessage>, TMessage extends IMessage>
+    private <TMessageEnvelope extends IMessageEnvelope<TMessage>, TMessage extends IMessage> @Nullable
             IMessageEnvelopeHandler<TMessage> resolveMessageEnvelopeHandler(
                     TMessageEnvelope messageEnvelope, ApplicationContext applicationContext) {
         return (IMessageEnvelopeHandler<TMessage>) messageEnvelopeHandlerCache.computeIfAbsent(

@@ -33,6 +33,8 @@ spring:
     hibernate:
       # Disable Hibernate's automatic schema updates, when we use flyway we should turn of hibernate `ddl-auto`
       ddl-auto: none
+      generate-statistics: false
+
   data:
     mongodb:
       connection-pool:
@@ -127,6 +129,6 @@ logging:
     com: info
 
 message-persistence:
-  interval: 30
+  interval: 3
   message-persist-provider-type: inmemory
 

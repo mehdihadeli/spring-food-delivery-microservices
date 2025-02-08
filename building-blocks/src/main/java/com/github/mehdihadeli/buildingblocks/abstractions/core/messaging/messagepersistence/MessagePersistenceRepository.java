@@ -1,6 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +18,12 @@ public interface MessagePersistenceRepository {
 
     List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification);
 
-    List<PersistMessage> filterByState(MessageStatus messageStatus);
+    List<PersistMessage> filterByState(@Nullable MessageStatus messageStatus);
 
-    List<PersistMessage> filterByStateAndDeliveryType(MessageStatus messageStatus, MessageDeliveryType deliveryType);
+    List<PersistMessage> filterBy(
+            @Nullable MessageStatus messageStatus,
+            @Nullable MessageDeliveryType deliveryType,
+            @Nullable String datatype);
 
     Optional<PersistMessage> getById(UUID id);
 

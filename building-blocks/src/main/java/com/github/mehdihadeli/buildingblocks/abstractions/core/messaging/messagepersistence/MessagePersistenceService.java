@@ -5,10 +5,17 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNot
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import org.springframework.lang.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface MessagePersistenceService {
+
+    List<PersistMessage> getByFilter(
+            @Nullable MessageStatus messageStatus,
+            @Nullable MessageDeliveryType messageDeliveryType,
+            @Nullable String type);
 
     <TMessage extends IMessage> void addPublishMessage(IMessageEnvelope<? extends TMessage> eventEnvelope);
 

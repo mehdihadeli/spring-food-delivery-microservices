@@ -2,29 +2,34 @@ package com.github.mehdihadeli.buildingblocks.test.fixtures;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.QueueInformation;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.RabbitMQContainer;
 
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+
+import static java.lang.String.format;
 
 public class RabbitMQTestContainerFixture {
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQTestContainerFixture.class);
     private final RabbitMQContainer rabbitMQContainer;
-    private final RabbitAdmin rabbitAdmin;
-    private final RestTemplate restTemplate;
+    private final TestRestTemplate restTemplate;
+    private RabbitAdmin rabbitAdmin;
 
-    public RabbitMQTestContainerFixture(RabbitAdmin rabbitAdmin, RestTemplate restTemplate) {
-        this.rabbitAdmin = rabbitAdmin;
-        this.restTemplate = restTemplate;
-        this.rabbitMQContainer = new RabbitMQContainer("rabbitmq:latest").withUser("guest", "guest");
+    public RabbitMQTestContainerFixture() {
+        this.restTemplate = new TestRestTemplate();
+        this.rabbitMQContainer = new RabbitMQContainer("rabbitmq:management");
     }
 
     public void startContainer() {
         if (!rabbitMQContainer.isRunning()) {
             rabbitMQContainer.start();
+            rabbitAdmin = new RabbitAdmin(connectionFactory());
         }
     }
 
@@ -40,18 +45,18 @@ public class RabbitMQTestContainerFixture {
         String host = rabbitMQContainer.getHost();
 
         // Get all queues
-        String queueUrl = String.format("http://%s:%d/api/queues", host, apiPort);
-        ResponseEntity<QueueInformation[]> response = restTemplate.exchange(
+        String queueUrl = format("http://%s:%d/api/queues", host, apiPort);
+        ResponseEntity<List<QueueResponse>> response = restTemplate.exchange(
                 queueUrl,
                 HttpMethod.GET,
                 new HttpEntity<>(createHeaders(getUserName(), getPassword())),
-                QueueInformation[].class);
+                new ParameterizedTypeReference<List<QueueResponse>>() {});
 
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-            QueueInformation[] queues = response.getBody();
-            for (QueueInformation queue : queues) {
+            List<QueueResponse> queues = response.getBody();
+            for (QueueResponse queue : queues) {
                 logger.info("Purging messages from queue: {}", queue);
-                rabbitAdmin.purgeQueue(queue.getName(), true); // Purge messages from the queue
+                rabbitAdmin.deleteQueue(queue.getName());
             }
         } else {
             logger.warn("Failed to retrieve queues. Status: {}", response.getStatusCode());
@@ -90,6 +95,41 @@ public class RabbitMQTestContainerFixture {
         String auth = username + ":" + password;
         String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
         headers.set("Authorization", "Basic " + encodedAuth);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
         return headers;
+    }
+
+    static class QueueResponse {
+        private String name;
+        private String type;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+    }
+
+    CachingConnectionFactory connectionFactory() {
+        // https://docs.spring.io/spring-amqp/reference/amqp/connections.html#choosing-factory
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+        connectionFactory.setHost(rabbitMQContainer.getHost());
+        connectionFactory.setPort(rabbitMQContainer.getAmqpPort());
+        connectionFactory.setUsername(rabbitMQContainer.getAdminUsername());
+        connectionFactory.setPassword(rabbitMQContainer.getAdminPassword());
+        connectionFactory.setVirtualHost("/");
+
+        return connectionFactory;
     }
 }

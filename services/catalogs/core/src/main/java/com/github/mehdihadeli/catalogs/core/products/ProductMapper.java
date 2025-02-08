@@ -28,6 +28,7 @@ import com.github.mehdihadeli.catalogs.core.products.dtos.ProductDto;
 import com.github.mehdihadeli.catalogs.core.products.dtos.ProductInfoDto;
 import com.github.mehdihadeli.catalogs.core.products.dtos.ProductReviewDto;
 import com.github.mehdihadeli.catalogs.core.products.dtos.ProductVariantDto;
+import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.CreateProduct;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.CreateProductRequest;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.domain.ProductCreated;
 import java.util.Collections;
@@ -132,6 +133,21 @@ public final class ProductMapper {
                 projection.getStatus(),
                 projectionToProductVariantsDto(projection.getVariants()),
                 projectionToProductReviewsDto(projection.getReviews()));
+    }
+
+    public static Product toProductAggregate(CreateProduct createProduct) {
+
+        return Product.create(
+                createProduct.productId(),
+                createProduct.categoryId(),
+                createProduct.name(),
+                createProduct.price(),
+                createProduct.status(),
+                createProduct.dimensions(),
+                createProduct.size(),
+                null,
+                createProduct.initialVariants(),
+                createProduct.description());
     }
 
     // product variant

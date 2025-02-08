@@ -6,16 +6,18 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.MessageMet
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.serialization.MessageSerializer;
+import com.github.mehdihadeli.buildingblocks.core.messaging.MessageUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.ReflectionUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.SerializerUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
-import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
-import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
+import com.github.mehdihadeli.buildingblocks.core.utils.TypeMapperUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -41,7 +43,11 @@ import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.Map;
+import java.io.File;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({RabbitTemplate.class})
@@ -125,6 +131,27 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
         retryTemplate.setBackOffPolicy(backOffPolicy);
         template.setRetryTemplate(retryTemplate);
         template.setMessageConverter(messageConverter);
+        template.addAfterReceivePostProcessors();
+
+        // Set ConfirmCallback
+        template.setConfirmCallback((correlationData, ack, cause) -> {
+            if (ack) {
+                applicationContext
+                        .getBeansOfType(AfterPublishPipeline.class)
+                        .forEach((key, afterPublishPipeline) -> afterPublishPipeline.handle(correlationData, ack));
+            } else {
+                System.out.println("Message not confirmed, cause: " + cause);
+            }
+        });
+
+        applicationContext
+                .getBeansOfType(PrePublishPipeline.class)
+                .forEach((key, beforePublishPipeline) ->
+                        template.addBeforePublishPostProcessors(beforePublishPipeline::handle));
+
+        applicationContext
+                .getBeansOfType(ConsumePipeline.class)
+                .forEach((key, consumePipeline) -> template.addAfterReceivePostProcessors(consumePipeline::handle));
 
         return template;
     }
@@ -154,15 +181,15 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
     // https://docs.spring.io/spring-amqp/reference/amqp/receiving-messages/async-consumer.html
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar rabbitListenerEndpointRegistrar) {
-        var handlers = applicationContext.getBeansOfType(IMessageEnvelopeHandler.class);
+        var envelopeHandlerMap = applicationContext.getBeansOfType(IMessageEnvelopeHandler.class);
 
-        for (Object handler : handlers.values()) {
-            if (handler instanceof IMessageEnvelopeHandler) {
+        for (Object envelopeHandler : envelopeHandlerMap.values()) {
+            if (envelopeHandler instanceof IMessageEnvelopeHandler) {
 
-                Class<?> messageType = ReflectionUtils.getGenericInterfaceTypeParameter(handler.getClass());
+                Class<?> messageType = ReflectionUtils.getGenericInterfaceTypeParameter(envelopeHandler.getClass());
                 if (messageType == null) continue;
                 registerMessageHandlerEndpoint(
-                        rabbitListenerEndpointRegistrar, (IMessageEnvelopeHandler<?>) handler, messageType);
+                        rabbitListenerEndpointRegistrar, (IMessageEnvelopeHandler<?>) envelopeHandler, messageType);
             }
         }
     }
@@ -192,11 +219,14 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
         // use `MessageListener` functional interface
         endpoint.setMessageListener(message -> {
             try {
+                var inputMessageTypeName = message.getMessageProperties().getType();
+                var inputMessageType = TypeMapperUtils.getType(inputMessageTypeName);
                 logger.atInfo()
                         .addKeyValue("message", SerializerUtils.serializePretty(message))
                         .log("message {} received", message.getClass().getSimpleName());
 
-                var envelope = convertMessageToEventEnvelope(message, messageType);
+                var envelope = MessageUtils.convertMessageToEventEnvelope(
+                        message, inputMessageType, applicationContext.getBean(MessageSerializer.class));
 
                 var beanScopeExecutor = applicationContext.getBean(BeanScopeExecutor.class);
 
@@ -215,9 +245,63 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
         registrar.registerEndpoint(endpoint);
     }
 
+    public static Set<String> getAllPackages() {
+        Set<String> packageNames = new HashSet<>();
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            Enumeration<URL> resources = classLoader.getResources("");
+
+            while (resources.hasMoreElements()) {
+                File directory = new File(resources.nextElement().toURI());
+                findPackagesInDirectory(directory, "", packageNames);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return packageNames;
+    }
+
+    private static void findPackagesInDirectory(File directory, String currentPackage, Set<String> packageNames) {
+        if (!directory.exists()) return;
+
+        for (File file : directory.listFiles()) {
+            if (file.isDirectory()) {
+                String newPackage = currentPackage.isEmpty() ? file.getName() : currentPackage + "." + file.getName();
+                packageNames.add(newPackage);
+                findPackagesInDirectory(file, newPackage, packageNames);
+            }
+        }
+    }
+    //
+    //    /**
+    //     * Helper method to find all classes with a given name (without requiring the package name).
+    //     *
+    //     * @param className The name of the class to find (e.g., "ProductCreated").
+    //     * @return A list of Class objects that match the given name.
+    //     */
+    //    public static List<Class<?>> findClassesByName(String className) {
+    //        List<Class<?>> matchingClasses = new ArrayList<>();
+    //
+    //        // Create a Reflections object to scan the classpath
+    //        Reflections reflections = new Reflections("", Scanners.SubTypes);
+    //
+    //        // Get all classes in the classpath
+    //        Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
+    //
+    //        // Search for classes with the matching name
+    //        for (Class<?> clazz : allClasses) {
+    //            if (clazz.getSimpleName().equals(className)) {
+    //                matchingClasses.add(clazz);
+    //            }
+    //        }
+    //
+    //        return matchingClasses;
+    //    }
+
     private String createExchangeForMessageType(Class<?> messageType, RabbitAdmin rabbitAdmin) {
 
-        String exchangeName = "%s-exchange".formatted(StringUtils.toKebabCase(messageType.getSimpleName()));
+        String exchangeName = MessageUtils.getExchangeName(messageType);
         TopicExchange exchange = new TopicExchange(exchangeName, true, false);
         rabbitAdmin.declareExchange(exchange);
         return exchangeName;
@@ -225,7 +309,7 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
 
     private String createQueueForMessageType(Class<?> messageType, RabbitAdmin rabbitAdmin) {
 
-        String queueName = "%s-queue".formatted(StringUtils.toKebabCase(messageType.getSimpleName()));
+        String queueName = MessageUtils.getQueueName(messageType);
         Queue queue = new Queue(queueName, true);
         rabbitAdmin.declareQueue(queue);
         return queueName;
@@ -246,23 +330,6 @@ public class RabbitMQConfiguration implements RabbitListenerConfigurer {
                 .formatted(
                         StringUtils.toKebabCase(handler.getClass().getSimpleName()),
                         StringUtils.toKebabCase(messageType.getSimpleName()));
-    }
-
-    private <TMessage extends IMessage> IMessageEnvelope<TMessage> convertMessageToEventEnvelope(
-            Message message, Class<?> messageType) {
-
-        var messageSerializer = applicationContext.getBean(MessageSerializer.class);
-        MessageProperties props = message.getMessageProperties();
-        Map<String, Object> headers = props.getHeaders();
-
-        // Object messageBody = messageConverter.fromMessage(message);
-        // our message body is EventEnvelope
-        IMessageEnvelope<TMessage> result = messageSerializer.deserialize(new String(message.getBody()), messageType);
-        if (result.metadata().headers() != null) {
-            result.metadata().headers().putAll(headers);
-        }
-
-        return result;
     }
 
     //    /**

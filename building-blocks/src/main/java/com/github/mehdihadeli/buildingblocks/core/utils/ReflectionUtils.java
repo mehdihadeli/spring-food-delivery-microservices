@@ -1,11 +1,14 @@
 package com.github.mehdihadeli.buildingblocks.core.utils;
 
 import com.google.common.reflect.TypeToken;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
 public class ReflectionUtils {
+
+    private static List<String> cachedPackages = null;
 
     private ReflectionUtils() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
@@ -443,6 +446,59 @@ public class ReflectionUtils {
             }
         }
         return interfaces;
+    }
+
+    public static Class<?> findClassByName(String className) {
+        // Try to find the class directly (fully qualified name)
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException ignored) {
+            // If it's not found, continue searching in known packages
+        }
+
+        // Retrieve all packages dynamically
+        var packages = getAllPackages();
+
+        // Try to find the class using its simple name in known packages
+        for (String packageName : packages) {
+            String fullClassName = packageName + "." + className;
+            try {
+                // attempt to load the class
+                return Class.forName(fullClassName);
+            } catch (ClassNotFoundException ignored) {
+                // Continue searching in other packages
+            }
+        }
+
+        return null;
+    }
+
+    public static List<String> getAllPackages() {
+        // Return cached packages if already loaded
+        if (cachedPackages != null) {
+            return cachedPackages;
+        }
+
+        // Load and cache packages
+        Package[] packages = Package.getPackages();
+        cachedPackages = Arrays.stream(packages).map(Package::getName).toList();
+
+        return cachedPackages;
+    }
+
+    public static List<String> getAllPackages(String packagePrefix) {
+        Set<String> applicationPackages = new HashSet<>();
+
+        for (Package pkg : Package.getPackages()) {
+            String packageName = pkg.getName();
+
+            // Only keep packages that start with our application’s base package (e.g., "com.myapp")
+            if (packageName.startsWith(packagePrefix)) {
+                applicationPackages.add(packageName);
+            }
+        }
+
+        return applicationPackages.stream().toList();
     }
 
     /**

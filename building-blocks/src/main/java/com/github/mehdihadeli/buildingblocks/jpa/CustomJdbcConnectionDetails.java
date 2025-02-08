@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
 public class CustomJdbcConnectionDetails implements JdbcConnectionDetails {
     private final DataSourceProperties dataSourceProperties;
 
-    CustomJdbcConnectionDetails(DataSourceProperties dataSourceProperties) {
+    public CustomJdbcConnectionDetails(DataSourceProperties dataSourceProperties) {
         this.dataSourceProperties = dataSourceProperties;
     }
 

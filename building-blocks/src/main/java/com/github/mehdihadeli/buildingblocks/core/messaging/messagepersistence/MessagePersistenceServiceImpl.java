@@ -14,6 +14,7 @@ import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMes
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +38,14 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
         this.mediator = mediator;
         this.busDirectPublisher = busDirectPublisher;
         this.serializer = serializer;
+    }
+
+    @Override
+    public List<PersistMessage> getByFilter(
+            @Nullable MessageStatus messageStatus,
+            @Nullable MessageDeliveryType messageDeliveryType,
+            @Nullable String dataType) {
+        return messagePersistenceRepository.filterBy(messageStatus, messageDeliveryType, dataType);
     }
 
     @Override
@@ -180,9 +189,7 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
 
         // if there is any delivery message as inbox we should skip the message
         List<PersistMessage> messages =
-                messagePersistenceRepository
-                        .filterByStateAndDeliveryType(MessageStatus.Delivered, MessageDeliveryType.Inbox)
-                        .stream()
+                messagePersistenceRepository.filterBy(MessageStatus.Delivered, MessageDeliveryType.Inbox, null).stream()
                         .filter(m -> m.getId() == persistMessage.getId())
                         .toList();
 

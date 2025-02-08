@@ -19,27 +19,28 @@
 > - [https://github.com/mehdihadeli/food-delivery-microservices](https://github.com/mehdihadeli/food-delivery-microservices)
 > - [https://github.com/mehdihadeli/food-delivery-modular-monolith](https://github.com/mehdihadeli/food-delivery-modular-monolith)
 
+## ⭐ Support
+
+If you like feel free to ⭐ this repository, It helps out :)
+
+Thanks a bunch for supporting me!
+
 ## Table of Contents
 
-- [🍔 Java Food Delivery Microservices](#-java-food-delivery-microservices)
-  - [Table of Contents](#table-of-contents)
+- [🍔 Spring Food Delivery Microservices](#-spring-food-delivery-microservices)
   - [⭐ Support](#-support)
+  - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Plan](#plan)
   - [Technologies - Libraries](#technologies---libraries)
   - [The Domain And Bounded Context - Service Boundary](#the-domain-and-bounded-context---service-boundary)
+  - [Application Architecture](#application-architecture)
   - [Application Structure](#application-structure)
     - [High Level Structure](#high-level-structure)
   - [How to Run](#how-to-run)
   - [Contribution](#contribution)
   - [Project References](#project-references)
   - [License](#license)
-
-## ⭐ Support
-
-If you like feel free to ⭐ this repository, It helps out :)
-
-Thanks a bunch for supporting me!
 
 ## Features
 
@@ -98,7 +99,7 @@ Thanks a bunch for supporting me!
 - ✔️ **[Spotbugs](https://github.com/spotbugs/spotbugs)** - SpotBugs is FindBugs' successor. A tool for static analysis to look for bugs in Java code.
 - ✔️ **[Mapstruct](https://github.com/mapstruct/mapstruct)** - An annotation processor for generating type-safe bean mappers.
 - ✔️ **[Wiremock](https://github.com/wiremock/wiremock)** - A tool for mocking HTTP services.
-- ✔️ **[Instancio](https://github.com/instancio/instancio)** - A library that creates fully populated objects for your unit tests.
+- ✔️ **[Datafaker](https://github.com/datafaker-net/datafaker)** - Generating fake data for the JVM (Java, Kotlin, Groovy) has never been easier!
 - ✔️ **[Guava](https://github.com/google/guava)** - Google core libraries for Java.
 - ✔️ **[Hibernate-Metamodel-Generator](https://github.com/hibernate/hibernate-orm/tree/main/tooling/metamodel-generator)** - Annotation Processor to generate JPA 2 static metamodel classes.
 - ✔️ **[Spotless](https://github.com/diffplug/spotless)** - Keep your code spotless.
@@ -107,6 +108,46 @@ Thanks a bunch for supporting me!
 ## The Domain And Bounded Context - Service Boundary
 
 TODO
+
+## Application Architecture
+
+The bellow architecture shows that there is one public API (API Gateway) which is accessible for the clients and this is done via HTTP request/response. The API gateway then routes the HTTP request to the corresponding microservice. The HTTP request is received by the microservice that hosts its own REST API. Each microservice is running within its own `AppDomain` and has directly access to its own dependencies such as databases, files, local transaction, etc. All these dependencies are only accessible for that microservice and not to the outside world. In fact microservices are decoupled from each other and are autonomous. This also means that the microservice does not rely on other parts in the system and can run independently of other services.
+
+![](./assets/microservices.png)
+
+Microservices are [event based](https://event-driven.io/en/internal_external_events/) which means they can publish and/or subscribe to any events occurring in the setup. By using this approach for communicating between services, each microservice does not need to know about the other services or handle errors occurred in other microservices.
+
+In this architecture we use [CQRS Pattern](https://www.kurrent.io/cqrs-pattern) for separating read and write model beside of other [CQRS Advantages](https://youtu.be/dK4Yb6-LxAk?t=1029). Here for now I don't use [Event Sourcing](https://www.kurrent.io/blog/event-sourcing-and-cqrs) for simplicity but I will use it in future for syncing read and write side with sending streams and using [Projection Feature](https://event-driven.io/en/projections_and_read_models_in_event_driven_architecture/) for some subscribers to syncing their data through sent streams and creating our [Custom Read Models](https://codeopinion.com/projections-in-event-sourcing-build-any-model-you-want/) in subscribers side.
+
+Here I have a write model that uses a postgres database for handling better `Consistency` and `ACID Transaction` guaranty. beside o this write side I use a read side model that uses MongoDB for better performance of our read side without any joins with using some nested documents, also better scalability with some good scaling features in MongoDB.
+
+For syncing our read side and write side we have 2 options with using Event Driven Architecture (without using events streams in event sourcing):
+
+- If our `read sides` are in `same service`, during saving data in write side and in the same transaction, we save a [Internal Command](https://github.com/kgrzybek/modular-monolith-with-ddd#38-internal-processing) record in our [PersistMessage](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/jpamessagepersistence/PostgresMessagePersistenceRepositoryImpl.java) storage (like something we do in outbox pattern) and after committing write side, our [MessagePersistenceBackgroundService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/core/messaging/messagepersistence/MessagePersistenceBackgroundService.java) and [MessagePersistenceServiceImpl](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/core/messaging/messagepersistence/MessagePersistenceServiceImpl.java) reads unsent internal commands and sends them to their corresponding `internal command handlers` in same service and these handlers can save their read models in our
+  MongoDb database as a read side.
+
+- If our `read sides` are in `another services` we publish an [integration event](https://event-driven.io/en/internal_external_events/) (with saving this message in the outbox) after committing our write side, all of our `subscribers` or `consumers` can get these events and save them in their read models (MongoDB).
+
+All of these are optional in a application and we should only use what the service requires, For example, if the service does not need to use DDD because the business logic is very simple, and it is mostly `CRUD` we can use `data centric` architecture or If our application is not `Task based` instead of CQRS and separating read side and write side, we can just use a simple `CRUD` based approach.
+
+Here I used [Outbox](http://www.kamilgrzybek.com/design/the-outbox-pattern/) for [Guaranteed Delivery](https://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html) and can be used as a landing zone for integration events before they are published to the message broker.
+
+[Outbox pattern](https://event-driven.io/en/outbox_inbox_patterns_and_delivery_guarantees_explained/) ensures that a message was sent (e.g. to a queue) successfully at least once. With this pattern, instead of directly publishing a message to the queue, we put it in the temporary storage (e.g. database table) for preventing missing any message and some retry mechanism in any failure ([At-least-once Delivery](https://www.cloudcomputingpatterns.org/at_least_once_delivery/)). For example When we save data as part of one transaction in our service, we also save messages (Integration Events) that we want to process later in another microservices. The list of messages to be processed is called a [PersistMessage](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/PersistMessage.java) with a [MessageDeliveryType](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessageDeliveryType.java) which can be `Outbox`, `Inbox` and `InternalCommand` and a [MessageStatus](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessageStatus.java) which can be `Stored` and `Delivered`. The [MessagePersistenceService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessagePersistenceService.java) service is responsible for doing this message processing internally.
+
+Also we have a background service [MessagePersistenceBackgroundService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/core/messaging/messagepersistence/MessagePersistenceBackgroundService.java) that periodically checks the our [PersistMessages](./building-blocks//src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/PersistMessage.java) in the database and try to send the messages to the broker with using our [MessagePersistenceService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessagePersistenceService.java) service. After it gets confirmation of publishing (e.g. ACK from the broker) it marks the message as processed to avoid `resending` and `duplication`.
+However, it is possible that we will not be able to mark the message as processed due to communication error, for example `broker` is `unavailable`. In this case our [MessagePersistenceBackgroundService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/core/messaging/messagepersistence/MessagePersistenceBackgroundService.jav) try to resend the messages that not processed and it is actually [At-Least-Once delivery](http://www.cloudcomputingpatterns.org/at_least_once_delivery/). We can be sure that message will be sent `once`, but can be sent `multiple times` too! That’s why another name for this approach is Once-Or-More delivery. We should remember this and try to design receivers of our messages as [Idempotents](https://www.enterpriseintegrationpatterns.com/patterns/messaging/IdempotentReceiver.html), which means:
+
+> A message that has the same effect whether it is received once or multiple times. This means that a message can safely be resent without causing any problems even if the receiver receives duplicates of the same message.
+
+For handling [Idempotency](https://www.enterpriseintegrationpatterns.com/patterns/messaging/IdempotentReceiver.html) and [Exactly-once Delivery](https://www.cloudcomputingpatterns.org/exactly_once_delivery/) in consumers side, we can use [Inbox Pattern](https://event-driven.io/en/outbox_inbox_patterns_and_delivery_guarantees_explained/).
+
+This pattern is similar to Outbox Pattern. It’s used to handle incoming messages (e.g. from a queue) for `unique processing` of `a single message` only `once` (even with executing multiple time). Accordingly, we have a table in which we’re storing incoming messages. Contrary to outbox pattern, we first save the messages in the database, then we’re returning ACK to queue. If save succeeded, but we didn’t return ACK to queue, then delivery will be retried. That’s why we have at-least-once delivery again. After that, an `inbox background process` runs and will process the inbox messages that not processed yet. also we can prevent executing a message with specific `MessgaeId`multiple times. after executing our inbox message for example with calling our subscribed event handlers we send a ACK to the queue when they succeeded. (Inbox part of the system is in progress, I will cover this part soon as possible)
+
+Also here I used `RabbitMQ` as my `Message Broker` for my async communication between the microservices with using eventually consistency mechanism, for now I used [Spring AMQP](https://docs.spring.io/spring-amqp/reference/) for handling event driven communications. beside of using eventually consistency through event driven architecture we have a synchronous calls with using `REST` when we need immediate consistency.
+
+I used [Spring Cloud Gateway](https://docs.spring.io/spring-cloud-gateway/reference/) which is an `API Gateway` built on top of the Spring as reverse proxy (we can use envoy, traefik, nginx, ...), in front of our services. We can also have multiple Api Gateways for reaching `BFF pattern`. For example one Gateway for mobile apps, One Gateway for web apps and etc.
+With using api Gateway our internal microservices are transparent and user can not access them directly and all requests will serve through this Gateway.
+Also we can use gateway for load balancing, authentication and authorization, caching ,...
 
 ## Application Structure
 

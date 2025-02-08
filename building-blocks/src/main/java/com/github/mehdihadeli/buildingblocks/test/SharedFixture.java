@@ -2,8 +2,14 @@ package com.github.mehdihadeli.buildingblocks.test;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.bean.BeanScopeExecutor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.ExternalEventBus;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.TestHarness;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageDeliveryType;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageStatus;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBus;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.QueryBus;
+import com.github.mehdihadeli.buildingblocks.core.messaging.MessageUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommand;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommandUnit;
@@ -17,59 +23,57 @@ import com.github.mehdihadeli.buildingblocks.test.fixtures.RabbitMQTestContainer
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import jakarta.persistence.EntityManager;
+import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.TriConsumer;
+import org.assertj.core.util.TriFunction;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.test.TestRabbitTemplate;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SharedFixture {
-    private final ApplicationContext applicationContext;
-    private final TestRestTemplate restTemplate;
-    private final RabbitTemplate rabbitTemplate;
-    private final BeanScopeExecutor beanScopeExecutor;
-    private final TestRabbitTemplate testRabbitTemplate;
-    private final String apiUrl;
+    private ApplicationContext applicationContext;
+    // TestRestTemplate is not an extension of RestTemplate, but rather an alternative that simplifies integration
+    // testing and facilitates authentication during tests. It helps in customization of Apache HTTP client.
+    private TestRestTemplate testRestTemplate;
+    private BeanScopeExecutor beanScopeExecutor;
+    private RabbitTemplate rabbitTemplate;
 
-    private final PostgresTestContainerFixture postgresContainer;
-    private final RabbitMQTestContainerFixture rabbitmqContainer;
-    private final MongoTestContainerFixture mongoTestContainer;
+    private static PostgresTestContainerFixture postgresContainer;
+    private static RabbitMQTestContainerFixture rabbitmqContainer;
+    private static MongoTestContainerFixture mongoTestContainer;
 
-    public SharedFixture(ApplicationContext applicationContext, String apiUrl) {
-        this.applicationContext = applicationContext;
-        this.postgresContainer = new PostgresTestContainerFixture(applicationContext.getBean(JdbcTemplate.class));
-        this.rabbitmqContainer = new RabbitMQTestContainerFixture(
-                applicationContext.getBean(RabbitAdmin.class), applicationContext.getBean(RestTemplate.class));
-        this.mongoTestContainer = new MongoTestContainerFixture();
-        this.restTemplate = applicationContext.getBean(TestRestTemplate.class);
-        this.rabbitTemplate = applicationContext.getBean(RabbitTemplate.class);
-        this.beanScopeExecutor = applicationContext.getBean(BeanScopeExecutor.class);
-        this.apiUrl = apiUrl;
-        // Use TestRabbitTemplate to intercept and verify the message
-        this.testRabbitTemplate = new TestRabbitTemplate(rabbitTemplate.getConnectionFactory());
-    }
+    public SharedFixture() {
+        postgresContainer = new PostgresTestContainerFixture();
+        rabbitmqContainer = new RabbitMQTestContainerFixture();
+        mongoTestContainer = new MongoTestContainerFixture();
 
-    protected static WireMockServer wireMockServer;
-
-    public void initialize() {
         postgresContainer.startContainer();
         rabbitmqContainer.startContainer();
         mongoTestContainer.startContainer();
         // Initialize WireMock server
         // Start WireMock server on a specific port
-        wireMockServer = new WireMockServer(WireMockConfiguration.options().port(8089));
+        wireMockServer = new WireMockServer(WireMockConfiguration.options().port(6060));
         wireMockServer.start();
-        WireMock.configureFor("localhost", 8089);
+        WireMock.configureFor("localhost", 6060);
+    }
+
+    protected static WireMockServer wireMockServer;
+
+    public void initialize(ApplicationContext applicationContext) {
+        // Use RabbitTemplate to intercept and verify the message
+        this.rabbitTemplate = applicationContext.getBean(RabbitTemplate.class);
+        this.testRestTemplate = applicationContext.getBean(TestRestTemplate.class);
+        this.testRestTemplate.withBasicAuth("test", "test");
+        this.beanScopeExecutor = applicationContext.getBean(BeanScopeExecutor.class);
     }
 
     public void dispose() {
@@ -77,13 +81,6 @@ public class SharedFixture {
         rabbitmqContainer.stopContainer();
         mongoTestContainer.stopContainer();
         wireMockServer.stop();
-    }
-
-    @DynamicPropertySource
-    public void configureTestProperties(DynamicPropertyRegistry registry) {
-        configurePostgresProperties(registry);
-        configureMongoProperties(registry);
-        configureRabbitMQProperties(registry);
     }
 
     public void resetDatabasesAsync() {
@@ -95,10 +92,17 @@ public class SharedFixture {
         rabbitmqContainer.cleanupQueues();
     }
 
+    public void configureTestProperties(DynamicPropertyRegistry registry) {
+        configureMongoProperties(registry);
+        configurePostgresProperties(registry);
+        configureRabbitMQProperties(registry);
+    }
+
     private void configurePostgresProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
+        registry.add("spring.datasource.driver-class-name", postgresContainer::getDriverClassName);
     }
 
     private void configureMongoProperties(DynamicPropertyRegistry registry) {
@@ -143,6 +147,10 @@ public class SharedFixture {
         }
     }
 
+    public void waitUntilConditionMet(Callable<Boolean> conditionToMet) {
+        waitUntilConditionMet(conditionToMet, 300, null);
+    }
+
     /**
      * Executes the provided action within a scoped context.
      *
@@ -160,7 +168,7 @@ public class SharedFixture {
      * @return The result of the action.
      */
     public <T> T executeInScope(Function<ApplicationContext, T> action) {
-      return beanScopeExecutor.executeInScope(action);
+        return beanScopeExecutor.executeInScope(action);
     }
 
     /**
@@ -241,6 +249,89 @@ public class SharedFixture {
         executeInScope(context -> {
             var bus = context.getBean(ExternalEventBus.class);
             bus.publish(eventEnvelope);
+        });
+    }
+
+    public <TInternalCommand extends IInternalCommand> void shouldProcessingInternalCommand(
+            Class<TInternalCommand> internalCommandClass) {
+        waitUntilConditionMet(() -> {
+            boolean hasElement = executeInScope(context -> {
+                var messagePersistenceService = context.getBean(MessagePersistenceService.class);
+
+                var result = messagePersistenceService.getByFilter(
+                        MessageStatus.Delivered,
+                        MessageDeliveryType.Internal,
+                        MessageUtils.getFullTypeName(internalCommandClass));
+
+                return !result.isEmpty();
+            });
+            return hasElement;
+        });
+    }
+
+    public <TMessage extends IMessage> void shouldProcessingOutboxMessage(Class<TMessage> messageClass) {
+        waitUntilConditionMet(() -> {
+            boolean hasElement = executeInScope(context -> {
+                var messagePersistenceService = context.getBean(MessagePersistenceService.class);
+
+                var result = messagePersistenceService.getByFilter(
+                        MessageStatus.Delivered,
+                        MessageDeliveryType.Outbox,
+                        MessageUtils.getFullTypeName(messageClass));
+
+                return !result.isEmpty();
+            });
+            return hasElement;
+        });
+    }
+
+    /**
+     * Waits for a message of the specified type to be published.
+     *
+     * @param messageType The class of the message to wait for.
+     * @param <TMessage>   The type of the message, which must implement IMessage.
+     */
+    public <TMessage extends IMessage> void shouldPublishing(Class<TMessage> messageType) {
+        executeInScope(context -> {
+            var testHarness = context.getBean(TestHarness.class);
+            testHarness.waitForPublishedMessage(messageType);
+        });
+    }
+
+    /**
+     * Waits for a message of the specified type to be consumed.
+     *
+     * @param messageType The class of the message to wait for.
+     * @param <TMessage>  The type of the message, which must implement IMessage.
+     */
+    public <TMessage extends IMessage> void shouldConsuming(Class<TMessage> messageType) {
+        executeInScope(context -> {
+            var testHarness = context.getBean(TestHarness.class);
+            testHarness.waitForConsumedMessage(messageType);
+        });
+    }
+
+    public <T> T executeEntityManager(BiFunction<EntityManager, Mediator, T> action) {
+        return executeInScope(context -> {
+            return action.apply(context.getBean(EntityManager.class), context.getBean(Mediator.class));
+        });
+    }
+
+    public void executeEntityManager(BiConsumer<EntityManager, Mediator> action) {
+        executeInScope(context -> {
+            action.accept(context.getBean(EntityManager.class), context.getBean(Mediator.class));
+        });
+    }
+
+    public void executeEntityManager(TriConsumer<ApplicationContext, EntityManager, Mediator> action) {
+        executeInScope(context -> {
+            action.accept(context, context.getBean(EntityManager.class), context.getBean(Mediator.class));
+        });
+    }
+
+    public <T> T executeEntityManager(TriFunction<ApplicationContext, EntityManager, Mediator, T> action) {
+        return executeInScope(context -> {
+            return action.apply(context, context.getBean(EntityManager.class), context.getBean(Mediator.class));
         });
     }
 }

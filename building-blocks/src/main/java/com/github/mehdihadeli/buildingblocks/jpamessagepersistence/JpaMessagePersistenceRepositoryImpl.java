@@ -1,9 +1,10 @@
 package com.github.mehdihadeli.buildingblocks.jpamessagepersistence;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.*;
-import com.github.mehdihadeli.buildingblocks.core.data.CriteriaQueryUtils;
+import com.github.mehdihadeli.buildingblocks.core.data.EntityManagerUtils;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -43,48 +44,54 @@ public class JpaMessagePersistenceRepositoryImpl implements MessagePersistenceRe
     @Override
     @Transactional(readOnly = true)
     public List<PersistMessage> getAll() {
-        return CriteriaQueryUtils.findAll(this.entityManager, PersistMessage.class, null);
+        return EntityManagerUtils.findAll(
+                this.entityManager, PersistMessage.class, (Specification<PersistMessage>) null);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PersistMessage> getByFilterSpec(Specification<PersistMessage> specification) {
-        return CriteriaQueryUtils.findAll(this.entityManager, PersistMessage.class, specification);
+        return EntityManagerUtils.findAll(this.entityManager, PersistMessage.class, specification);
     }
 
     @Override
-    public List<PersistMessage> filterByState(MessageStatus messageStatus) {
-        return CriteriaQueryUtils.findAll(
+    @Transactional(readOnly = true)
+    public List<PersistMessage> filterByState(@Nullable MessageStatus messageStatus) {
+        return EntityManagerUtils.findAll(
                 this.entityManager, PersistMessage.class, MessageSpecifications.hasStatus(messageStatus));
     }
 
     @Override
-    public List<PersistMessage> filterByStateAndDeliveryType(
-            MessageStatus messageStatus, MessageDeliveryType deliveryType) {
-        return CriteriaQueryUtils.findAll(
+    @Transactional(readOnly = true)
+    public List<PersistMessage> filterBy(
+            @Nullable MessageStatus messageStatus,
+            @Nullable MessageDeliveryType deliveryType,
+            @Nullable String dataType) {
+        return EntityManagerUtils.findAll(
                 this.entityManager,
                 PersistMessage.class,
                 MessageSpecifications.hasStatus(messageStatus)
-                        .and(MessageSpecifications.hasDeliveryType(deliveryType)));
+                        .and(MessageSpecifications.hasDeliveryType(deliveryType))
+                        .and(MessageSpecifications.hasDataType(dataType)));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<PersistMessage> getById(UUID id) {
-        return CriteriaQueryUtils.findOne(
+        return EntityManagerUtils.findOne(
                 entityManager, PersistMessage.class, (root, query, cb) -> cb.equal(root.get(PersistMessage_.id), id));
     }
 
     @Override
     @Transactional
     public boolean remove(PersistMessage persistMessage) {
-        CriteriaQueryUtils.delete(entityManager, persistMessage);
+        EntityManagerUtils.delete(entityManager, persistMessage);
         return true;
     }
 
     @Override
     @Transactional
     public void cleanupMessages() {
-        CriteriaQueryUtils.deleteAll(entityManager, PersistMessage.class);
+        EntityManagerUtils.deleteAll(entityManager, PersistMessage.class);
     }
 }
