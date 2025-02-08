@@ -171,8 +171,7 @@ public class CoreConfiguration {
     @Bean
     @ConditionalOnMissingBean
     MessagePersistenceBackgroundService messagePersistenceServiceBackgroundService(
-            MessagePersistenceProperties messagePersistenceProperties,
-            BeanScopeExecutor beanScopeExecutor) {
+            MessagePersistenceProperties messagePersistenceProperties, BeanScopeExecutor beanScopeExecutor) {
         return new MessagePersistenceBackgroundService(beanScopeExecutor, messagePersistenceProperties);
     }
 

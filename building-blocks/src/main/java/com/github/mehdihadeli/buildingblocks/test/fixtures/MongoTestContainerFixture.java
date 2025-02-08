@@ -11,18 +11,12 @@ public class MongoTestContainerFixture {
     private static final Logger logger = LoggerFactory.getLogger(MongoTestContainerFixture.class);
 
     private final MongoDBContainer mongoContainer;
-    private final MongoClient mongoClient;
-    private final MongoDatabase database;
+    private MongoClient mongoClient;
+    private MongoDatabase database;
 
     public MongoTestContainerFixture() {
         // Initialize the MongoDB container
         this.mongoContainer = new MongoDBContainer("mongo:latest").withExposedPorts(27017);
-
-        // Create a MongoClient to interact with the container
-        this.mongoClient = MongoClients.create(mongoContainer.getConnectionString());
-
-        // Ensure the database exists
-        this.database = mongoClient.getDatabase("test_db");
     }
 
     /**
@@ -32,6 +26,12 @@ public class MongoTestContainerFixture {
         if (!mongoContainer.isRunning()) {
             mongoContainer.start();
             logger.info("MongoDB container started.");
+
+            // Create a MongoClient to interact with the container
+            this.mongoClient = MongoClients.create(mongoContainer.getConnectionString());
+
+            // Ensure the database exists
+            this.database = mongoClient.getDatabase("test_db");
         }
     }
 

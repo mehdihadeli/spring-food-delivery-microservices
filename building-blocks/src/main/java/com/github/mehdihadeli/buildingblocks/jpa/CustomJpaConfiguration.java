@@ -8,11 +8,6 @@ import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.sql.DataSource;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.spi.IntegratorProvider;
@@ -46,7 +41,12 @@ import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.util.StringUtils;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration
 @ConditionalOnClass({DataSource.class})
@@ -97,7 +97,7 @@ public class CustomJpaConfiguration {
     public DataSource dataSource(
             DataSourceProperties dataSourceProperties, CustomDataSourceProperties customDataSourceProperties) {
         DataSource dataSource;
-        if (!StringUtils.hasText(dataSourceProperties.getUrl()) && customDataSourceProperties.isUseInMemory()) {
+        if (customDataSourceProperties.isUseInMemory() && isInMemoryUrl(dataSourceProperties.getUrl())) {
             var jdbcUrl = "jdbc:h2:mem:localdb";
             dataSource = DataSourceBuilder.create(dataSourceProperties.getClassLoader())
                     .type(HikariDataSource.class)
@@ -118,6 +118,16 @@ public class CustomJpaConfiguration {
         HikariConfig hikariConfig = getHikariConfig(dataSource);
 
         return new HikariDataSource(hikariConfig);
+    }
+
+    private boolean isInMemoryUrl(String url) {
+        if (org.apache.commons.lang3.StringUtils.isEmpty(url)) {
+            return true;
+        }
+        // Check for in-memory database URL patterns
+        return url.contains(":mem:")
+                || // H2 and HSQLDB
+                url.contains(":memory:"); // Derby
     }
 
     private static HikariConfig getHikariConfig(DataSource datasource) {
@@ -223,7 +233,7 @@ public class CustomJpaConfiguration {
                 packages = AutoConfigurationPackages.get(beanFactory);
             }
 
-            return StringUtils.toStringArray(packages);
+            return packages.toArray(new String[0]);
         }
     }
 

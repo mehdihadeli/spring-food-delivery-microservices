@@ -49,7 +49,6 @@
     <commons-configuration2.version>2.11.0</commons-configuration2.version>
     <testcontainers.version>1.20.4</testcontainers.version>
     <rest-assured.version>5.5.0</rest-assured.version>
-    <instancio-junit.version>5.2.1</instancio-junit.version>
     <google.guava.version>33.4.0-jre</google.guava.version>
     <ulid-creator.version>5.2.3</ulid-creator.version>
     <hibernate-jpamodelgen.version>6.6.5.Final</hibernate-jpamodelgen.version>
@@ -64,6 +63,7 @@
     <flyway-database-postgresql.version>11.3.0</flyway-database-postgresql.version>
     <spring-cloud-dependencies-pom.version>2024.0.0</spring-cloud-dependencies-pom.version>
     <wiremock.version>3.11.0</wiremock.version>
+    <datafaker.version>2.4.2</datafaker.version>
   </properties>
 
   <dependencyManagement>
@@ -133,7 +133,6 @@
       <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
-        <scope>runtime</scope>
         <version>${postgresdatabase.version}</version>
       </dependency>
       <!-- QueryDSL Dependencies -->
@@ -192,18 +191,12 @@
       <dependency>
         <groupId>io.rest-assured</groupId>
         <artifactId>rest-assured</artifactId>
-        <scope>test</scope>
         <version>${rest-assured.version}</version>
       </dependency>
       <dependency>
         <groupId>org.wiremock</groupId>
-        <artifactId>wiremock</artifactId>
+        <artifactId>wiremock-standalone</artifactId>
         <version>${wiremock.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.instancio</groupId>
-        <artifactId>instancio-junit</artifactId>
-        <version>${instancio-junit.version}</version>
       </dependency>
       <dependency>
         <groupId>com.github.f4b6a3</groupId>
@@ -249,6 +242,11 @@
         <groupId>org.flywaydb</groupId>
         <artifactId>flyway-database-postgresql</artifactId>
         <version>${flyway-database-postgresql.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.datafaker</groupId>
+        <artifactId>datafaker</artifactId>
+        <version>${datafaker.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

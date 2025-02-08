@@ -44,7 +44,6 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <!--MongoDB-->
     <dependency>
@@ -95,6 +94,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
     </dependency>
+
     <!-- Test with TestContainers -->
     <!-- https://testcontainers.com/guides/testing-spring-boot-rest-api-using-testcontainers/-->
     <dependency>
@@ -115,18 +115,17 @@
     </dependency>
     <dependency>
       <groupId>org.wiremock</groupId>
-      <artifactId>wiremock</artifactId>
+      <artifactId>wiremock-standalone</artifactId>
     </dependency>
     <!-- Run Tests using RestAssured -->
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
     </dependency>
-    <!-- Fake object generator with instancio-junit-->
+    <!-- Fake object generator with datafaker-->
     <dependency>
-      <groupId>org.instancio</groupId>
-      <artifactId>instancio-junit</artifactId>
+      <groupId>net.datafaker</groupId>
+      <artifactId>datafaker</artifactId>
     </dependency>
 
     <!-- Bean Validation API Reference Implementation -->
@@ -241,6 +240,10 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
     </dependency>
   </dependencies>
 

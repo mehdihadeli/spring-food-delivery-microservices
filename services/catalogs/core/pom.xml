@@ -6,8 +6,9 @@
     <groupId>com.github.mehdihadeli</groupId>
     <artifactId>catalogs</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath> <!-- Point to the catalogs parent POM -->
+    <relativePath>../pom.xml</relativePath> <!-- Point to the `catalogs` parent POM -->
   </parent>
+
   <artifactId>catalogs-core</artifactId>
 
   <properties>
@@ -19,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>com.github.mehdihadeli</groupId>
-      <artifactId>building-blocks</artifactId>
+      <artifactId>shared</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>

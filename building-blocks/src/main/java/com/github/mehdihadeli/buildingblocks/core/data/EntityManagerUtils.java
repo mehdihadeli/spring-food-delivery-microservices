@@ -1,5 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.core.data;
 
+import com.github.mehdihadeli.buildingblocks.abstractions.core.data.EntityFilter;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
@@ -16,9 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CriteriaQueryUtils {
+public class EntityManagerUtils {
 
-    private CriteriaQueryUtils() {
+    private EntityManagerUtils() {
         throw new AssertionError("No instances allowed");
     }
 
@@ -27,6 +28,24 @@ public class CriteriaQueryUtils {
      */
     public static <T> List<T> findAll(EntityManager entityManager, Class<T> entityClass, Specification<T> spec) {
         CriteriaQuery<T> query = createQuery(entityManager, entityClass, spec);
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    /**
+     * Find all entities matching the specification
+     */
+    public static <T> List<T> findAll(EntityManager entityManager, Class<T> entityClass, EntityFilter<T> filter) {
+        CriteriaQuery<T> query = createQuery(entityManager, entityClass, filter);
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    /**
+     * Find all entities matching the specification with sorting
+     */
+    public static <T> List<T> findAll(
+            EntityManager entityManager, Class<T> entityClass, EntityFilter<T> filter, Sort sort) {
+        CriteriaQuery<T> query = createQuery(entityManager, entityClass, filter);
+        addSorting(entityManager, query, entityClass, sort);
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -61,10 +80,43 @@ public class CriteriaQueryUtils {
     }
 
     /**
+     * Find all entities matching the specification with pagination
+     */
+    public static <T> Page<T> findAll(
+            EntityManager entityManager, Class<T> entityClass, EntityFilter<T> filter, Pageable pageable) {
+        CriteriaQuery<T> query = createQuery(entityManager, entityClass, filter);
+
+        if (pageable.getSort().isSorted()) {
+            addSorting(entityManager, query, entityClass, pageable.getSort());
+        }
+
+        TypedQuery<T> typedQuery = entityManager.createQuery(query);
+        typedQuery.setFirstResult((int) pageable.getOffset());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        Long total = count(entityManager, entityClass, filter);
+
+        return new PageImpl<>(typedQuery.getResultList(), pageable, total);
+    }
+
+    /**
      * Find a single result matching the specification
      */
     public static <T> Optional<T> findOne(EntityManager entityManager, Class<T> entityClass, Specification<T> spec) {
         CriteriaQuery<T> query = createQuery(entityManager, entityClass, spec);
+        try {
+            return Optional.ofNullable(
+                    entityManager.createQuery(query).setMaxResults(1).getSingleResult());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Find a single result matching the specification
+     */
+    public static <T> Optional<T> findOne(EntityManager entityManager, Class<T> entityClass, EntityFilter<T> filter) {
+        CriteriaQuery<T> query = createQuery(entityManager, entityClass, filter);
         try {
             return Optional.ofNullable(
                     entityManager.createQuery(query).setMaxResults(1).getSingleResult());
@@ -86,6 +138,22 @@ public class CriteriaQueryUtils {
             if (predicate != null) {
                 query.where(predicate);
             }
+        }
+
+        query.select(cb.count(root));
+        return entityManager.createQuery(query).getSingleResult();
+    }
+
+    /**
+     * Count entities matching the specification
+     */
+    public static <T> Long count(EntityManager entityManager, Class<T> entityClass, EntityFilter<T> filter) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<T> root = query.from(entityClass);
+
+        if (filter != null) {
+            query.where(filter.apply(root, cb));
         }
 
         query.select(cb.count(root));
@@ -183,24 +251,39 @@ public class CriteriaQueryUtils {
         return entityManager.createQuery(query).getResultList();
     }
 
-    public <T> List<T> where(EntityManager entityManager, Class<T> entityClass, Predicate predicate) {
+    /**
+     * Find all entities matching the specification with projections.
+     */
+    public static <T, R> List<R> findAllWithProjection(
+            EntityManager entityManager,
+            Class<T> entityClass,
+            Class<R> resultClass,
+            EntityFilter<T> filter,
+            List<String> fields) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> query = cb.createQuery(entityClass);
+        CriteriaQuery<R> query = cb.createQuery(resultClass);
         Root<T> root = query.from(entityClass);
-        query.select(root);
 
-        query.where(predicate);
+        List<Selection<R>> selections = fields.stream()
+                .map(field -> (Selection<R>) getPropertyPath(root, field)) // Cast Path<?> to Selection<?>
+                .toList();
+
+        query.select(cb.construct(resultClass, selections.toArray(Selection[]::new)));
+
+        if (filter != null) {
+            query.where(filter.apply(root, cb));
+        }
 
         return entityManager.createQuery(query).getResultList();
     }
 
-    public <T> List<T> where(EntityManager entityManager, Class<T> entityClass, Expression<Boolean> expression) {
+    public <T> List<T> where(EntityManager entityManager, Class<T> entityClass, EntityFilter<T> filter) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> query = cb.createQuery(entityClass);
         Root<T> root = query.from(entityClass);
         query.select(root);
 
-        query.where(expression);
+        query.where(filter.apply(root, cb));
 
         return entityManager.createQuery(query).getResultList();
     }
@@ -230,7 +313,7 @@ public class CriteriaQueryUtils {
     /**
      * Create a base criteria query with specification
      */
-    private static <T> CriteriaQuery<T> createQuery(
+    public static <T> CriteriaQuery<T> createQuery(
             EntityManager entityManager, Class<T> entityClass, Specification<T> spec) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> query = cb.createQuery(entityClass);
@@ -242,6 +325,42 @@ public class CriteriaQueryUtils {
             if (predicate != null) {
                 query.where(predicate);
             }
+        }
+
+        return query;
+    }
+
+    /**
+     * Create a base criteria query with specification
+     */
+    public static <T> CriteriaQuery<T> createQuery(
+            EntityManager entityManager, Class<T> entityClass, Predicate predicate) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(entityClass);
+        Root<T> root = query.from(entityClass);
+        query.select(root);
+
+        if (predicate != null) {
+            query.where(predicate);
+        }
+
+        return query;
+    }
+
+    /**
+     * Create a base criteria query with specification
+     *
+     * CriteriaQuery will use for `Ordering`, `Grouping`, `Subqueries`. For filtering, `CriteriaBuilder` is enough
+     */
+    public static <T> CriteriaQuery<T> createQuery(
+            EntityManager entityManager, Class<T> entityClass, EntityFilter<T> filter) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> query = cb.createQuery(entityClass);
+        Root<T> root = query.from(entityClass);
+        query.select(root);
+
+        if (filter != null) {
+            query.where(filter.apply(root, cb));
         }
 
         return query;
@@ -422,6 +541,44 @@ public class CriteriaQueryUtils {
             };
         }
 
+        /**
+         * Simple where clause for a single specification
+         */
+        public static <T> Specification<T> where(Specification<T> spec) {
+            return (root, query, cb) -> spec.toPredicate(root, query, cb);
+        }
+
+        /**
+         * Where clause combining multiple specifications with AND
+         */
+        public static <T> Specification<T> whereAnd(Specification<T>... specs) {
+            return (root, query, cb) -> {
+                Predicate predicate = cb.conjunction();
+                for (Specification<T> spec : specs) {
+                    Predicate condition = spec.toPredicate(root, query, cb);
+                    if (condition != null) {
+                        predicate = cb.and(predicate, condition);
+                    }
+                }
+                return predicate;
+            };
+        }
+
+        /**
+         * Where clause combining multiple specifications with OR
+         */
+        public static <T> Specification<T> whereOr(Specification<T>... specs) {
+            return (root, query, cb) -> {
+                Predicate predicate = cb.disjunction();
+                for (Specification<T> spec : specs) {
+                    Predicate condition = spec.toPredicate(root, query, cb);
+                    if (condition != null) {
+                        predicate = cb.or(predicate, condition);
+                    }
+                }
+                return predicate;
+            };
+        }
         /**
          * Exists subquery
          */

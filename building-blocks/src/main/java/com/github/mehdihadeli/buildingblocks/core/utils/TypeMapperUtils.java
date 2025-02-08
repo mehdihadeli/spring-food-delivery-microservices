@@ -79,7 +79,12 @@ public class TypeMapperUtils {
         if (typeName == null || typeName.isEmpty()) {
             throw new IllegalArgumentException("TypeName cannot be null or empty");
         }
-        return nameToType.get(typeName);
+        var result = nameToType.get(typeName);
+        if (result != null) {
+            return result;
+        }
+
+        return ReflectionUtils.findClassByName(typeName);
     }
 
     /**
