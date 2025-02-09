@@ -17,15 +17,14 @@ import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.IReq
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.IRequestHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.RequestHandlerDelegate;
 import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.ResolvableType;
-import org.springframework.lang.Nullable;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.ResolvableType;
+import org.springframework.lang.Nullable;
 
 class MediatorImpl implements Mediator {
 

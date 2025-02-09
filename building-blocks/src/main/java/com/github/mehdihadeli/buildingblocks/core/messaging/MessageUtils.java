@@ -6,11 +6,10 @@ import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.TypeMapperUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
-
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 
 public class MessageUtils {
     private MessageUtils() {}

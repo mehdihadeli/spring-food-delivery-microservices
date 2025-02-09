@@ -1,5 +1,8 @@
 package com.github.mehdihadeli.catalogs.api.unittests.products.features.creatingproduct.v1;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.github.mehdihadeli.buildingblocks.core.exceptions.ConflictException;
 import com.github.mehdihadeli.buildingblocks.core.exceptions.ValidationException;
 import com.github.mehdihadeli.buildingblocks.test.UnitTestBase;
@@ -14,9 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class CreateProductTests extends UnitTestBase {
 

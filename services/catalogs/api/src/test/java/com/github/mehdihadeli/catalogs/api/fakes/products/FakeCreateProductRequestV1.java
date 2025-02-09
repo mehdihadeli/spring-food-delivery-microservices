@@ -2,10 +2,9 @@ package com.github.mehdihadeli.catalogs.api.fakes.products;
 
 import com.github.mehdihadeli.catalogs.core.products.domain.models.entities.ProductStatus;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.CreateProductRequest;
-import net.datafaker.Faker;
-
 import java.math.BigDecimal;
 import java.util.*;
+import net.datafaker.Faker;
 
 public class FakeCreateProductRequestV1 {
     public static CreateProductRequest generate() {

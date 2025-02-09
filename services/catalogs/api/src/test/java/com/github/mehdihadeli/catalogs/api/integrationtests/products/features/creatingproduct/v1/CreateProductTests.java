@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.catalogs.api.integrationtests.products.features.creatingproduct.v1;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import com.github.mehdihadeli.buildingblocks.core.data.EntityManagerUtils;
 import com.github.mehdihadeli.buildingblocks.test.IntegrationTestBase;
 import com.github.mehdihadeli.catalogs.api.fakes.products.FakeCreateProductV1;
@@ -9,8 +11,6 @@ import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1
 import com.github.mehdihadeli.shared.catalogs.products.events.integration.v1.ProductCreatedV1;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class CreateProductTests extends IntegrationTestBase {
     protected CreateProductTests(ApplicationContext applicationContext) {

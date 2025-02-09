@@ -3,7 +3,6 @@ package com.github.mehdihadeli.buildingblocks.abstractions.core.events;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.events.IEvent;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
-
 import java.util.List;
 
 public interface InternalEventBus {

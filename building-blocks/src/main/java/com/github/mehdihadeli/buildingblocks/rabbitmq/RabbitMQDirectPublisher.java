@@ -44,7 +44,7 @@ public class RabbitMQDirectPublisher implements BusDirectPublisher {
 
     @Override
     public <TMessage extends IMessage> void publish(
-      IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
+            IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
         ensureExchangeAndQueueExist(exchangeOrTopic, queue);
         publishInternal(eventEnvelope, exchangeOrTopic, queue);
     }

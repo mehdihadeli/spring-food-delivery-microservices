@@ -12,5 +12,5 @@ public interface BusPublisher {
     <TMessage extends IMessage> void publish(TMessage message, String exchangeOrTopic, String queue);
 
     <TMessage extends IMessage> void publish(
-      IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue);
+            IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue);
 }

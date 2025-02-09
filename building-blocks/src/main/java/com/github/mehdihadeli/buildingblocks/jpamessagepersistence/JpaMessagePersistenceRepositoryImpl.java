@@ -3,13 +3,12 @@ package com.github.mehdihadeli.buildingblocks.jpamessagepersistence;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.*;
 import com.github.mehdihadeli.buildingblocks.core.data.EntityManagerUtils;
 import jakarta.persistence.EntityManager;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 
 public class JpaMessagePersistenceRepositoryImpl implements MessagePersistenceRepository {
     private final EntityManager entityManager;

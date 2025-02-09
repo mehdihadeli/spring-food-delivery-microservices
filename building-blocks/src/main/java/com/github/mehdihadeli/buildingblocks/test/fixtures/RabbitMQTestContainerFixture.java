@@ -1,5 +1,10 @@
 package com.github.mehdihadeli.buildingblocks.test.fixtures;
 
+import static java.lang.String.format;
+
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -8,12 +13,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.testcontainers.containers.RabbitMQContainer;
-
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-
-import static java.lang.String.format;
 
 public class RabbitMQTestContainerFixture {
     private static final Logger logger = LoggerFactory.getLogger(RabbitMQTestContainerFixture.class);

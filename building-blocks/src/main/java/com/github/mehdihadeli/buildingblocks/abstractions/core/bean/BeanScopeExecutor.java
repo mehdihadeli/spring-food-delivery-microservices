@@ -1,9 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.bean;
 
-import org.springframework.context.ApplicationContext;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.springframework.context.ApplicationContext;
 
 public interface BeanScopeExecutor {
 

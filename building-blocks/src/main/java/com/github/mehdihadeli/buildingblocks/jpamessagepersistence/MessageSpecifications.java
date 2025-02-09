@@ -4,11 +4,10 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.message
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageStatus;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage_;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 
 public class MessageSpecifications {
     public static Specification<PersistMessage> hasStatus(@Nullable MessageStatus status) {

@@ -6,13 +6,12 @@ import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.SKU;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.Stock;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.VariantId;
-import net.datafaker.Faker;
-
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import net.datafaker.Faker;
 
 public class FakeProductVariant {
     public static Set<ProductVariant> generate(int numberOfVariants) {

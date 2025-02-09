@@ -9,7 +9,6 @@ import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.MessageEnvelopeFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -75,7 +74,7 @@ public class SpringRabbitMQBusImpl implements ExternalEventBus {
     }
 
     public <TMessage extends IMessage> void publish(
-      IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
+            IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue) {
         String messageTypeName =
                 StringUtils.toKebabCase(eventEnvelope.message().getClass().getSimpleName());
 
