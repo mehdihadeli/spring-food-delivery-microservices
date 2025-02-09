@@ -8,7 +8,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IIntegr
 import com.github.mehdihadeli.buildingblocks.core.messaging.MessageUtils;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.domain.ProductCreated;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.notification.ProductCreatedNotification;
-
 import java.time.LocalDateTime;
 
 @Mapper

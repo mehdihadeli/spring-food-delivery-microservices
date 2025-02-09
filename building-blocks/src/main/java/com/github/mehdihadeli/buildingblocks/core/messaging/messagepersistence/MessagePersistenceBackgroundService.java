@@ -2,15 +2,14 @@ package com.github.mehdihadeli.buildingblocks.core.messaging.messagepersistence;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.bean.BeanScopeExecutor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 public class MessagePersistenceBackgroundService implements InitializingBean, DisposableBean {
     private static final Logger logger = LoggerFactory.getLogger(MessagePersistenceBackgroundService.class);
@@ -50,13 +49,14 @@ public class MessagePersistenceBackgroundService implements InitializingBean, Di
                                 interval);
 
                         beanScopeExecutor.executeInScope(scopedContext -> {
-                          // Get a new instance of the service for each execution
-                          MessagePersistenceService scopedService = scopedContext.getBean(MessagePersistenceService.class);
-                          scopedService.processAllMessages();
+                            // Get a new instance of the service for each execution
+                            MessagePersistenceService scopedService =
+                                    scopedContext.getBean(MessagePersistenceService.class);
+                            scopedService.processAllMessages();
                         });
                     } catch (Exception e) {
                         logger.error("Error in scheduled processing", e);
-                    } 
+                    }
                 },
                 0, // initial delay
                 interval, // period

@@ -1,6 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.test.fixtures;
 
 import com.github.mehdihadeli.buildingblocks.jpa.CustomJdbcConnectionDetails;
+import java.util.List;
+import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +10,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 public class PostgresTestContainerFixture {
     private static final Logger logger = LoggerFactory.getLogger(PostgresTestContainerFixture.class);

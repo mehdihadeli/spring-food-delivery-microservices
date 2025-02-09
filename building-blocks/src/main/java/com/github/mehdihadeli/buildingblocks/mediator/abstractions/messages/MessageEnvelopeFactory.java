@@ -2,7 +2,6 @@ package com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages;
 
 import com.github.mehdihadeli.buildingblocks.core.utils.TypeMapperUtils;
 import com.google.common.base.CaseFormat;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;

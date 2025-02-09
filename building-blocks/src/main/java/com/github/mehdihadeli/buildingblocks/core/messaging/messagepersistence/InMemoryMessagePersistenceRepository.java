@@ -4,12 +4,11 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.message
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceRepository;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessageStatus;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.PersistMessage;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 
 public class InMemoryMessagePersistenceRepository implements MessagePersistenceRepository {
     private final Map<UUID, PersistMessage> messageStore = new ConcurrentHashMap<>();

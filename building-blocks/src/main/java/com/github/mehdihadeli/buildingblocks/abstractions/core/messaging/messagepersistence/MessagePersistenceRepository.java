@@ -1,11 +1,10 @@
 package com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence;
 
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.Nullable;
 
 public interface MessagePersistenceRepository {
     void add(PersistMessage persistMessage);

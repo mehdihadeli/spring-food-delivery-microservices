@@ -8,5 +8,4 @@ import org.mockito.junit.jupiter.MockitoExtension;
 // - It automatically initializes fields annotated with @Mock as Mockito mocks.
 // - It automatically injects the mock objects into fields annotated with @InjectMocks.
 @ExtendWith(MockitoExtension.class)
-public abstract class UnitTestBase {
-}
+public abstract class UnitTestBase {}

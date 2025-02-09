@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.core.utils;
 
 import com.google.common.reflect.TypeToken;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;

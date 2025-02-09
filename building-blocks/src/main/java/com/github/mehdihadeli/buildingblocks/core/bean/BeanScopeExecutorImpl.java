@@ -1,13 +1,12 @@
 package com.github.mehdihadeli.buildingblocks.core.bean;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.bean.BeanScopeExecutor;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class BeanScopeExecutorImpl implements BeanScopeExecutor {
     private final ApplicationContext applicationContext;

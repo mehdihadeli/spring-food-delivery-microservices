@@ -3,7 +3,6 @@ package com.github.mehdihadeli.buildingblocks.core.messaging;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.TestHarness;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;

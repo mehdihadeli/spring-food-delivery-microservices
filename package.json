@@ -1,0 +1,23 @@
+{
+  "name": "spring-food-delivery-microservices",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky",
+    "format": "make apply-spotless"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mehdihadeli/spring-food-delivery-microservices.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mehdihadeli/spring-food-delivery-microservices/issues"
+  },
+  "homepage": "https://github.com/mehdihadeli/spring-food-delivery-microservices#readme",
+  "author": "mehdihadeli",
+  "devDependencies": {
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
+    "husky": "^9.1.7"
+  }
+}

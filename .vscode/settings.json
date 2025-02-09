@@ -1,0 +1,4 @@
+{
+  "makefile.configureOnOpen": false,
+  "java.compile.nullAnalysis.mode": "automatic"
+}

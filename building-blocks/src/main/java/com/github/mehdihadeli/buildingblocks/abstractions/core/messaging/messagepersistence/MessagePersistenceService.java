@@ -5,10 +5,9 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNot
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.IInternalCommand;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
-import org.springframework.lang.Nullable;
-
 import java.util.List;
 import java.util.UUID;
+import org.springframework.lang.Nullable;
 
 public interface MessagePersistenceService {
 

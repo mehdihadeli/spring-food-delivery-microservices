@@ -12,12 +12,11 @@ import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessage;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelope;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeBase;
+import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
-import java.util.UUID;
 
 public class MessagePersistenceServiceImpl implements MessagePersistenceService {
     private static final Logger logger = LoggerFactory.getLogger(MessagePersistenceServiceImpl.class);

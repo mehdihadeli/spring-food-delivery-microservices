@@ -10,7 +10,7 @@ public interface BusDirectPublisher {
     void publish(IMessageEnvelopeBase eventEnvelope);
 
     <TMessage extends IMessage> void publish(
-      IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue);
+            IMessageEnvelope<TMessage> eventEnvelope, String exchangeOrTopic, String queue);
 
     void publish(IMessageEnvelopeBase eventEnvelope, String exchangeOrTopic, String queue);
 }

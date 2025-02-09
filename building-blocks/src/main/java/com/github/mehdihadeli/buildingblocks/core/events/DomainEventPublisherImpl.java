@@ -6,14 +6,13 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.message
 import com.github.mehdihadeli.buildingblocks.core.utils.SerializerUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.MessageEnvelopeFactory;
 import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 public class DomainEventPublisherImpl implements DomainEventPublisher {
     private static final Logger logger = LoggerFactory.getLogger(DomainEventPublisherImpl.class);

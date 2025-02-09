@@ -12,6 +12,11 @@ import com.github.mehdihadeli.buildingblocks.core.utils.SerializerUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.StringUtils;
 import com.github.mehdihadeli.buildingblocks.core.utils.TypeMapperUtils;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.messages.IMessageEnvelopeHandler;
+import java.io.File;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
@@ -42,12 +47,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.io.File;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({RabbitTemplate.class})
