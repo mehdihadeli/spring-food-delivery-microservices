@@ -1,8 +1,8 @@
 package com.github.mehdihadeli.catalogs.core.products.features.searchproductbyname.v1;
 
+import com.github.mehdihadeli.buildingblocks.abstractions.core.request.QueryBus;
 import com.github.mehdihadeli.buildingblocks.core.pagination.PageList;
 import com.github.mehdihadeli.buildingblocks.core.pagination.PageRequest;
-import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
 import com.github.mehdihadeli.catalogs.core.products.dtos.ProductInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/products/search-by-name")
 public class SearchProductsByNameEndpoint {
-    private final Mediator mediator;
 
-    public SearchProductsByNameEndpoint(Mediator mediator) {
-        this.mediator = mediator;
+    private final QueryBus queryBus;
+
+    public SearchProductsByNameEndpoint(QueryBus queryBus) {
+        this.queryBus = queryBus;
     }
 
     @Operation(
@@ -32,7 +33,7 @@ public class SearchProductsByNameEndpoint {
     @GetMapping
     ResponseEntity<SearchProductsByNameResponse> searchProductsByNameResponse(
             @RequestParam String searchTerm, @RequestParam int pageNumber, @RequestParam int pageSize) {
-        var result = mediator.send(new SearchProductsByName(new PageRequest(pageNumber, pageSize), searchTerm));
+        var result = queryBus.send(new SearchProductsByName(new PageRequest(pageNumber, pageSize), searchTerm));
 
         // https: // docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/responseentity.html
         return ResponseEntity.ok(new SearchProductsByNameResponse(result.Products()));

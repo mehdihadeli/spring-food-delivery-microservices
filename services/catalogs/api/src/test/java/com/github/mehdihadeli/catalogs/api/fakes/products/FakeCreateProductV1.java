@@ -9,9 +9,10 @@ import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.Size;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.CreateProduct;
+import net.datafaker.Faker;
+
 import java.math.BigDecimal;
 import java.util.UUID;
-import net.datafaker.Faker;
 
 public class FakeCreateProductV1 {
     public static CreateProduct generate() {

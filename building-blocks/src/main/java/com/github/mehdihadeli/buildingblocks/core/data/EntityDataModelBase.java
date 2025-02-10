@@ -2,14 +2,18 @@ package com.github.mehdihadeli.buildingblocks.core.data;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.data.IEntityDataModelBase;
 import jakarta.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
-@FilterDef(name = "deletedFilter", parameters = @ParamDef(name = "isDeleted", type = boolean.class))
-@Filter(name = "deletedFilter", condition = "is_deleted = :isDeleted")
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@FilterDef(
+        name = "deletedFilter",
+        parameters = @ParamDef(name = "deleted", type = boolean.class),
+        applyToLoadByKey = true)
+@Filter(name = "deletedFilter", condition = "is_deleted = :deleted")
 @MappedSuperclass
 public abstract class EntityDataModelBase<TId extends Serializable> implements IEntityDataModelBase<TId> {
 

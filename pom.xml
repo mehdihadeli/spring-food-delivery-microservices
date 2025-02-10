@@ -310,14 +310,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- https://documentation.red-gate.com/fd/quickstart-maven-184127578.html-->
-      <!-- https://blog.jetbrains.com/idea/2024/11/how-to-use-flyway-for-database-migrations-in-spring-boot-applications/-->
-      <!-- for apply migration with mvn command `mvn flyway:migrate` we use `flyway-maven-plugin`-->
-      <plugin>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-maven-plugin</artifactId>
-        <version>${flyway-maven-plugin.version}</version>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

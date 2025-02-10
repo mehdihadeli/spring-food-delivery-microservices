@@ -26,13 +26,26 @@
   </dependencies>
 
   <build>
-
     <plugins>
       <plugin>
         <!--https://docs.spring.io/spring-boot/maven-plugin/getting-started.html-->
         <!--        https://stackoverflow.com/questions/32368328/unable-to-find-a-suitable-main-class-please-add-a-mainclass-property-spring-->
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- https://documentation.red-gate.com/fd/quickstart-maven-184127578.html-->
+      <!-- https://blog.jetbrains.com/idea/2024/11/how-to-use-flyway-for-database-migrations-in-spring-boot-applications/-->
+      <!-- for apply migration with mvn command `mvn flyway:migrate` we use `flyway-maven-plugin`-->
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>${flyway-maven-plugin.version}</version>
+        <configuration>
+          <url>jdbc:postgresql://localhost:5432/catalogs_service</url>
+          <user>postgres</user>
+          <password>postgres</password>
+        </configuration>
       </plugin>
     </plugins>
   </build>

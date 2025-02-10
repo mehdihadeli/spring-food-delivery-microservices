@@ -1,6 +1,6 @@
 package com.github.mehdihadeli.catalogs.core.categories.data.entities;
 
-import com.github.mehdihadeli.buildingblocks.core.data.AuditableEntityDataModel;
+import com.github.mehdihadeli.buildingblocks.core.data.AuditableAggregateDataModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "categories")
-public class CategoryDataModel extends AuditableEntityDataModel {
+public class CategoryDataModel extends AuditableAggregateDataModel {
     @Column(nullable = false)
     private String name;
 

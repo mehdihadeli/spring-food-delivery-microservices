@@ -1,7 +1,5 @@
 package com.github.mehdihadeli.catalogs.core.products.domain.models.entities;
 
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
-
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
@@ -20,8 +18,11 @@ import com.github.mehdihadeli.catalogs.core.products.features.creatingproductvar
 import com.github.mehdihadeli.catalogs.core.products.features.removingproductvariant.v1.events.domain.ProductVariantRemoved;
 import com.github.mehdihadeli.catalogs.core.products.features.updatingproductdetails.v1.events.domain.ProductDetailsUpdated;
 import com.github.mehdihadeli.catalogs.core.products.features.verifyingproductreview.v1.events.domain.ProductReviewVerified;
-import java.util.*;
 import org.springframework.lang.Nullable;
+
+import java.util.*;
+
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 // Aggregates should reference other aggregates by their identity (ID), not by direct object composition, to
 // maintain autonomy and avoid deep object graphs.
@@ -163,12 +164,14 @@ public class Product extends Aggregate<ProductId> {
 
     public void updateProductDetails(
             Name newName,
-            @Nullable Description newDescription,
             Price newPrice,
             Dimensions newDimensions,
-            Size newSize) {
+            Size newSize,
+            @Nullable Description newDescription) {
         notBeNull(newName, "newName");
         notBeNull(newPrice, "newPrice");
+        notBeNull(newDimensions, "newDimensions");
+        notBeNull(newSize, "newSize");
 
         this.name = newName;
         this.description = newDescription;
@@ -176,7 +179,7 @@ public class Product extends Aggregate<ProductId> {
         this.dimensions = newDimensions;
         this.size = newSize;
 
-        this.addDomainEvent(new ProductDetailsUpdated(getId(), name, description, price, newDimensions, newSize));
+        this.addDomainEvent(new ProductDetailsUpdated(getId(), name, price, newDimensions, newSize, description));
     }
 
     public void activate() throws DomainException {

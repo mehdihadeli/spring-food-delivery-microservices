@@ -8,8 +8,8 @@ spring:
     use-in-memory: true
   jpa:
     database: h2
-    show-sql: true
-    generate-ddl: true
+    show-sql: false
+    generate-ddl: false
     hibernate:
       generate-statistics: false
       # when we use flyway we should turn of hibernate `ddl-auto`

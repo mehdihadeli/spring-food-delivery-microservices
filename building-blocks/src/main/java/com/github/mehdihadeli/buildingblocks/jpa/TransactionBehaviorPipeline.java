@@ -39,7 +39,6 @@ public class TransactionBehaviorPipeline<TRequest extends IRequest<TResponse>, T
                         "[{}] Handle Request of type {}",
                         getClass().getSimpleName(),
                         request.getClass().getSimpleName());
-
         // tx should not be called for queries
         if (!(request instanceof ITxRequest)) {
             return next.handle();
@@ -55,6 +54,7 @@ public class TransactionBehaviorPipeline<TRequest extends IRequest<TResponse>, T
         try {
             var result = transactionTemplate.execute(status -> {
                 try {
+
                     TResponse response = next.handle();
 
                     var domainEvents = domainEventsAccessor.dequeueUncommittedDomainEvents();

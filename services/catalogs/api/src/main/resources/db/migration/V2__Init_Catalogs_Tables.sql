@@ -67,10 +67,10 @@ CREATE TABLE products
     deleted_date       TIMESTAMP WITHOUT TIME ZONE,
     deleted_by         UUID,
     version            INTEGER                     NOT NULL,
-    category_id        UUID                        NOT NULL,
     name               VARCHAR(255)                NOT NULL,
     description        VARCHAR(255),
     status             VARCHAR(255)                NOT NULL,
+    category_id        UUID                        NOT NULL,
     price_amount       DECIMAL,
     price_currency     VARCHAR(255),
     size_unit          VARCHAR(255),
@@ -83,6 +83,9 @@ CREATE TABLE products
 
 ALTER TABLE product_variants
     ADD CONSTRAINT uc_product_variants_sku UNIQUE (sku);
+
+ALTER TABLE products
+    ADD CONSTRAINT FK_PRODUCTS_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);
 
 ALTER TABLE product_reviews
     ADD CONSTRAINT FK_PRODUCT_REVIEWS_ON_PRODUCT FOREIGN KEY (product_id) REFERENCES products (id);
