@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.catalogs.core.products.domain.models.entities;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Money;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
@@ -18,11 +20,8 @@ import com.github.mehdihadeli.catalogs.core.products.features.creatingproductvar
 import com.github.mehdihadeli.catalogs.core.products.features.removingproductvariant.v1.events.domain.ProductVariantRemoved;
 import com.github.mehdihadeli.catalogs.core.products.features.updatingproductdetails.v1.events.domain.ProductDetailsUpdated;
 import com.github.mehdihadeli.catalogs.core.products.features.verifyingproductreview.v1.events.domain.ProductReviewVerified;
-import org.springframework.lang.Nullable;
-
 import java.util.*;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+import org.springframework.lang.Nullable;
 
 // Aggregates should reference other aggregates by their identity (ID), not by direct object composition, to
 // maintain autonomy and avoid deep object graphs.

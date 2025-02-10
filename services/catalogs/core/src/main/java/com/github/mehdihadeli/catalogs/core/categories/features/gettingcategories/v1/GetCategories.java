@@ -22,26 +22,25 @@ public record GetCategories(PageRequest pageRequest) implements IQuery<GetCatego
 @QueryHandler
 class GetCategoriesHandler implements IQueryHandler<GetCategories, GetCategoriesResult> {
 
-  private final CategoryAggregateRepository categoryAggregateRepository;
+    private final CategoryAggregateRepository categoryAggregateRepository;
 
-  @PersistenceContext
-  private EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
-  public GetCategoriesHandler(CategoryAggregateRepository categoryAggregateRepository) {
-    this.categoryAggregateRepository = categoryAggregateRepository;
-  }
+    public GetCategoriesHandler(CategoryAggregateRepository categoryAggregateRepository) {
+        this.categoryAggregateRepository = categoryAggregateRepository;
+    }
 
-  @Override
-  public GetCategoriesResult handle(GetCategories query) {
-    var pageResult = this.categoryAggregateRepository.findByPage(org.springframework.data.domain.PageRequest.of(
-        query.pageRequest().getPageNumber(), query.pageRequest().getPageSize())
-      .withSort(Sort.by("name").ascending()));
+    @Override
+    public GetCategoriesResult handle(GetCategories query) {
+        var pageResult = this.categoryAggregateRepository.findByPage(org.springframework.data.domain.PageRequest.of(
+                        query.pageRequest().getPageNumber(), query.pageRequest().getPageSize())
+                .withSort(Sort.by("name").ascending()));
 
-    var pageList = PageList.fromSpringPage(pageResult, CategoryMapper::toCategoryInfoDto);
+        var pageList = PageList.fromSpringPage(pageResult, CategoryMapper::toCategoryInfoDto);
 
-    return new GetCategoriesResult(pageList);
-  }
+        return new GetCategoriesResult(pageList);
+    }
 }
 
-record GetCategoriesResult(PageList<CategoryInfoDto> categories){}
-
+record GetCategoriesResult(PageList<CategoryInfoDto> categories) {}

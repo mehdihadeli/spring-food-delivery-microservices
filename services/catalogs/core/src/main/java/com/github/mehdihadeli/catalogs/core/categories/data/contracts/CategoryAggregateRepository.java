@@ -3,10 +3,9 @@ package com.github.mehdihadeli.catalogs.core.categories.data.contracts;
 import com.github.mehdihadeli.catalogs.core.categories.data.projections.CategoryInfoProjection;
 import com.github.mehdihadeli.catalogs.core.categories.models.entities.Category;
 import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryId;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 public interface CategoryAggregateRepository {
     Optional<Category> findById(CategoryId categoryId);

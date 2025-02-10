@@ -7,10 +7,8 @@ import com.github.mehdihadeli.catalogs.core.products.data.valueobjects.PriceVO;
 import com.github.mehdihadeli.catalogs.core.products.data.valueobjects.SizeVO;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.entities.ProductStatus;
 import jakarta.persistence.*;
-import org.springframework.lang.Nullable;
-
 import java.util.*;
-
+import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "products")

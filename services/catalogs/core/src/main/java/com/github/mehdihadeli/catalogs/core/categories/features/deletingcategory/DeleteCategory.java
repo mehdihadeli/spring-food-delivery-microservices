@@ -3,6 +3,4 @@ package com.github.mehdihadeli.catalogs.core.categories.features.deletingcategor
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.ITxCommandUnit;
 import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryId;
 
-
-public record DeleteCategory(CategoryId categoryId) implements ITxCommandUnit
-{}
+public record DeleteCategory(CategoryId categoryId) implements ITxCommandUnit {}

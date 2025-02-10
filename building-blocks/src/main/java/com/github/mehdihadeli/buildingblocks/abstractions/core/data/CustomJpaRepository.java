@@ -31,9 +31,9 @@ public interface CustomJpaRepository<TEntity, TID>
                 JpaSpecificationExecutor<TEntity> {
     @Override
     default void delete(TEntity entity) {
-      // because in jpa like .net we can't change entity state entry to Modified for preventing delete operation
-      // and change operation type to update so we have to override Delete JpaRepository and change it to update
-      // if is instanceof SoftDeleteBase.
+        // because in jpa like .net we can't change entity state entry to Modified for preventing delete operation
+        // and change operation type to update so we have to override Delete JpaRepository and change it to update
+        // if is instanceof SoftDeleteBase.
         if (entity instanceof SoftDeleteBase softDeleteBase) {
             softDeleteBase.setDeleted(true);
             save(entity); // Save the entity to update it instead of deleting it

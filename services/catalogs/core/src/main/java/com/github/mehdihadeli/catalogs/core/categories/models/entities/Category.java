@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.catalogs.core.categories.models.entities;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Code;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
@@ -7,11 +9,8 @@ import com.github.mehdihadeli.buildingblocks.core.domain.Aggregate;
 import com.github.mehdihadeli.catalogs.core.categories.features.creatingcategory.v1.events.domain.CategoryCreated;
 import com.github.mehdihadeli.catalogs.core.categories.features.updatingcategorydetails.v1.events.domain.CategoryDetailsUpdated;
 import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryId;
-import org.springframework.lang.Nullable;
-
 import java.util.Optional;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+import org.springframework.lang.Nullable;
 
 public class Category extends Aggregate<CategoryId> {
     private Name name;

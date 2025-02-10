@@ -9,11 +9,10 @@ import com.github.mehdihadeli.catalogs.core.categories.data.projections.Category
 import com.github.mehdihadeli.catalogs.core.categories.models.entities.Category;
 import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryId;
 import jakarta.persistence.EntityManager;
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.UUID;
 
 // The `@Repository` annotation needs to be on the concrete class not interface and after that interface is accessible
 // on dependency injection

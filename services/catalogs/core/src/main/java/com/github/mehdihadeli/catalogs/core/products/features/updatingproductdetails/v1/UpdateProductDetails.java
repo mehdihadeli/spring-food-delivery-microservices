@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.catalogs.core.products.features.updatingproductdetails.v1;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.ITxCommandUnit;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
@@ -8,8 +10,6 @@ import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.Size;
 import org.springframework.lang.Nullable;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 public record UpdateProductDetails(
         ProductId productId,

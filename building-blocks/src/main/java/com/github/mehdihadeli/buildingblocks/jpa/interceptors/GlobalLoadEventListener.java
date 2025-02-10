@@ -13,4 +13,3 @@ public class GlobalLoadEventListener implements LoadEventListener {
         //    filter.setParameter("deleted", false);
     }
 }
-

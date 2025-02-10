@@ -31,7 +31,6 @@ import com.github.mehdihadeli.catalogs.core.products.dtos.ProductVariantDto;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.CreateProduct;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.CreateProductRequest;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.domain.ProductCreated;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

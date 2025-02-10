@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.catalogs.core.products.features.deletingproduct;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.core.exceptions.NotFoundException;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.CommandHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommandUnitHandler;
@@ -7,8 +9,6 @@ import com.github.mehdihadeli.buildingblocks.mediator.abstractions.requests.Unit
 import com.github.mehdihadeli.catalogs.core.products.data.contracts.ProductAggregateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 @CommandHandler
 public class DeleteProductHandler implements ICommandUnitHandler<DeleteProduct> {

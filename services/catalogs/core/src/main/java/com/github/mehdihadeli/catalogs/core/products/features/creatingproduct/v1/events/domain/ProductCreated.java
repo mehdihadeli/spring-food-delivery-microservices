@@ -1,5 +1,7 @@
 package com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.domain;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEvent;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainEventHandler;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBus;
@@ -17,14 +19,11 @@ import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.Size;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.internal.mongo.CreateProductRead;
+import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
-import java.util.Set;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 // https://event-driven.io/en/explicit_validation_in_csharp_just_got_simpler/
 // https://event-driven.io/en/how_to_validate_business_logic/

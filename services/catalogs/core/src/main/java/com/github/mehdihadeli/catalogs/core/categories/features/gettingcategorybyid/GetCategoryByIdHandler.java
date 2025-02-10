@@ -1,13 +1,13 @@
 package com.github.mehdihadeli.catalogs.core.categories.features.gettingcategorybyid;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.core.exceptions.NotFoundException;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.IQueryHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.queries.QueryHandler;
 import com.github.mehdihadeli.catalogs.core.categories.CategoryMapper;
 import com.github.mehdihadeli.catalogs.core.categories.data.contracts.CategoryAggregateRepository;
 import com.github.mehdihadeli.catalogs.core.categories.dtos.CategoryDto;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 @QueryHandler
 public class GetCategoryByIdHandler implements IQueryHandler<GetCategoryById, GetCategoryByIdResult> {

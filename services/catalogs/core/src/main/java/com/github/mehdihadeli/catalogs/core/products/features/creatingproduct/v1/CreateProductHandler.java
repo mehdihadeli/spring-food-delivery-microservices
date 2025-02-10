@@ -1,13 +1,13 @@
 package com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
+
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.CommandHandler;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.commands.ICommandHandler;
 import com.github.mehdihadeli.catalogs.core.products.ProductMapper;
 import com.github.mehdihadeli.catalogs.core.products.data.contracts.ProductAggregateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 @CommandHandler
 public class CreateProductHandler implements ICommandHandler<CreateProduct, CreateProductResult> {

@@ -47,4 +47,3 @@ public class CatalogsApiApplication {
         app.run(args);
     }
 }
-

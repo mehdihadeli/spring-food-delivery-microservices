@@ -2,12 +2,11 @@ package com.github.mehdihadeli.buildingblocks.core.data;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.data.IEntityDataModelBase;
 import jakarta.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @FilterDef(
         name = "deletedFilter",
