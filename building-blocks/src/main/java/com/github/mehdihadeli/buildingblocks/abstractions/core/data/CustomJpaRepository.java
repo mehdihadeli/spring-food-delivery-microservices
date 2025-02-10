@@ -28,4 +28,24 @@ public interface CustomJpaRepository<TEntity, TID>
         extends JpaRepository<TEntity, TID>,
                 ProjectionRepository,
                 QuerydslPredicateExecutor<TEntity>,
-                JpaSpecificationExecutor<TEntity> {}
+                JpaSpecificationExecutor<TEntity> {
+    @Override
+    default void delete(TEntity entity) {
+        // because in jpa like .net we can't change entity state entry to Modified for preventing delete operation
+        // and change operation type to update so we have to override Delete JpaRepository and change it to update
+        // if is instanceof SoftDeleteBase.
+        if (entity instanceof SoftDeleteBase softDeleteBase) {
+            softDeleteBase.setDeleted(true);
+            save(entity); // Save the entity to update it instead of deleting it
+        } else {
+            throw new IllegalArgumentException("Entity must implement SoftDelete<TId>");
+        }
+    }
+
+    @Override
+    default void deleteById(TID id) {
+        findById(id).ifPresent(this::delete);
+    }
+}
+
+interface Test<S> {}

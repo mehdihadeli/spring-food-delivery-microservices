@@ -1,7 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.jpa.interceptors;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.data.IEntityDataModelBase;
-import jakarta.persistence.PreRemove;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.data.SoftDeleteBase;
+import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +34,14 @@ public class DeleteInterceptor {
         DeleteInterceptor.applicationContext = applicationContext;
     }
 
-    @PreRemove
+    @PreUpdate
     public void handlePreRemove(Object entity) {
-        if (entity instanceof IEntityDataModelBase<?> entityObject) {
-            // Prevent physical delete, mark as deleted
-            entityObject.setDeleted(true);
-            entityObject.setDeletedDate(LocalDateTime.now());
-            getAuditorAware().getCurrentAuditor().ifPresent(entityObject::setDeletedByObject);
+        if (entity instanceof SoftDeleteBase softDeleteBase && softDeleteBase.isDeleted()) {
+            // because in jpa like .net we can't change entity state entry to Modified for preventing delete operation
+            // and change operation type to update so we have to override Delete JpaRepository and change it to update
+            // if is instanceof SoftDeleteBase.
+            softDeleteBase.setDeletedDate(LocalDateTime.now());
+            getAuditorAware().getCurrentAuditor().ifPresent(softDeleteBase::setDeletedByObject);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.mehdihadeli.catalogs.core.products.data.entities;
 
 import com.github.mehdihadeli.buildingblocks.core.data.AuditableAggregateDataModel;
+import com.github.mehdihadeli.catalogs.core.categories.data.entities.CategoryDataModel;
 import com.github.mehdihadeli.catalogs.core.products.data.valueobjects.DimensionsVO;
 import com.github.mehdihadeli.catalogs.core.products.data.valueobjects.PriceVO;
 import com.github.mehdihadeli.catalogs.core.products.data.valueobjects.SizeVO;
@@ -12,8 +13,6 @@ import org.springframework.lang.Nullable;
 @Entity
 @Table(name = "products")
 public class ProductDataModel extends AuditableAggregateDataModel {
-    @Column(nullable = false)
-    private UUID categoryId;
 
     @Column(nullable = false)
     private String name;
@@ -61,6 +60,22 @@ public class ProductDataModel extends AuditableAggregateDataModel {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductReviewDataModel> reviews = new ArrayList<>();
+
+    @Column(nullable = false, name = "category_id")
+    private UUID categoryId;
+
+    // force `fk` on category_id column but category is optional in insert and will get during fetch with lazy loading
+    @ManyToOne(cascade = CascadeType.MERGE, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false, insertable = false, updatable = false)
+    private CategoryDataModel category;
+
+    public CategoryDataModel getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDataModel category) {
+        this.category = category;
+    }
 
     // Default constructor for JPA
     public ProductDataModel() {}

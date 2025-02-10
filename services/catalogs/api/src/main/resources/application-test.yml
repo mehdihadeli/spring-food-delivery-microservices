@@ -6,7 +6,7 @@ spring:
 
   jpa:
     database: postgresql
-    show-sql: true
+    show-sql: false
     generate-ddl: false
     hibernate:
       generate-statistics: false

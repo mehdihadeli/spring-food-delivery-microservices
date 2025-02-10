@@ -1,9 +1,9 @@
 package com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.id.IdGenerator;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.request.CommandBus;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
 import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
-import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
 import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryId;
 import com.github.mehdihadeli.catalogs.core.products.ProductMapper;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.Dimensions;
@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/products")
 public class CreateProductEndpoint {
-    private final Mediator mediator;
+    private final CommandBus commandBus;
     private final IdGenerator idGenerator;
 
-    public CreateProductEndpoint(Mediator mediator, IdGenerator idGenerator) {
-        this.mediator = mediator;
+    public CreateProductEndpoint(CommandBus commandBus, IdGenerator idGenerator) {
+        this.commandBus = commandBus;
         this.idGenerator = idGenerator;
     }
 
@@ -57,7 +57,7 @@ public class CreateProductEndpoint {
                     new Size(request.size(), request.sizeUnit()),
                     productVariants,
                     new Description(request.description()));
-            var result = mediator.send(createProduct);
+            var result = commandBus.send(createProduct);
             URI location = new URI(String.format("/api/v1/products/%s", result.Id()));
 
             return ResponseEntity.created(location).body(new CreateProductResponse(result.Id()));

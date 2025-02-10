@@ -14,5 +14,5 @@ import org.springframework.context.annotation.Import;
 // for setup connections for using in message persistence
 @AutoConfiguration(
         before = {CoreAutoConfiguration.class, HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class})
-@Import(CustomJpaConfiguration.class)
+@Import({CustomJpaConfiguration.class})
 public class CustomJpaAutoConfiguration {}

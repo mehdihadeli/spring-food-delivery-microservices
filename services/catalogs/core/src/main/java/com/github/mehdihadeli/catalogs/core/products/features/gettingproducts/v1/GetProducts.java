@@ -43,4 +43,4 @@ class GetProductsHandler implements IQueryHandler<GetProducts, GetProductsResult
     }
 }
 
-record GetProductsResult(PageList<ProductInfoDto> Products) {}
+record GetProductsResult(PageList<ProductInfoDto> products) {}

@@ -28,6 +28,7 @@ public class MessagePersistenceBackgroundService implements InitializingBean, Di
 
     @Override
     public void afterPropertiesSet() {
+
         start();
     }
 

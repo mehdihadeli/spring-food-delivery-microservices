@@ -163,12 +163,14 @@ public class Product extends Aggregate<ProductId> {
 
     public void updateProductDetails(
             Name newName,
-            @Nullable Description newDescription,
             Price newPrice,
             Dimensions newDimensions,
-            Size newSize) {
+            Size newSize,
+            @Nullable Description newDescription) {
         notBeNull(newName, "newName");
         notBeNull(newPrice, "newPrice");
+        notBeNull(newDimensions, "newDimensions");
+        notBeNull(newSize, "newSize");
 
         this.name = newName;
         this.description = newDescription;
@@ -176,7 +178,7 @@ public class Product extends Aggregate<ProductId> {
         this.dimensions = newDimensions;
         this.size = newSize;
 
-        this.addDomainEvent(new ProductDetailsUpdated(getId(), name, description, price, newDimensions, newSize));
+        this.addDomainEvent(new ProductDetailsUpdated(getId(), name, price, newDimensions, newSize, description));
     }
 
     public void activate() throws DomainException {

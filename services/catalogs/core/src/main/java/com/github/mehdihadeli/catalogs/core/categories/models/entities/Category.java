@@ -2,23 +2,24 @@ package com.github.mehdihadeli.catalogs.core.categories.models.entities;
 
 import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Code;
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Description;
+import com.github.mehdihadeli.buildingblocks.core.data.valueobjects.Name;
 import com.github.mehdihadeli.buildingblocks.core.domain.Aggregate;
-import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryCode;
-import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryDescription;
+import com.github.mehdihadeli.catalogs.core.categories.features.creatingcategory.v1.events.domain.CategoryCreated;
+import com.github.mehdihadeli.catalogs.core.categories.features.updatingcategorydetails.v1.events.domain.CategoryDetailsUpdated;
 import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryId;
-import com.github.mehdihadeli.catalogs.core.categories.models.valueobjects.CategoryName;
 import java.util.Optional;
 import org.springframework.lang.Nullable;
 
 public class Category extends Aggregate<CategoryId> {
-    private CategoryName name;
-    private CategoryCode code;
+    private Name name;
+    private Code code;
 
     @Nullable
-    private CategoryDescription description;
+    private Description description;
 
-    private Category(
-            CategoryId categoryId, CategoryName name, CategoryCode code, @Nullable CategoryDescription description) {
+    private Category(CategoryId categoryId, Name name, Code code, @Nullable Description description) {
 
         super.setId(categoryId);
         this.name = name;
@@ -26,43 +27,37 @@ public class Category extends Aggregate<CategoryId> {
         this.description = description;
     }
 
-    public static Category create(
-            CategoryId categoryId, CategoryName name, CategoryCode code, @Nullable CategoryDescription description) {
-
+    public static Category create(CategoryId categoryId, Name name, Code code, @Nullable Description description) {
         // factory method serves as the clear entry point for domain validation
-        return new Category(
+        var category = new Category(
                 notBeNull(categoryId, "categoryId"), notBeNull(name, "name"), notBeNull(code, "code"), description);
+
+        category.addDomainEvent(new CategoryCreated(categoryId, name, code, description));
+
+        return category;
     }
 
-    public CategoryName getName() {
+    public Name getName() {
         return name;
     }
 
-    public CategoryCode getCode() {
+    public Code getCode() {
         return code;
     }
 
-    public Optional<CategoryDescription> getDescription() {
+    public Optional<Description> getDescription() {
         return Optional.ofNullable(description);
     }
 
-    public void rename(CategoryName newName) {
+    public void updateCategoryDetails(Name newName, Code newCode, Description newDescription) {
         notBeNull(newName, "newName");
-        this.name = newName;
-
-        // domain event
-    }
-
-    public void updateCode(CategoryCode newCode) {
         notBeNull(newCode, "newCode");
+        notBeNull(newDescription, "newDescription");
+
+        this.name = newName;
         this.code = newCode;
-
-        // domain event
-    }
-
-    public void updateDescription(@Nullable CategoryDescription newDescription) {
         this.description = newDescription;
 
-        // domain event
+        this.addDomainEvent(new CategoryDetailsUpdated(getId(), name, code, description));
     }
 }

@@ -14,10 +14,10 @@ import org.springframework.lang.Nullable;
 public record ProductDetailsUpdated(
         ProductId productId,
         Name newName,
-        @Nullable Description newDescription,
         Price newPrice,
         Dimensions newDimensions,
-        Size newSize)
+        Size newSize,
+        @Nullable Description newDescription)
         implements IDomainEvent {
 
     public ProductDetailsUpdated {

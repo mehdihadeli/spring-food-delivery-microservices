@@ -30,11 +30,7 @@ public class CreateProductHandler implements ICommandHandler<CreateProduct, Crea
         // https://spring.io/blog/2024/08/23/structured-logging-in-spring-boot-3-4
         logger.atInfo()
                 .addKeyValue("product", product)
-                .addKeyValue("productId", product.getId().id())
-                .log(
-                        "product {} with id {} created successfully.",
-                        product.getClass().getSimpleName(),
-                        product.getId().id());
+                .log("product with id {} created successfully.", product.getId().id());
 
         return new CreateProductResult(createdProduct.getId().id());
     }

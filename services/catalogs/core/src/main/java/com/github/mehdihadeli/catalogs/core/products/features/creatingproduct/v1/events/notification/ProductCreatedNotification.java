@@ -6,13 +6,15 @@ import com.github.mehdihadeli.buildingblocks.abstractions.core.events.IDomainNot
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.notifications.NotificationHandler;
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.domain.ProductCreated;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public record ProductCreatedNotification(ProductCreated domainEvent, UUID notificationId)
         implements IDomainNotificationEvent<ProductCreated> {}
 
 @NotificationHandler
 class ProductCreatedNotificationHandler implements IDomainNotificationEventHandler<ProductCreatedNotification> {
-
+    private static final Logger logger = LoggerFactory.getLogger(ProductCreatedNotificationHandler.class);
     private final ExternalEventBus externalEventBus;
 
     public ProductCreatedNotificationHandler(ExternalEventBus externalEventBus) {
@@ -21,18 +23,10 @@ class ProductCreatedNotificationHandler implements IDomainNotificationEventHandl
 
     @Override
     public void handle(ProductCreatedNotification notification) throws RuntimeException {
-        System.out.println(notification);
-        // We can publish integration event to bus here
-
-        // var messageId = MessageUtils.generateMessageId();
-        //        externalEventBus.publish(
-        //                new
-        // com.mehdihadeli.verticalslicetemplate.products.features.creatingproduct.v1.events.integration
-        //                        .ProductCreated(
-        //                        messageId,
-        //                        notification.domainEvent().productId().id(),
-        //                        notification.domainEvent().categoryId().id(),
-        //                        notification.domainEvent().name().value(),
-        //                        LocalDateTime.now()));
+        logger.atInfo()
+                .addKeyValue("notification", notification)
+                .log("notification event {} handled.", notification.getClass().getSimpleName());
+        // We can publish integration event to bus here, but we used our eventmapper for mapping events and publishing
+        // integration event
     }
 }

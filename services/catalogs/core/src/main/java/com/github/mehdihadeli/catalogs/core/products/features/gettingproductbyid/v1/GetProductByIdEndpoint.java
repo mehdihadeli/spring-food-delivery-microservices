@@ -1,7 +1,6 @@
 package com.github.mehdihadeli.catalogs.core.products.features.gettingproductbyid.v1;
 
-import com.github.mehdihadeli.buildingblocks.core.exceptions.NotFoundException;
-import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
+import com.github.mehdihadeli.buildingblocks.abstractions.core.request.QueryBus;
 import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.ProductId;
 import com.github.mehdihadeli.catalogs.core.products.dtos.ProductDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import org.slf4j.MDC;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/products")
 public class GetProductByIdEndpoint {
 
-    private final Mediator mediator;
+    private final QueryBus queryBus;
 
-    public GetProductByIdEndpoint(Mediator mediator) {
-        this.mediator = mediator;
+    public GetProductByIdEndpoint(QueryBus queryBus) {
+        this.queryBus = queryBus;
     }
 
     @Operation(summary = "Get product by id", description = "Get product by id", operationId = "GetProductById")
@@ -35,13 +35,13 @@ public class GetProductByIdEndpoint {
     @ApiResponse(
             responseCode = "404",
             description = "NotFound",
-            content = @Content(schema = @Schema(implementation = NotFoundException.class)))
+            content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @GetMapping("{id}")
     // https://docs.spring.io/spring-framework/reference/web/webflux/controller/ann-methods/responseentity.html
     ResponseEntity<GetProductByIdResponse> getById(@PathVariable UUID id) {
         try (MDC.MDCCloseable md = MDC.putCloseable("productId", id.toString())) {
-            var result = mediator.send(new GetProductById(new ProductId(id)));
-            var response = new GetProductByIdResponse(result.Product());
+            var result = queryBus.send(new GetProductById(new ProductId(id)));
+            var response = new GetProductByIdResponse(result.product());
 
             // https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/responseentity.html
             // `ResponseEntity` is like `@ResponseBody` but with `status` and headers.
@@ -50,4 +50,4 @@ public class GetProductByIdEndpoint {
     }
 }
 
-record GetProductByIdResponse(ProductDto Product) {}
+record GetProductByIdResponse(ProductDto product) {}

@@ -15,7 +15,7 @@ spring:
       development: "dev-tools,dev-db,dev-config"
       test: "test-db,test-config"
       production: "prod-db,prod-config"
-    active: local  # Set the default active profile
+    active: dev  # Set the default active profile
     default: local # Set the default profile if none specified
 
   main:
@@ -28,8 +28,8 @@ spring:
     use-in-memory: true
   jpa:
     database: h2
-    show-sql: true
-    generate-ddl: true
+    show-sql: false
+    generate-ddl: false
     hibernate:
       # Disable Hibernate's automatic schema updates, when we use flyway we should turn of hibernate `ddl-auto`
       ddl-auto: none
@@ -66,13 +66,13 @@ spring:
 
 app:
   version: "1.0.0"
-  name: "Spring Food Delivery Microservices"
+  name: "Catalogs Service"
   seed:
     enabled: false
 
 swagger:
-  title: "Spring Food Delivery Microservices"
-  description: "Spring Food Delivery Microservices"
+  title: "Catalogs Service"
+  description: "Catalogs Service"
   contact-name: "test"
   contact-email: "test@test.com"
   enabled: true
@@ -93,8 +93,8 @@ otel:
       service:
         name: catalogs
         namespace: catalogs
-  instrumentation-name: "spring-food-delivery-microservices"
-  service-name: "spring-food-delivery-microservices"
+  instrumentation-name: "catalogs-service"
+  service-name: "catalogs-service"
   metrics-enabled: true
   tracing-enabled: true
   logging-enabled: true

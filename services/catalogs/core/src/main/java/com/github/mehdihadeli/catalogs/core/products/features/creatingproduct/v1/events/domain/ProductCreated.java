@@ -21,6 +21,8 @@ import com.github.mehdihadeli.catalogs.core.products.domain.models.valueobjects.
 import com.github.mehdihadeli.catalogs.core.products.features.creatingproduct.v1.events.internal.mongo.CreateProductRead;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 
 // https://event-driven.io/en/explicit_validation_in_csharp_just_got_simpler/
@@ -57,7 +59,7 @@ public record ProductCreated(
 
 @NotificationHandler
 class ProductCreatedDomainHandler implements IDomainEventHandler<ProductCreated> {
-
+    private static final Logger logger = LoggerFactory.getLogger(ProductCreatedDomainHandler.class);
     private final CommandBus commandBus;
 
     ProductCreatedDomainHandler(CommandBus commandBus) {
@@ -70,5 +72,9 @@ class ProductCreatedDomainHandler implements IDomainEventHandler<ProductCreated>
         // https://github.com/kgrzybek/modular-monolith-with-ddd#38-internal-processing
         // Schedule multiple read sides to execute here
         commandBus.schedule(new CreateProductRead(MessageUtils.generateInternalId(), productReadModel));
+
+        logger.atInfo()
+                .addKeyValue("domain-event", productCreated)
+                .log("domain event {} handled.", productCreated.getClass().getSimpleName());
     }
 }

@@ -15,6 +15,8 @@ public interface ProductAggregateRepository {
 
     void update(Product product);
 
+    void delete(Product product);
+
     Page<ProductSummaryProjection> findByPage(Pageable pageable);
 
     Page<ProductSummaryDTO> searchByName(Pageable pageable, String name);

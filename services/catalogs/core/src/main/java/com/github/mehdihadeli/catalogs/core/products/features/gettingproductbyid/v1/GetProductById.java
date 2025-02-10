@@ -39,17 +39,17 @@ class GetProductByIdHandler implements IQueryHandler<GetProductById, GetProductB
     public GetProductByIdResult handle(GetProductById query) {
         notBeNull(query, "query");
 
-        var product = productAggregateRepository.findById(query.productId());
-
-        if (product.isEmpty()) {
-            throw new NotFoundException(String.format("Product with id %s not found", query.productId()));
+        var product = productAggregateRepository.findById(query.productId()).orElse(null);
+        if (product == null) {
+            throw new NotFoundException(String.format(
+                    "Product with id %s not found", query.productId().id()));
         }
 
         // Map product data model to DTO
-        ProductDto productDto = ProductMapper.toProductDto(product.get());
+        ProductDto productDto = ProductMapper.toProductDto(product);
 
         return new GetProductByIdResult(productDto);
     }
 }
 
-record GetProductByIdResult(ProductDto Product) {}
+record GetProductByIdResult(ProductDto product) {}

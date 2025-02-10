@@ -22,6 +22,8 @@ public class RootAwareEventListenerIntegrator implements Integrator {
         eventListenerRegistry.appendListeners(EventType.PERSIST, CustomHibernateEventListener.INSTANCE);
         eventListenerRegistry.appendListeners(EventType.PRE_INSERT, CustomHibernateEventListener.INSTANCE);
         eventListenerRegistry.appendListeners(EventType.PRE_UPDATE, CustomHibernateEventListener.INSTANCE);
+        //        eventListenerRegistry.appendListeners(EventType.LOAD, new GlobalLoadEventListener());
+        //        eventListenerRegistry.appendListeners(EventType.PRE_LOAD, new GlobalPreLoadEventListener());
     }
 
     @Override

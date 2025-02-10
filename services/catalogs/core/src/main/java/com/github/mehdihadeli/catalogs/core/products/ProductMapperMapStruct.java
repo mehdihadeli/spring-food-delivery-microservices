@@ -1,8 +1,5 @@
 package com.github.mehdihadeli.catalogs.core.products;
 
-import com.github.mehdihadeli.catalogs.core.products.data.entities.ProductDataModel;
-import com.github.mehdihadeli.catalogs.core.products.dtos.ProductDto;
-import java.util.Optional;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -12,11 +9,4 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface ProductMapperMapStruct {
     ProductMapperMapStruct INSTANCE = Mappers.getMapper(ProductMapperMapStruct.class);
-
-    // Map ProductDataModel to ProductDto
-    ProductDto toProductDto(ProductDataModel productDataModel);
-
-    default String fromOptionalString(Optional<String> optional) {
-        return optional.orElse(null);
-    }
 }

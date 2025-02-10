@@ -38,9 +38,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public final class ProductMapper {
+    private ProductMapper() {}
+
     public static Product toProductAggregate(ProductDataModel productDataModel) {
         var productId = new ProductId(productDataModel.getId());
         var categoryId = new CategoryId(productDataModel.getCategoryId());
+        String categoryName = productDataModel.getCategory() != null
+                ? productDataModel.getCategory().getName()
+                : null;
         var name = new Name(productDataModel.getName());
         var state = ProductStatus.valueOf(productDataModel.getStatus().name());
         var price = new Price(
@@ -136,7 +141,6 @@ public final class ProductMapper {
     }
 
     public static Product toProductAggregate(CreateProduct createProduct) {
-
         return Product.create(
                 createProduct.productId(),
                 createProduct.categoryId(),
