@@ -1,9 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.security;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "spring.security.oauth2.keycloak-client-options")
 public class KeycloakClientOptions {

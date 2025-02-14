@@ -1,5 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.security;
 
+import java.time.Instant;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -7,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.Instant;
 
 public class ClientTokenAccessorImpl implements ClientTokenAccessor {
 

@@ -4,18 +4,17 @@ import com.github.mehdihadeli.buildingblocks.abstractions.problemdetails.IProble
 import com.github.mehdihadeli.buildingblocks.core.utils.SerializerUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DefaultProblemDetailsExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(DefaultProblemDetailsExceptionHandler.class);

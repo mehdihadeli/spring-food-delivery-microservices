@@ -2,13 +2,12 @@ package com.github.mehdihadeli.buildingblocks.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.util.Optional;
 
 // ref:
 // https://github.com/thomasdarimont/keycloak-project-example/blob/0d9745a4bfa520af4316fc71ca332b31bdc2440c/apps/bff-springboot3/src/main/java/com/github/thomasdarimont/apps/bff3/support/HttpSessionOAuth2AuthorizedClientService.java

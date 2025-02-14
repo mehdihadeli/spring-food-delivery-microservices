@@ -1,13 +1,12 @@
 package com.github.mehdihadeli.buildingblocks.security;
 
+import java.io.IOException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-
-import java.io.IOException;
 
 public class GatewayOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
 

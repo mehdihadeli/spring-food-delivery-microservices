@@ -6,6 +6,9 @@ package com.github.mehdihadeli.buildingblocks.security;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,10 +20,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Uses the current Oauth2 refresh token of the current user session to obtain new tokens.
