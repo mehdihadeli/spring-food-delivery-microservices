@@ -7,13 +7,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.UUID;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Validated
 @RestController
@@ -26,11 +28,20 @@ public class DeleteProductEndpoint {
         this.commandBus = commandBus;
     }
 
+    @PreAuthorize("hasAuthority('catalogs-delete-claim') or hasAnyRole('admin', 'application')")
     @Operation(summary = "Delete product", description = "Delete product", operationId = "DeleteProduct")
     @Tag(name = "Products")
     @ApiResponse(
             responseCode = "404",
             description = "NotFound",
+            content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(
+            responseCode = "401",
+            description = "UnAuthorize",
             content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{id}")

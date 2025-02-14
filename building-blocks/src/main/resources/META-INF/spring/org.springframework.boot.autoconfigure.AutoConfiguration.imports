@@ -11,3 +11,4 @@ com.github.mehdihadeli.buildingblocks.rabbitmq.RabbitMQAutoConfiguration
 com.github.mehdihadeli.buildingblocks.mongo.MongoAutoConfiguration
 com.github.mehdihadeli.buildingblocks.observability.ObservabilityAutoConfiguration
 com.github.mehdihadeli.buildingblocks.flyway.FlywayAutoConfiguration
+com.github.mehdihadeli.buildingblocks.security.SecurityAutoConfiguration

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class SearchProductsByNameEndpoint {
         this.queryBus = queryBus;
     }
 
+    @PreAuthorize("hasAuthority('catalogs-read-claim') or hasAnyRole('admin', 'application')")
     @Operation(
             summary = "Search products by name",
             description = "Search products by name",

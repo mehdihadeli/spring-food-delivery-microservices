@@ -2,10 +2,6 @@
 # https://docs.spring.io/spring-boot/reference/features/external-config.html
 # Common configurations across all environments
 
-# export SPRING_PROFILES_ACTIVE=development
-# java -jar app.jar --spring.profiles.active=development
-# -Dspring.profiles.active=development
-
 server:
   port: 5000 # Port for the service
 spring:
@@ -17,6 +13,21 @@ spring:
       production: "prod-db,prod-config"
     active: dev  # Set the default active profile
     default: local # Set the default profile if none specified
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/food-delivery-microservices
+          jwk-set-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/certs
+      keycloak-client-options:
+        base-url: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect
+        token-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+        auth-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/auth
+        client-id: catalogs-microservice-client
+        scope: users-microservice-read
+        client-secret: ${CATALOGS_CLIENT_SECRET}
+        grant-type: client_credentials
 
   main:
     banner-mode: off

@@ -1,4 +1,4 @@
-package com.github.mehdihadeli.catalogs.core;
+package com.github.mehdihadeli.identity.core;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.DomainEventPublisher;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.DomainEventsAccessor;
@@ -22,7 +22,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.context.WebApplicationContext;
 
 @Configuration
-public class VerticalSliceTemplateConfiguration {
+public class IdentityCoreConfiguration {
 
     @Bean
     @Order(1)

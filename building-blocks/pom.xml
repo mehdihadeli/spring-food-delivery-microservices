@@ -245,7 +245,28 @@
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
     </dependency>
+
+    <!-- Spring Security -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <!-- Spring Security OAuth2 Resource Server for jwt validation -->
+    <!-- The resource server validate jwt token using keycloak public key that provided in the `openid-connect/certs` endpoint that we configured in the settings-->
+    <!-- It checks the token's signature, expiration, issuer, and audience.-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+
   </dependencies>
+
 
   <build>
     <plugins>

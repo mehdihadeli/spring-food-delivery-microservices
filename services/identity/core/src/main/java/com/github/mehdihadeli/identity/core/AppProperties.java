@@ -1,4 +1,4 @@
-package com.github.mehdihadeli.catalogs.core.shared.options;
+package com.github.mehdihadeli.identity.core;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

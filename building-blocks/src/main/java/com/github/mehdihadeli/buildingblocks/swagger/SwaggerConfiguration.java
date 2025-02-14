@@ -63,10 +63,13 @@ public class SwaggerConfiguration {
         return new OpenAPI()
                 .components(new Components()
                         .addSecuritySchemes(
-                                "basicScheme",
+                                "bearerScheme",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme("basic")))
+                                        .scheme("bearer") // Bearer scheme
+                                        .bearerFormat("JWT") // Optional: Specify the bearer format (e.g., JWT)
+                                        .description("Use `Bearer <token>` for authentication") // Simple help message
+                                ))
                 .info(new Info()
                         .title(title)
                         .version(version)

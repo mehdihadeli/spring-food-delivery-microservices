@@ -2,8 +2,8 @@ package com.github.mehdihadeli.catalogs.api;
 
 import com.github.mehdihadeli.buildingblocks.core.web.ApplicationStartedListener;
 import com.github.mehdihadeli.buildingblocks.core.web.ApplicationStoppedListener;
-import com.github.mehdihadeli.catalogs.core.VerticalSliceTemplateRoot;
-import com.github.mehdihadeli.catalogs.core.shared.options.AppProperties;
+import com.github.mehdihadeli.catalogs.core.AppProperties;
+import com.github.mehdihadeli.catalogs.core.CatalogsCoreRoot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,14 +14,14 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 // - `@ComponentScan` and `scanBasePackages` in `@SpringBootApplication` use for scanning configurations in `Java-Based
 // @VerticalSliceTemplateConfiguration` which internally using @Component and `Annotation based configurations` like
 // @Component, @Service
-@SpringBootApplication(scanBasePackageClasses = {VerticalSliceTemplateRoot.class})
+@SpringBootApplication(scanBasePackageClasses = {CatalogsCoreRoot.class})
 
 // basePackages use for `auto-configurations` for scanning configurations like for `HibernateJpaAutoConfiguration` for
 // scanning repositories and entities
 @AutoConfigurationPackage(
         // `jpa auto-configuration` use `basePackages` which is application root package and all submodules as default
         // for finding repositories and entities. `VerticalSliceTemplateRoot` for finding repositories and interfaces
-        basePackageClasses = {VerticalSliceTemplateRoot.class})
+        basePackageClasses = {CatalogsCoreRoot.class})
 
 // @ConfigurationPropertiesScan(basePackages = {Constants.ROOT_MODULE_NAME}) // configure all registered properties not
 // one by one through @EnableConfigurationProperties

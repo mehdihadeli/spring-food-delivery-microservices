@@ -5,9 +5,13 @@ import com.github.mehdihadeli.buildingblocks.core.pagination.PageList;
 import com.github.mehdihadeli.buildingblocks.core.pagination.PageRequest;
 import com.github.mehdihadeli.catalogs.core.products.dtos.ProductInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +26,19 @@ public class GetProductsEndpoint {
         this.queryBus = queryBus;
     }
 
+    @PreAuthorize(
+            "hasAnyAuthority('PERMISSION_CATALOGS.READ') or hasAnyAuthority('CLAIM_CATALOGS.READ') or hasAnyRole('CATALOGS:READ') or hasAnyRole('ADMIN', 'CUSTOMER')")
     @Operation(summary = "Get products by page", description = "Get products by page", operationId = "GetProducts")
     @Tag(name = "Products")
     @ApiResponse(responseCode = "200", description = "Ok")
+    @ApiResponse(
+            responseCode = "403",
+            description = "Forbidden",
+            content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(
+            responseCode = "401",
+            description = "UnAuthorize",
+            content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @ResponseStatus(HttpStatus.OK)
     // https://docs.spring.io/spring-framework/reference/web/webflux/controller/ann-methods/responsebody.html
     @ResponseBody

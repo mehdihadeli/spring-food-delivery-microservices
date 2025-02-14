@@ -4,7 +4,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.problemdetails.IProble
 import com.github.mehdihadeli.buildingblocks.core.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -20,6 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.ErrorResponseException;
@@ -39,6 +42,8 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import java.util.List;
 
 // when `proxyBeanMethods = false`, avoids the direct method call problem that would occur when one @Bean method calls
 // another internally.
@@ -83,6 +88,7 @@ public class ProblemDetailsConfiguration {
             HttpResponseException.class,
             AppException.class,
             CustomException.class,
+            AuthenticationException.class,
             HttpRequestMethodNotSupportedException.class,
             HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class,
@@ -103,11 +109,25 @@ public class ProblemDetailsConfiguration {
             HttpMessageNotWritableException.class,
             MethodValidationException.class,
             BindException.class,
-            AsyncRequestNotUsableException.class
+            AsyncRequestNotUsableException.class,
+            InsufficientAuthenticationException.class,
+            BadCredentialsException.class,
+            AccessDeniedException.class,
+            AuthenticationException.class,
+            RuntimeException.class
         })
         @Nullable
         public ResponseEntity<ProblemDetail> handleException(
                 HttpServletRequest request, HttpServletResponse response, Exception exception) {
+            return handleExceptions(exceptionHandler, request, response, exception);
+        }
+
+        @Nullable
+        public static ResponseEntity<ProblemDetail> handleExceptions(
+                DefaultProblemDetailsExceptionHandler exceptionHandler,
+                HttpServletRequest request,
+                HttpServletResponse response,
+                Exception exception) {
             return exceptionHandler.handleException(request, response, exception);
         }
     }
