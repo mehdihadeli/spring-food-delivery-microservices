@@ -273,6 +273,192 @@
       ]
     },
     {
+      "clientId": "gateway-bff-client",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${API_GATEWAY_CLIENT_SECRET}",
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "defaultClientScopes": [
+        "basic",
+        "profile",
+        "email",
+        "roles"
+      ],
+      "authorizationSettings": {
+        "policyEnforcementMode": "ENFORCING",
+        "resources": [
+          {
+            "name": "catalogs",
+            "uris": [
+              "/products/{id}",
+              "/products",
+              "/categories/{id}",
+              "/categories"
+            ],
+            "scopes": [
+              {
+                "name": "catalogs.read"
+              },
+              {
+                "name": "catalogs.write"
+              }
+            ]
+          },
+          {
+            "name": "customers",
+            "scopes": [
+              {
+                "name": "customers.read"
+              },
+              {
+                "name": "customers.write"
+              }
+            ]
+          },
+          {
+            "name": "users",
+            "scopes": [
+              {
+                "name": "users.read"
+              },
+              {
+                "name": "users.write"
+              }
+            ]
+          },
+          {
+            "name": "orders",
+            "scopes": [
+              {
+                "name": "orders.read"
+              },
+              {
+                "name": "orders.write"
+              }
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "id": "resource-based-policy",
+            "name": "Resource-Based Policy",
+            "type": "resource",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "resources": [
+              "catalogs",
+              "users",
+              "customers",
+              "orders"
+            ],
+            "config": {
+              "roles": "[{\"id\":\"admin\",\"required\":true}]"
+            }
+          },
+          {
+            "id": "scope-based-policy",
+            "name": "Scope-Based Policy",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "AFFIRMATIVE",
+            "scopes": [
+              "catalogs.read",
+              "catalogs.write",
+              "users.read",
+              "users.write",
+              "customers.read",
+              "customers.write",
+              "orders.read",
+              "orders.write"
+            ],
+            "config": {
+              "roles": "[{\"id\":\"admin\",\"required\":true}]"
+            }
+          },
+          {
+            "id": "admin-policy",
+            "name": "admin-policy",
+            "type": "role",
+            "config": {
+              "roles": "[{\"id\":\"admin\",\"required\":true}]"
+            }
+          },
+          {
+            "id": "customer-policy",
+            "name": "customer-policy",
+            "type": "role",
+            "config": {
+              "roles": "[{\"id\":\"customer\",\"required\":true}]"
+            }
+          },
+          {
+            "id": "restaurant-owner-policy",
+            "name": "restaurant-owner-policy",
+            "type": "role",
+            "config": {
+              "roles": "[{\"id\":\"restaurant_owner\",\"required\":true}]"
+            }
+          },
+          {
+            "id": "delivery-driver-policy",
+            "name": "delivery-driver-policy",
+            "type": "role",
+            "config": {
+              "roles": "[{\"id\":\"delivery_driver\",\"required\":true}]"
+            }
+          },
+          {
+            "id": "catalogs-read-permission",
+            "name": "catalogs-read-permission",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "resources": "[\"catalogs\"]",
+              "scopes": "[\"catalogs.read\"]",
+              "applyPolicies": "[\"admin-policy\", \"customer-policy\"]"
+            }
+          },
+          {
+            "id": "catalogs-write-permission",
+            "name": "catalogs-write-permission",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "resources": "[\"catalogs\"]",
+              "scopes": "[\"catalogs.write\"]",
+              "applyPolicies": "[\"admin-policy\"]"
+            }
+          },
+          {
+            "id": "app-admin-policy",
+            "name": "app-admin-policy",
+            "type": "user",
+            "config": {
+              "users": "[\"app-admin\"]"
+            }
+          }
+        ],
+        "scopes": [
+          {
+            "name": "catalogs:read",
+            "iconUri": ""
+          },
+          {
+            "name": "catalogs:write",
+            "iconUri": ""
+          }
+        ],
+        "decisionStrategy": "UNANIMOUS"
+      }
+    },
+    {
       "clientId": "spa-pkce-client",
       "name": "SPA PKCE Client",
       "enabled": true,
@@ -362,7 +548,7 @@
       "enabled": true,
       "publicClient": false,
       "secret": "${CATALOGS_MICROSERVICE_CLIENT_SECRET}",
-      "serviceAccountsEnabled": true,
+      "serviceAccountsEnabled": false,
       "authorizationServicesEnabled": true,
       "directAccessGrantsEnabled": false,
       "standardFlowEnabled": false,

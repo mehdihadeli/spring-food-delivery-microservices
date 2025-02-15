@@ -332,6 +332,7 @@ services:
   # https://developer.okta.com/blog/2018/05/24/what-is-the-oauth2-implicit-grant-type
   ####### realm config
   # https://www.keycloak.org/docs/latest/authorization_services/
+  # https://stackoverflow.com/questions/42186537/resources-scopes-permissions-and-policies-in-keycloak
   # https://www.keycloak.org/docs-api/latest/rest-api/index.html#RealmRepresentation
   # https://www.keycloak.org/docs-api/latest/rest-api/index.html#ClientScopeRepresentation
   # https://www.keycloak.org/docs-api/latest/rest-api/index.html#ClientRepresentation
@@ -377,6 +378,7 @@ services:
       - CUSTOMERS_MICROSERVICE_CLIENT_SECRET=${CUSTOMERS_MICROSERVICE_CLIENT_SECRET}
       - CATALOGS_MICROSERVICE_CLIENT_SECRET=${CATALOGS_MICROSERVICE_CLIENT_SECRET}
       - ORDERS_MICROSERVICE_CLIENT_SECRET=${ORDERS_MICROSERVICE_CLIENT_SECRET}
+      - API_GATEWAY_CLIENT_SECRET=${API_GATEWAY_CLIENT_SECRET}
       #     - KC_DB=postgres
       #     - KC_DB_URL=jdbc:postgresql://postgres:5432/identity-service
       #     - KC_DB_USERNAME=${KC_DB_USERNAME:-admin}
