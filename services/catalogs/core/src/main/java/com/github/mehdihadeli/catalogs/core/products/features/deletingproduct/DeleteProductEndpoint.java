@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.UUID;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -14,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @Validated
 @RestController
@@ -28,8 +27,8 @@ public class DeleteProductEndpoint {
         this.commandBus = commandBus;
     }
 
-  @PreAuthorize(
-    "hasAnyAuthority('PERMISSION_CATALOGS.WRITE') or hasAnyAuthority('CLAIM_CATALOGS.WRITE') or  hasAnyRole('CATALOGS:WRITE','ADMIN', 'CUSTOMER')")
+    @PreAuthorize(
+            "hasAnyAuthority('PERMISSION_CATALOGS.WRITE') or hasAnyAuthority('CLAIM_CATALOGS.WRITE') or  hasAnyRole('CATALOGS:WRITE','ADMIN', 'CUSTOMER')")
     @Operation(summary = "Delete product", description = "Delete product", operationId = "DeleteProduct")
     @Tag(name = "Products")
     @ApiResponse(
