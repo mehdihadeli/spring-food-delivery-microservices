@@ -380,7 +380,7 @@ services:
       - ORDERS_MICROSERVICE_CLIENT_SECRET=${ORDERS_MICROSERVICE_CLIENT_SECRET}
       - API_GATEWAY_CLIENT_SECRET=${API_GATEWAY_CLIENT_SECRET}
       #     - KC_DB=postgres
-      #     - KC_DB_URL=jdbc:postgresql://postgres:5432/identity-service
+      #     - KC_DB_URL=jdbc:postgresql://postgres:5432/identity_service
       #     - KC_DB_USERNAME=${KC_DB_USERNAME:-admin}
       #     - KC_DB_PASSWORD=${KC_DB_PASSWORD:-admin}
     volumes:

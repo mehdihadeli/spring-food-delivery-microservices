@@ -7,9 +7,13 @@ import static io.opentelemetry.semconv.ServiceAttributes.SERVICE_VERSION;
 import com.github.mehdihadeli.buildingblocks.abstractions.observability.DiagnosticsProvider;
 import com.github.mehdihadeli.buildingblocks.core.utils.EnvironmentUtils;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerMetrics;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerMetricsImpl;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerSpan;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerSpanImpl;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerMetrics;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerMetricsImpl;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerSpan;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerSpanImpl;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.Tracer;
@@ -80,22 +84,22 @@ public class ObservabilityConfiguration {
 
     @Bean
     public CommandHandlerSpan commandHandlerActivity(DiagnosticsProvider diagnosticsProvider) {
-        return new CommandHandlerSpan(diagnosticsProvider);
+        return new CommandHandlerSpanImpl(diagnosticsProvider);
     }
 
     @Bean
     public QueryHandlerSpan queryHandlerActivity(DiagnosticsProvider diagnosticsProvider) {
-        return new QueryHandlerSpan(diagnosticsProvider);
+        return new QueryHandlerSpanImpl(diagnosticsProvider);
     }
 
     @Bean
     public QueryHandlerMetrics queryHandlerMetrics(Meter meter) {
-        return new QueryHandlerMetrics(meter);
+        return new QueryHandlerMetricsImpl(meter);
     }
 
     @Bean
     public CommandHandlerMetrics commandHandlerMetrics(Meter meter) {
-        return new CommandHandlerMetrics(meter);
+        return new CommandHandlerMetricsImpl(meter);
     }
 
     // https://opentelemetry.io/docs/zero-code/java/spring-boot-starter/sdk-configuration/#programmatic-configuration

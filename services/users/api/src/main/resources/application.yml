@@ -2,19 +2,18 @@
 # https://docs.spring.io/spring-boot/reference/features/external-config.html
 # Common configurations across all environments
 
-
 server:
-  port: 5000 # Port for the service
+  port: 6000 # Port for the service
 spring:
   application:
-    name: catalogs service api
+    name: users service api
   profiles:
     group:
       local: "dev-tools,dev-db,dev-config,default, local"
       development: "dev-tools,dev-db,dev-config"
       test: "test-db,test-config"
       production: "prod-db,prod-config"
-    active: dev  # Set the default active profile
+    active: local  # Set the default active profile
     default: local # Set the default profile if none specified
 
   security:
@@ -23,14 +22,6 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/auth/realms/food-delivery-microservices
           jwk-set-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/certs
-      keycloak-client-options:
-        base-url: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect
-        token-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
-        auth-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/auth
-        client-id: catalogs-microservice-client
-        scope: users-microservice-read
-        client-secret: ${CATALOGS_CLIENT_SECRET}
-        grant-type: client_credentials
 
   main:
     banner-mode: off
@@ -49,21 +40,6 @@ spring:
       ddl-auto: none
       generate-statistics: false
 
-  data:
-    mongodb:
-      connection-pool:
-        max-size: 100
-        min-size: 10
-      socket:
-        connect-timeout: 5000
-        read-timeout: 5000
-      host: localhost
-      port: 27017
-      database: catalogs
-      username: admin
-      password: admin
-      authentication-database: admin
-      enabled: false
 
   rabbitmq:
     host: localhost
@@ -80,15 +56,19 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true # Create baseline for existing databases
 
+  data:
+    mongodb:
+      enabled: false
+
 app:
   version: "1.0.0"
-  name: "Catalogs Service"
+  name: "Users Service"
   seed:
     enabled: false
 
 swagger:
-  title: "Catalogs Service"
-  description: "Catalogs Service"
+  title: "Users Service"
+  description: "Users Service"
   contact-name: "test"
   contact-email: "test@test.com"
   enabled: true
@@ -107,10 +87,10 @@ otel:
     attributes:
       deployment.environment: dev
       service:
-        name: catalogs
-        namespace: catalogs
-  instrumentation-name: "catalogs-service"
-  service-name: "catalogs-service"
+        name: users
+        namespace: users
+  instrumentation-name: "users-service"
+  service-name: "users-service"
   metrics-enabled: true
   tracing-enabled: true
   logging-enabled: true

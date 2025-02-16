@@ -17,9 +17,9 @@
 
   <modules>
     <module>building-blocks</module>
-    <module>services/catalogs</module>
-    <module>services/identity</module>
     <module>services/shared</module>
+    <module>services/users</module>
+    <module>services/catalogs</module>
   </modules>
 
   <properties>
