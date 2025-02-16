@@ -15,8 +15,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.net.URI;
-import java.net.URISyntaxException;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -24,6 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Validated
 @RestController
@@ -37,7 +38,8 @@ public class CreateProductEndpoint {
         this.idGenerator = idGenerator;
     }
 
-    @PreAuthorize("hasAuthority('catalogs-create-claim') or hasAnyRole('admin', 'application')")
+  @PreAuthorize(
+    "hasAnyAuthority('PERMISSION_CATALOGS.WRITE') or hasAnyAuthority('CLAIM_CATALOGS.WRITE') or  hasAnyRole('CATALOGS:WRITE','ADMIN', 'CUSTOMER')")
     @Operation(summary = "Create product", description = "Create product", operationId = "CreateProduct")
     @Tag(name = "Products")
     @ApiResponse(responseCode = "201", description = "Created")

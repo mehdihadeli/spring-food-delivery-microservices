@@ -1,0 +1,125 @@
+### implicit-flow-client
+GET {{keycloakAddress}}/realms/food-delivery-microservices/protocol/openid-connect/auth?
+  client_id=implicit-flow-client&redirect_uri=http://localhost:3000&response_type=token&
+  scope=basic%20email%20profile%20roles&
+  state={{STATE}}
+
+> {%
+  client.global.set("token", response.body.access_token);
+%}
+
+### catalogs-microservice-client
+POST {{keycloakAddress}}/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = catalogs-microservice-client &
+client_secret = {{CATALOGS_MICROSERVICE_CLIENT_SECRET}} &
+grant_type = client_credentials &
+scope = catalogs-users-service-scope
+
+> {%
+  client.global.set("token", response.body.access_token);
+%}
+
+### Get Product by ID
+GET {{apiGatewayAddress}}/api/v1/catalogs/products/{{productId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Update Product Details
+PUT {{apiGatewayAddress}}/api/v1/catalogs/products/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Product Name",
+  "priceAmount": 99.99,
+  "currency": "USD",
+  "width": 10.5,
+  "height": 5.5,
+  "depth": 2.5,
+  "size": "Medium",
+  "sizeUnit": "cm",
+  "description": "Updated product description"
+}
+
+### Delete Product
+DELETE {{apiGatewayAddress}}/api/v1/catalogs/products/{{productId}}
+Authorization: Bearer {{token}}
+
+### Get Category by ID
+GET {{apiGatewayAddress}}/api/v1/catalogs/categories/{{categoryId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Update Category Details
+PUT {{apiGatewayAddress}}/api/v1/catalogs/categories/{{categoryId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Category Name",
+  "code": "UPDATED_CODE",
+  "description": "Updated category description"
+}
+
+### Delete Category
+DELETE {{apiGatewayAddress}}/api/v1/catalogs/categories/{{categoryId}}
+Authorization: Bearer {{token}}
+
+### Get Products by Page
+GET {{apiGatewayAddress}}/api/v1/catalogs/products?pageNumber=0&pageSize=10
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Create Product
+POST {{apiGatewayAddress}}/api/v1/catalogs/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "categoryId": "{{categoryId}}",
+  "name": "New Product",
+  "status": "Active",
+  "priceAmount": 49.99,
+  "currency": "USD",
+  "width": 10.0,
+  "height": 5.0,
+  "depth": 2.0,
+  "size": "Small",
+  "sizeUnit": "cm",
+  "productVariants": [
+    {
+      "sku": "SKU123",
+      "amount": 49.99,
+      "currency": "USD",
+      "stock": 100,
+      "color": "Red",
+      "attributes": {
+        "material": "Plastic"
+      }
+    }
+  ],
+  "description": "New product description"
+}
+
+### Get Categories by Page
+GET {{apiGatewayAddress}}/api/v1/catalogs/categories?pageNumber=0&pageSize=10
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Create Category
+POST {{apiGatewayAddress}}/api/v1/catalogs/categories
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Category",
+  "code": "NEW_CAT",
+  "description": "New category description"
+}
+
+### Search Products by Name
+GET {{apiGatewayAddress}}/api/v1/catalogs/products/search-by-name?searchTerm=Product&pageNumber=0&pageSize=10
+Accept: application/json
+Authorization: Bearer {{token}}

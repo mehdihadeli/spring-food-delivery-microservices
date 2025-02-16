@@ -122,7 +122,8 @@
       "clientRoles": {
         "orders-microservice-client": [
           "orders:read",
-          "orders:write"
+          "orders:write",
+          "orders:read-write"
         ]
       }
     },
@@ -133,9 +134,10 @@
       "realmRoles": [
       ],
       "clientRoles": {
-        "orders-microservice-client": [
+        "customers-microservice-client": [
           "customers:read",
-          "customers:write"
+          "customers:write",
+          "customers:read-write"
         ]
       }
     },
@@ -146,9 +148,10 @@
       "realmRoles": [
       ],
       "clientRoles": {
-        "orders-microservice-client": [
+        "users-microservice-client": [
           "users:read",
-          "users:write"
+          "users:write",
+          "users:read-write"
         ]
       }
     },
@@ -159,9 +162,10 @@
       "realmRoles": [
       ],
       "clientRoles": {
-        "orders-microservice-client": [
+        "catalogs-microservice-client": [
           "catalogs:read",
-          "catalogs:write"
+          "catalogs:write",
+          "catalogs:read-write"
         ]
       }
     }
@@ -184,7 +188,109 @@
         "name": "customer",
         "description": "Basic customer access"
       }
-    ]
+    ],
+    "client": {
+      "catalogs-microservice-client": [
+        {
+          "name": "catalogs:read",
+          "description": "Read access to catalogs"
+        },
+        {
+          "name": "catalogs:write",
+          "description": "Write access to catalogs"
+        },
+        {
+          "name": "catalogs:read-write",
+          "description": "Read and write access to catalogs",
+          "composite": true,
+          "composites": {
+            "client": {
+              "catalogs-microservice-client": [
+                "catalogs:write",
+                "catalogs:read"
+              ]
+            }
+          },
+          "clientRole": true,
+          "attributes": {}
+        }
+      ],
+      "users-microservice-client": [
+        {
+          "name": "users:read",
+          "description": "Read access to users"
+        },
+        {
+          "name": "users:write",
+          "description": "Write access to users"
+        },
+        {
+          "name": "users:read-write",
+          "description": "Read and write access to users",
+          "composite": true,
+          "composites": {
+            "client": {
+              "users-microservice-client": [
+                "users:write",
+                "users:read"
+              ]
+            }
+          },
+          "clientRole": true,
+          "attributes": {}
+        }
+      ],
+      "customers-microservice-client": [
+        {
+          "name": "customers:read",
+          "description": "Read access to customers"
+        },
+        {
+          "name": "customers:write",
+          "description": "Write access to customers"
+        },
+        {
+          "name": "customers:read-write",
+          "description": "Read and write access to customers",
+          "composite": true,
+          "composites": {
+            "client": {
+              "customers-microservice-client": [
+                "customers:write",
+                "customers:read"
+              ]
+            }
+          },
+          "clientRole": true,
+          "attributes": {}
+        }
+      ],
+      "orders-microservice-client": [
+        {
+          "name": "orders:read",
+          "description": "Read access to orders"
+        },
+        {
+          "name": "orders:write",
+          "description": "Write access to orders"
+        },
+        {
+          "name": "orders:read-write",
+          "description": "Read and write access to orders",
+          "composite": true,
+          "composites": {
+            "client": {
+              "orders-microservice-client": [
+                "orders:write",
+                "orders:read"
+              ]
+            }
+          },
+          "clientRole": true,
+          "attributes": {}
+        }
+      ]
+    }
   },
   "clients": [
     {
@@ -265,6 +371,58 @@
       "attributes": {
         "client_credentials.use_refresh_token": "false"
       },
+      "protocolMappers": [
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "implicit-flow-client",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "basic",
         "profile",
@@ -283,6 +441,58 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": false,
+      "protocolMappers": [
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "gateway-bff-client",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "basic",
         "profile",
@@ -480,6 +690,58 @@
       "attributes": {
         "client_credentials.use_refresh_token": "false"
       },
+      "protocolMappers": [
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "spa-pkce-client",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "basic",
         "profile",
@@ -503,13 +765,63 @@
       "attributes": {
         "client_credentials.use_refresh_token": "false"
       },
+      "protocolMappers": [
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "users-microservice-client",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "basic",
         "profile",
         "email",
         "roles",
-        "service_account",
-        "service-client-role-scope",
         "users-scope"
       ]
     },
@@ -529,13 +841,63 @@
       "attributes": {
         "client_credentials.use_refresh_token": "false"
       },
+      "protocolMappers": [
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "customers-microservice-client",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "basic",
         "profile",
         "email",
         "roles",
-        "service_account",
-        "service-client-role-scope",
         "customers-scope"
       ],
       "optionalClientScopes": [
@@ -558,13 +920,63 @@
       "attributes": {
         "client_credentials.use_refresh_token": "false"
       },
+      "protocolMappers": [
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "catalogs-microservice-client",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "basic",
         "profile",
         "email",
         "roles",
-        "service_account",
-        "service-client-role-scope",
         "catalogs-scope"
       ],
       "optionalClientScopes": [
@@ -587,13 +999,63 @@
       "attributes": {
         "client_credentials.use_refresh_token": "false"
       },
+      "protocolMappers": [
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "orders-microservice-client",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "basic",
         "profile",
         "email",
         "roles",
-        "service_account",
-        "service-client-role-scope",
         "orders-scope"
       ],
       "optionalClientScopes": [
@@ -1133,33 +1595,6 @@
             "introspection.token.claim": "true",
             "access.token.claim": "true",
             "claim.name": "clientHost",
-            "jsonType.label": "String"
-          }
-        }
-      ]
-    },
-    {
-      "name": "service-client-role-scope",
-      "description": "",
-      "protocol": "openid-connect",
-      "attributes": {
-        "include.in.token.scope": "true",
-        "display.on.consent.screen": "false"
-      },
-      "protocolMappers": [
-        {
-          "name": "service-client-roles",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-client-role-mapper",
-          "consentRequired": false,
-          "config": {
-            "introspection.token.claim": "true",
-            "multivalued": "true",
-            "userinfo.token.claim": "false",
-            "id.token.claim": "false",
-            "lightweight.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "client_roles.${client_id}",
             "jsonType.label": "String"
           }
         }

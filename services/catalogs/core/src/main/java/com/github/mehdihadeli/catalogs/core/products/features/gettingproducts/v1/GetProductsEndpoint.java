@@ -27,7 +27,7 @@ public class GetProductsEndpoint {
     }
 
     @PreAuthorize(
-            "hasAnyAuthority('PERMISSION_CATALOGS.READ') or hasAnyAuthority('CLAIM_CATALOGS.READ') or hasAnyRole('CATALOGS:READ') or hasAnyRole('ADMIN', 'CUSTOMER')")
+            "hasAnyAuthority('PERMISSION_CATALOGS.READ') or hasAnyAuthority('CLAIM_CATALOGS.READ') or  hasAnyRole('CATALOGS:READ','ADMIN', 'CUSTOMER')")
     @Operation(summary = "Get products by page", description = "Get products by page", operationId = "GetProducts")
     @Tag(name = "Products")
     @ApiResponse(responseCode = "200", description = "Ok")

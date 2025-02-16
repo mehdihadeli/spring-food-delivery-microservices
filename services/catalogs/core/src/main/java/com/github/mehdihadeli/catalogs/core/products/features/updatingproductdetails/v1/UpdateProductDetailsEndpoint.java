@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.UUID;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -20,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Validated
 @RestController
@@ -32,7 +33,8 @@ public class UpdateProductDetailsEndpoint {
         this.commandBus = commandBus;
     }
 
-    @PreAuthorize("hasAuthority('catalogs-update-claim') or hasAnyRole('admin', 'application')")
+  @PreAuthorize(
+    "hasAnyAuthority('PERMISSION_CATALOGS.WRITE') or hasAnyAuthority('CLAIM_CATALOGS.WRITE') or  hasAnyRole('CATALOGS:WRITE','ADMIN', 'CUSTOMER')")
     @Operation(
             summary = "Update product details",
             description = "Update product details",

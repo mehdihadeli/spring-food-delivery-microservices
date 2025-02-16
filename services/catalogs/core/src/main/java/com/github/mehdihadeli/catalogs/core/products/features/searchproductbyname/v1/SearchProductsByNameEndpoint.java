@@ -24,7 +24,8 @@ public class SearchProductsByNameEndpoint {
         this.queryBus = queryBus;
     }
 
-    @PreAuthorize("hasAuthority('catalogs-read-claim') or hasAnyRole('admin', 'application')")
+    @PreAuthorize(
+            "hasAnyAuthority('PERMISSION_CATALOGS.READ') or hasAnyAuthority('CLAIM_CATALOGS.READ') or  hasAnyRole('CATALOGS:READ','ADMIN', 'CUSTOMER')")
     @Operation(
             summary = "Search products by name",
             description = "Search products by name",
