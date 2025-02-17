@@ -1,14 +1,13 @@
 package com.github.mehdihadeli.shared.users.users.events.integration.v1;
 
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IIntegrationEvent;
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeEmpty;
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
+import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.IIntegrationEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeEmpty;
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeNull;
 
 public record UserCreatedV1(
         UUID messageId,

@@ -26,6 +26,7 @@ import com.github.mehdihadeli.buildingblocks.core.request.QueryBusImpl;
 import com.github.mehdihadeli.buildingblocks.core.serialization.JacksonMessageSerializerImpl;
 import com.github.mehdihadeli.buildingblocks.core.serialization.JacksonSerializerImpl;
 import com.github.mehdihadeli.buildingblocks.mediator.abstractions.Mediator;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
@@ -41,8 +42,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.UUID;
 
 @Configuration
 @EnableConfigurationProperties(MessagePersistenceProperties.class)
@@ -161,7 +160,7 @@ public class CoreConfiguration {
             MessagePersistenceRepository messagePersistenceRepository,
             MessageSerializer messageSerializer,
             Mediator mediator,
-            //BusDirectPublisher busDirectPublisher,
+            // BusDirectPublisher busDirectPublisher,
             ApplicationContext applicationContext,
             Serializer serializer) {
         return new MessagePersistenceServiceImpl(

@@ -1,9 +1,8 @@
 package com.github.mehdihadeli.buildingblocks.security.tokenaccessors;
 
 import com.github.mehdihadeli.buildingblocks.security.KeycloakCustomClientFactory;
-import org.keycloak.admin.client.token.TokenManager;
-
 import java.time.Instant;
+import org.keycloak.admin.client.token.TokenManager;
 
 public class OAuthCustomClientTokenAccessorImpl implements OAuthCustomClientTokenAccessor {
 

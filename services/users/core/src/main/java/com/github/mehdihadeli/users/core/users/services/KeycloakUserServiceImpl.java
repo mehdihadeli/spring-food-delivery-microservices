@@ -7,16 +7,15 @@ import com.github.mehdihadeli.users.core.users.contracts.KeycloakUserService;
 import com.github.mehdihadeli.users.core.users.dtos.CreateAdminUserDto;
 import com.github.mehdihadeli.users.core.users.dtos.CreateCustomerUserDto;
 import com.github.mehdihadeli.users.core.users.dtos.CreateUserDto;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 public class KeycloakUserServiceImpl implements KeycloakUserService {
     private final RealmResource realmResource;

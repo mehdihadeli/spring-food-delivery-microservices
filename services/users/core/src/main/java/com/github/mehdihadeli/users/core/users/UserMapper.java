@@ -8,7 +8,6 @@ import com.github.mehdihadeli.users.core.users.dtos.CreateUserDto;
 import com.github.mehdihadeli.users.core.users.features.creatingadminuser.v1.CreateAdminUser;
 import com.github.mehdihadeli.users.core.users.features.creatingcustomeruser.v1.CreateCustomerUser;
 import com.github.mehdihadeli.users.core.users.features.creatinguser.v1.CreateUser;
-
 import java.time.LocalDateTime;
 
 public final class UserMapper {

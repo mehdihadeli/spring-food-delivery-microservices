@@ -8,12 +8,11 @@ import com.github.mehdihadeli.buildingblocks.validation.ValidationUtils;
 import com.github.mehdihadeli.buildingblocks.validation.Validator;
 import com.github.mehdihadeli.users.core.users.UserMapper;
 import com.github.mehdihadeli.users.core.users.contracts.KeycloakUserService;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 public record CreateUser(
         String userId,

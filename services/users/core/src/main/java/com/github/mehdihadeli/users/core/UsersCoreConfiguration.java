@@ -30,17 +30,17 @@ import org.springframework.web.context.WebApplicationContext;
 @Configuration
 public class UsersCoreConfiguration {
 
-  @Bean
-  public SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
-    http
-      .securityMatcher("/api/v1/users/customer-user") // Match only this specific endpoint
-      .csrf(csrf -> csrf.ignoringRequestMatchers("/api/v1/users/customer-user")) // Disable CSRF for this endpoint
-      .authorizeHttpRequests(auth -> {
-        auth.anyRequest().permitAll(); // Allow unauthenticated access to this endpoint
-      });
+    @Bean
+    public SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("/api/v1/users/customer-user") // Match only this specific endpoint
+                .csrf(csrf ->
+                        csrf.ignoringRequestMatchers("/api/v1/users/customer-user")) // Disable CSRF for this endpoint
+                .authorizeHttpRequests(auth -> {
+                    auth.anyRequest().permitAll(); // Allow unauthenticated access to this endpoint
+                });
 
-    return http.build();
-  }
+        return http.build();
+    }
 
     @Bean
     public KeycloakUserService keycloakUserService(
