@@ -1,0 +1,5 @@
+# Production environment
+spring:
+  config:
+    activate:
+      on-profile: prod

@@ -1,0 +1,23 @@
+# Test environment
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    database: postgresql
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      generate-statistics: false
+      # when we use flyway we should turn of hibernate `ddl-auto`
+      ddl-auto: none
+
+logging:
+  level:
+    org: info
+    com: info
+
+message-persistence:
+  interval: 3
+  message-persist-provider-type: postgresql

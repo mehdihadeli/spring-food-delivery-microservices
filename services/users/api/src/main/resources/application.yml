@@ -3,7 +3,7 @@
 # Common configurations across all environments
 
 server:
-  port: 6400 # Port for the service
+  port: 7000 # Port for the service
 spring:
   application:
     name: users service api
@@ -13,7 +13,7 @@ spring:
       development: "dev-tools,dev-db,dev-config"
       test: "test-db,test-config"
       production: "prod-db,prod-config"
-    active: local  # Set the default active profile
+    active: dev  # Set the default active profile
     default: local # Set the default profile if none specified
 
 
@@ -34,9 +34,6 @@ spring:
 
   main:
     banner-mode: off
-    web-application-type: servlet
-    allow-bean-definition-overriding: true
-    log-startup-info: true
 
   datasource:
     use-in-memory: true
@@ -97,7 +94,8 @@ otel:
   tracing-enabled: true
   logging-enabled: true
   use-prometheus-exporter: true
-  prometheus-port: 9464
+  # application prometheus exporter http server port, should be unique port for each microservice
+  prometheus-port: 9564
   use-otlp-grpc-exporter: true
   use-otlp-http-exporter: false
   use-aspire-otlp-exporter: true

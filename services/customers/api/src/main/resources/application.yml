@@ -2,12 +2,11 @@
 # https://docs.spring.io/spring-boot/reference/features/external-config.html
 # Common configurations across all environments
 
-
 server:
-  port: 5000 # Port for the service
+  port: 4000 # Port for the service
 spring:
   application:
-    name: catalogs service api
+    name: customers service api
   profiles:
     group:
       local: "dev-tools,dev-db,dev-config,default, local"
@@ -25,17 +24,14 @@ spring:
           jwk-set-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/certs
       custom-client-options:
         host-url: http://localhost:8080
-        client-id: ${CUSTOM_CATALOGS_CLIENT_ID}
-        grant-type: ${CUSTOM_CATALOGS_CLIENT_GRANT_TYPE}
-        client-secret: ${CUSTOM_CATALOGS_CLIENT_SECRET}
+        client-id: ${CUSTOM_CUSTOMERS_CLIENT_ID}
+        grant-type: ${CUSTOM_CUSTOMERS_CLIENT_GRANT_TYPE}
+        client-secret: ${CUSTOM_CUSTOMERS_CLIENT_SECRET}
         application-realm-name: food-delivery-microservices
         admin-realm-name: master
 
   main:
     banner-mode: off
-    web-application-type: servlet
-    allow-bean-definition-overriding: true
-    log-startup-info: true
 
   datasource:
     use-in-memory: true
@@ -58,7 +54,7 @@ spring:
         read-timeout: 5000
       host: localhost
       port: 27017
-      database: catalogs
+      database: customers
       username: admin
       password: admin
       authentication-database: admin
@@ -80,8 +76,8 @@ spring:
     baseline-on-migrate: true # Create baseline for existing databases
 
 swagger:
-  title: "Catalogs Service"
-  description: "Catalogs Service"
+  title: "Customers Service"
+  description: "Customers Service"
   contact-name: "test"
   contact-email: "test@test.com"
   enabled: true
@@ -100,19 +96,19 @@ otel:
     attributes:
       deployment.environment: dev
       service:
-        name: catalogs
+        name: customers
         namespace: catalogs
-  instrumentation-name: "catalogs-service"
-  service-name: "catalogs-service"
+  instrumentation-name: "customers-service"
+  service-name: "customers-service"
   metrics-enabled: true
   tracing-enabled: true
   logging-enabled: true
   use-prometheus-exporter: true
   # application prometheus exporter http server port, should be unique port for each microservice
-  prometheus-port: 9563
+  prometheus-port: 9565
   use-otlp-grpc-exporter: true
   use-otlp-http-exporter: false
-  use-aspire-otlp-exporter: true
+  use-aspire-otlp-exporter: false
   use-console-exporter: false
   use-jaeger-exporter: false
   use-zipkin-exporter: false

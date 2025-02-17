@@ -2,7 +2,7 @@ package com.github.mehdihadeli.users.core.users.services;
 
 import com.github.mehdihadeli.buildingblocks.security.KeycloakCustomClientFactory;
 import com.github.mehdihadeli.buildingblocks.security.OAthCustomClientOptions;
-import com.github.mehdihadeli.users.core.Constants;
+import com.github.mehdihadeli.shared.Constants;
 import com.github.mehdihadeli.users.core.users.contracts.KeycloakUserService;
 import com.github.mehdihadeli.users.core.users.dtos.CreateAdminUserDto;
 import com.github.mehdihadeli.users.core.users.dtos.CreateCustomerUserDto;

@@ -177,15 +177,6 @@
       <artifactId>opentelemetry-exporter-zipkin</artifactId>
     </dependency>
 
-    <!-- https://opentelemetry.io/docs/languages/java/intro/#dependencies-and-boms-->
-    <!-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/rabbitmq-2.7-->
-    <!--exists in the `opentelemetry-instrumentation-bom-alpha` pom.xml-->
-    <!-- auto instrumentation of rabbitmq-->
-    <dependency>
-      <groupId>io.opentelemetry.javaagent.instrumentation</groupId>
-      <artifactId>opentelemetry-javaagent-rabbitmq-2.7</artifactId>
-    </dependency>
-
     <!-- OpenTelemetry Prometheus Exporter -->
     <!-- https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/prometheus/src/main/java/io/opentelemetry/example/prometheus/ExampleConfiguration.java-->
     <!-- https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/prometheus-->

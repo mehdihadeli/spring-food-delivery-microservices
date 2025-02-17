@@ -1,4 +1,4 @@
-package com.github.mehdihadeli.users.core;
+package com.github.mehdihadeli.shared;
 
 public final class Constants {
     private Constants() {}
