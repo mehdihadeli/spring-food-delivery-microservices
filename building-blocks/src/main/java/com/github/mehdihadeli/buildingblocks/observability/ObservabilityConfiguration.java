@@ -1,5 +1,9 @@
 package com.github.mehdihadeli.buildingblocks.observability;
 
+import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeEmpty;
+import static io.opentelemetry.semconv.ServiceAttributes.SERVICE_NAME;
+import static io.opentelemetry.semconv.ServiceAttributes.SERVICE_VERSION;
+
 import com.github.mehdihadeli.buildingblocks.abstractions.observability.DiagnosticsProvider;
 import com.github.mehdihadeli.buildingblocks.core.utils.EnvironmentUtils;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerMetrics;
@@ -39,6 +43,7 @@ import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.samplers.Sampler;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +51,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
-import java.util.concurrent.TimeUnit;
-
-import static com.github.mehdihadeli.buildingblocks.validation.ValidationUtils.notBeEmpty;
-import static io.opentelemetry.semconv.ServiceAttributes.SERVICE_NAME;
-import static io.opentelemetry.semconv.ServiceAttributes.SERVICE_VERSION;
 
 // https://github.com/open-telemetry/opentelemetry-java-examples
 // https://opentelemetry.io/docs/languages/java/sdk/
