@@ -1,0 +1,68 @@
+
+### test-resource-owner-password-client
+POST http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = test-resource-owner-password-client &
+client_secret = {{TEST_RESOURCE_OWNER_CLIENT_SECRET}} &
+username = app-admin &
+password = {{APP_ADMIN_PASSWORD}} &
+grant_type = password
+
+### test-client-credentials-client
+POST http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = test-client-credentials-client &
+client_secret = {{TEST_CLIENT_CREDENTIALS_SECRET}} &
+grant_type = client_credentials
+
+### app-client-credentials-client
+POST http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = app-client-credentials-client &
+client_secret = {{APP_CLIENT_CREDENTIALS_SECRET}} &
+grant_type = client_credentials
+
+### users-microservice-client
+POST http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = users-microservice-client &
+client_secret = {{USERS_MICROSERVICE_CLIENT_SECRET}} &
+grant_type = client_credentials
+
+### catalogs-microservice-client
+POST http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = catalogs-microservice-client &
+client_secret = {{CATALOGS_MICROSERVICE_CLIENT_SECRET}} &
+grant_type = client_credentials &
+scope = catalogs-users-service-scope
+
+### customers-microservice-client
+POST http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = customers-microservice-client &
+client_secret = {{CUSTOMERS_MICROSERVICE_CLIENT_SECRET}} &
+grant_type = client_credentials &
+scope = customers-users-service-scope
+
+### orders-microservice-client
+POST http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = orders-microservice-client &
+client_secret = {{ORDERS_MICROSERVICE_CLIENT_SECRET}} &
+grant_type = client_credentials &
+scope = orders-customers-service-scope
+
+### implicit-flow-client
+GET http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/auth?
+  client_id=implicit-flow-client&redirect_uri=http://localhost:3000&response_type=token&
+  scope=basic%20email%20profile%20roles&
+  state={{STATE}}
+

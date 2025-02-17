@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.github.mehdihadeli</groupId>
+    <artifactId>customers</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath> <!-- Point to the `customers` parent POM -->
+  </parent>
+
+  <artifactId>customers-api</artifactId>
+
+  <properties>
+    <maven.compiler.source>23</maven.compiler.source>
+    <maven.compiler.target>23</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.mehdihadeli</groupId>
+      <artifactId>customers-core</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!--https://docs.spring.io/spring-boot/maven-plugin/getting-started.html-->
+        <!--        https://stackoverflow.com/questions/32368328/unable-to-find-a-suitable-main-class-please-add-a-mainclass-property-spring-->
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+
+      <!-- https://documentation.red-gate.com/fd/quickstart-maven-184127578.html-->
+      <!-- https://blog.jetbrains.com/idea/2024/11/how-to-use-flyway-for-database-migrations-in-spring-boot-applications/-->
+      <!-- for apply migration with mvn command `mvn flyway:migrate` we use `flyway-maven-plugin`-->
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>${flyway-maven-plugin.version}</version>
+        <configuration>
+          <url>jdbc:postgresql://localhost:5432/customers_service</url>
+          <user>postgres</user>
+          <password>postgres</password>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

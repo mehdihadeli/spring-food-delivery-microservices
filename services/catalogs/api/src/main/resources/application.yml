@@ -2,13 +2,12 @@
 # https://docs.spring.io/spring-boot/reference/features/external-config.html
 # Common configurations across all environments
 
-# export SPRING_PROFILES_ACTIVE=development
-# java -jar app.jar --spring.profiles.active=development
-# -Dspring.profiles.active=development
 
 server:
   port: 5000 # Port for the service
 spring:
+  application:
+    name: catalogs service api
   profiles:
     group:
       local: "dev-tools,dev-db,dev-config,default, local"
@@ -17,6 +16,20 @@ spring:
       production: "prod-db,prod-config"
     active: dev  # Set the default active profile
     default: local # Set the default profile if none specified
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/food-delivery-microservices
+          jwk-set-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/certs
+      custom-client-options:
+        host-url: http://localhost:8080
+        client-id: ${CUSTOM_CATALOGS_CLIENT_ID}
+        grant-type: ${CUSTOM_CATALOGS_CLIENT_GRANT_TYPE}
+        client-secret: ${CUSTOM_CATALOGS_CLIENT_SECRET}
+        application-realm-name: food-delivery-microservices
+        admin-realm-name: master
 
   main:
     banner-mode: off
@@ -49,6 +62,7 @@ spring:
       username: admin
       password: admin
       authentication-database: admin
+      enabled: true
 
   rabbitmq:
     host: localhost
@@ -57,18 +71,13 @@ spring:
     password: guest
     virtual-host: /
     use-outbox: true
+    enabled: true
 
   flyway:
     enabled: true
     # migration scripts path
     locations: classpath:db/migration
     baseline-on-migrate: true # Create baseline for existing databases
-
-app:
-  version: "1.0.0"
-  name: "Catalogs Service"
-  seed:
-    enabled: false
 
 swagger:
   title: "Catalogs Service"
@@ -99,7 +108,8 @@ otel:
   tracing-enabled: true
   logging-enabled: true
   use-prometheus-exporter: true
-  prometheus-port: 9464
+  # application prometheus exporter http server port, should be unique port for each microservice
+  prometheus-port: 9563
   use-otlp-grpc-exporter: true
   use-otlp-http-exporter: false
   use-aspire-otlp-exporter: true

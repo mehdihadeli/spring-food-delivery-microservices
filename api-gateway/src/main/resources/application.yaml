@@ -3,6 +3,13 @@ server:
 spring:
   application:
     name: api-gateway
+  security:
+    oauth2:
+      # configure the Spring Cloud Gateway and `oauth2-resource-server` package to validate JWT tokens and enforce scopes suing keycloak public keys in the `openid-connect/certs` endpoint
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/food-delivery-microservices
+          jwk-set-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/certs
   cloud:
     gateway:
       routes:
@@ -13,6 +20,8 @@ spring:
             - Path=/api/{version}/catalogs/**
           filters:
             - RewritePath=/api/(?<version>.*)/catalogs/(?<remainder>.*), /api/$\{version}/$\{remainder}
+            # forwards the validated token to the downstream microservices.
+            - TokenRelay
             - CorrelationId
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - PreserveHostHeader
@@ -20,13 +29,14 @@ spring:
             response-timeout: 20000
             connect-timeout: 20000
 
-        - id: identity
+        - id: users
           uri: http://localhost:7000
-          # uri: lb://identity-service # Use lb:// for load balancing
+          # uri: lb://users-service # Use lb:// for load balancing
           predicates:
-            - Path=/api/{version}/identity/**
+            - Path=/api/{version}/users/**
           filters:
-            - RewritePath=/api/(?<version>.*)/identity/(?<remainder>.*), /api/$\{version}/$\{remainder}
+            - RewritePath=/api/(?<version>.*)/users/(?<remainder>.*), /api/$\{version}/$\{remainder}
+            - TokenRelay
             - CorrelationId
             - PreserveHostHeader
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
@@ -41,6 +51,7 @@ spring:
             - Path=/api/{version}/customers/**
           filters:
             - RewritePath=/api/(?<version>.*)/customers/(?<remainder>.*), /api/$\{version}/$\{remainder}
+            - TokenRelay
             - CorrelationId
             - PreserveHostHeader
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin

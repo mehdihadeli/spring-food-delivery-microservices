@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class CustomMongoProperties {
     private ConnectionPool connectionPool = new ConnectionPool();
     private Socket socket = new Socket();
+    private boolean enabled = false;
 
     // Getters and Setters
     public ConnectionPool getConnectionPool() {
@@ -22,6 +23,14 @@ public class CustomMongoProperties {
 
     public void setSocket(Socket socket) {
         this.socket = socket;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     // Nested class for connection pool settings

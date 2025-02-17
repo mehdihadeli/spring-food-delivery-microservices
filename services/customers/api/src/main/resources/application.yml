@@ -1,0 +1,140 @@
+# https://docs.spring.io/spring-boot/how-to/properties-and-configuration.html
+# https://docs.spring.io/spring-boot/reference/features/external-config.html
+# Common configurations across all environments
+
+server:
+  port: 4000 # Port for the service
+spring:
+  application:
+    name: customers service api
+  profiles:
+    group:
+      local: "dev-tools,dev-db,dev-config,default, local"
+      development: "dev-tools,dev-db,dev-config"
+      test: "test-db,test-config"
+      production: "prod-db,prod-config"
+    active: dev  # Set the default active profile
+    default: local # Set the default profile if none specified
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/food-delivery-microservices
+          jwk-set-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/certs
+      custom-client-options:
+        host-url: http://localhost:8080
+        client-id: ${CUSTOM_CUSTOMERS_CLIENT_ID}
+        grant-type: ${CUSTOM_CUSTOMERS_CLIENT_GRANT_TYPE}
+        client-secret: ${CUSTOM_CUSTOMERS_CLIENT_SECRET}
+        application-realm-name: food-delivery-microservices
+        admin-realm-name: master
+
+  main:
+    banner-mode: off
+
+  datasource:
+    use-in-memory: true
+  jpa:
+    database: h2
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      # Disable Hibernate's automatic schema updates, when we use flyway we should turn of hibernate `ddl-auto`
+      ddl-auto: none
+      generate-statistics: false
+
+  data:
+    mongodb:
+      connection-pool:
+        max-size: 100
+        min-size: 10
+      socket:
+        connect-timeout: 5000
+        read-timeout: 5000
+      host: localhost
+      port: 27017
+      database: customers
+      username: admin
+      password: admin
+      authentication-database: admin
+      enabled: true
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    use-outbox: true
+    enabled: true
+
+  flyway:
+    enabled: true
+    # migration scripts path
+    locations: classpath:db/migration
+    baseline-on-migrate: true # Create baseline for existing databases
+
+swagger:
+  title: "Customers Service"
+  description: "Customers Service"
+  contact-name: "test"
+  contact-email: "test@test.com"
+  enabled: true
+  version: 3
+  ui-path: /swagger
+  openapi-path: /v3/openapi
+
+problem-details:
+  enabled: true
+  include-stack-trace: true
+
+otel:
+  sdk:
+    disabled: false
+  resource:
+    attributes:
+      deployment.environment: dev
+      service:
+        name: customers
+        namespace: catalogs
+  instrumentation-name: "customers-service"
+  service-name: "customers-service"
+  metrics-enabled: true
+  tracing-enabled: true
+  logging-enabled: true
+  use-prometheus-exporter: true
+  # application prometheus exporter http server port, should be unique port for each microservice
+  prometheus-port: 9565
+  use-otlp-grpc-exporter: true
+  use-otlp-http-exporter: false
+  use-aspire-otlp-exporter: false
+  use-console-exporter: false
+  use-jaeger-exporter: false
+  use-zipkin-exporter: false
+  jaeger-options:
+    otlp-grpc-endpoint: "http://localhost:14317"
+    http-endpoint: "http://localhost:14268/api/traces"
+  zipkin-options:
+    http-endpoint: "http://localhost:9411/api/v2/spans"
+  otlp-options:
+    otlp-grpc-endpoint: "http://localhost:4317"
+    otlp-http-endpoint: "http://localhost:4318"
+  aspire-dashboard-otlp-options:
+    otlp-grpc-endpoint: "http://localhost:4319"
+
+mediator:
+  enabled: true
+
+validation:
+  enabled: true
+
+logging:
+  level:
+    org: info
+    com: info
+
+message-persistence:
+  interval: 3
+  message-persist-provider-type: inmemory
+

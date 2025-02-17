@@ -20,6 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.ErrorResponseException;
@@ -83,6 +87,7 @@ public class ProblemDetailsConfiguration {
             HttpResponseException.class,
             AppException.class,
             CustomException.class,
+            AuthenticationException.class,
             HttpRequestMethodNotSupportedException.class,
             HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class,
@@ -103,11 +108,25 @@ public class ProblemDetailsConfiguration {
             HttpMessageNotWritableException.class,
             MethodValidationException.class,
             BindException.class,
-            AsyncRequestNotUsableException.class
+            AsyncRequestNotUsableException.class,
+            InsufficientAuthenticationException.class,
+            BadCredentialsException.class,
+            AccessDeniedException.class,
+            AuthenticationException.class,
+            RuntimeException.class
         })
         @Nullable
         public ResponseEntity<ProblemDetail> handleException(
                 HttpServletRequest request, HttpServletResponse response, Exception exception) {
+            return handleExceptions(exceptionHandler, request, response, exception);
+        }
+
+        @Nullable
+        public static ResponseEntity<ProblemDetail> handleExceptions(
+                DefaultProblemDetailsExceptionHandler exceptionHandler,
+                HttpServletRequest request,
+                HttpServletResponse response,
+                Exception exception) {
             return exceptionHandler.handleException(request, response, exception);
         }
     }

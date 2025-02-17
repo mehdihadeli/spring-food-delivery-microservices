@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.ErrorResponseException;
@@ -77,6 +81,12 @@ public class DefaultProblemDetailMapper implements IProblemDetailMapper {
             case TypeMismatchException e -> HttpStatus.BAD_REQUEST;
             case HttpMessageNotReadableException e -> HttpStatus.BAD_REQUEST;
             case HttpMessageNotWritableException e -> HttpStatus.INTERNAL_SERVER_ERROR;
+
+                // Authentication exceptions
+            case BadCredentialsException e -> HttpStatus.UNAUTHORIZED;
+            case InsufficientAuthenticationException e -> HttpStatus.FORBIDDEN;
+            case AccessDeniedException e -> HttpStatus.FORBIDDEN;
+            case AuthenticationException e -> HttpStatus.UNAUTHORIZED;
 
                 // Default case
             default -> HttpStatus.INTERNAL_SERVER_ERROR;

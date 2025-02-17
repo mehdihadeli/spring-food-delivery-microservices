@@ -1,6 +1,7 @@
 package com.github.mehdihadeli.buildingblocks.problemdetails;
 
 import com.github.mehdihadeli.buildingblocks.abstractions.problemdetails.IProblemDetailMapper;
+import com.github.mehdihadeli.buildingblocks.core.utils.SerializerUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.URI;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 
@@ -53,7 +55,14 @@ public class DefaultProblemDetailsExceptionHandler {
         }
 
         ProblemDetailsDefaults.applyDefaults(problemDetails, responseStatusCode);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(responseStatusCode.value());
+
+        logger.atError()
+                .addKeyValue("details", SerializerUtils.serializePretty(problemDetails))
+                .log(
+                        "An error occurred while processing the request. exc: {}",
+                        SerializerUtils.serializePretty(problemDetails));
 
         return ResponseEntity.status(responseStatusCode).body(problemDetails);
     }

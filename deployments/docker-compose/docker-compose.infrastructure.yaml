@@ -117,7 +117,7 @@ services:
     image: otel/opentelemetry-collector-contrib:latest
     container_name: otel-collector
     restart: unless-stopped
-    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    command: [ "--config=/etc/otelcol-contrib/config.yaml" ]
     volumes:
       - ./../configs/otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
     ports:
@@ -175,7 +175,7 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
     ports:
-       - "9101:9100"
+      - "9101:9100"
     networks:
       - infrastructure
   #######################################################
@@ -246,66 +246,147 @@ services:
     networks:
       - infrastructure
 
-   #######################################################
-   # elasticsearch
-   # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docker.html#docker-compose-file
-   #######################################################
+  #######################################################
+  # elasticsearch
+  # https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docker.html#docker-compose-file
+  #######################################################
   elasticsearch:
-     container_name: elasticsearch
-     restart: unless-stopped
-     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
-     environment:
-       - discovery.type=single-node
-       - cluster.name=docker-cluster
-       - node.name=docker-node
-       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-       - xpack.security.enabled=false
-       - xpack.security.http.ssl.enabled=false
-       - xpack.security.transport.ssl.enabled=false
-       - network.host=0.0.0.0
-       - http.port=9200
-       - transport.host=localhost
-       - bootstrap.memory_lock=true
-       - cluster.routing.allocation.disk.threshold_enabled=false
-     ulimits:
-       memlock:
-         soft: -1
-         hard: -1
-     volumes:
-       - elastic-data:/usr/share/elasticsearch/data
-     ports:
-       - ${ELASTIC_HOST_PORT:-9200}:${ELASTIC_PORT:-9200}
-       - 9300:9300
-     networks:
-       - infrastructure
-   #######################################################
-   # kibana
-   # https://www.elastic.co/guide/en/kibana/current/docker.html
-   #######################################################
+    container_name: elasticsearch
+    restart: unless-stopped
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - node.name=docker-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - network.host=0.0.0.0
+      - http.port=9200
+      - transport.host=localhost
+      - bootstrap.memory_lock=true
+      - cluster.routing.allocation.disk.threshold_enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    ports:
+      - ${ELASTIC_HOST_PORT:-9200}:${ELASTIC_PORT:-9200}
+      - 9300:9300
+    networks:
+      - infrastructure
+  #######################################################
+  # kibana
+  # https://www.elastic.co/guide/en/kibana/current/docker.html
+  #######################################################
   kibana:
-     image: docker.elastic.co/kibana/kibana:8.17.0
-     container_name: kibana
-     restart: unless-stopped
-     environment:
-       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-     ports:
-       - ${KIBANA_HOST_PORT:-5601}:${KIBANA_PORT:-5601}
-     depends_on:
-       - elasticsearch
-     networks:
-       - infrastructure
-   #######################################################
-   #  Redis
-   # https://developer.redis.com/howtos/quick-start
-   #######################################################
+    image: docker.elastic.co/kibana/kibana:8.17.0
+    container_name: kibana
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - ${KIBANA_HOST_PORT:-5601}:${KIBANA_PORT:-5601}
+    depends_on:
+      - elasticsearch
+    networks:
+      - infrastructure
+  #######################################################
+  #  Redis
+  # https://developer.redis.com/howtos/quick-start
+  #######################################################
   redis:
-     image: redis/redis-stack:latest
-     container_name: redis
-     restart: unless-stopped
-     networks:
-       - infrastructure
-     ports:
-       - 6379:6379
+    image: redis/redis-stack:latest
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - infrastructure
+    ports:
+      - 6379:6379
+
+  #######################################################
+  # Keycloak
+  # https://www.keycloak.org/server/configuration
+  # https://www.keycloak.org/getting-started/getting-started-docker
+  # https://www.keycloak.org/server/containers
+  # https://www.keycloak.org/server/all-config#category-metrics
+  # https://www.keycloak.org/server/all-config#category-tracing
+  # https://www.keycloak.org/server/db
+  # https://www.keycloak.org/server/importExport
+  # https://www.keycloak.org/securing-apps/oidc-layers
+  # http://localhost:8080/realms/food-delivery-microservices/.well-known/openid-configuration
+  # https://www.keycloak.org/documentation
+  # https://www.keycloak.org/docs/latest/securing_apps/
+  # https://www.keycloak.org/docs/latest/server_admin/index.html
+  # https://auth0.com/docs/get-started/authentication-and-authorization-flow/resource-owner-password-flow/call-your-api-using-resource-owner-password-flow
+  # https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow/call-your-api-using-the-client-credentials-flow
+  # https://www.oauth.com/oauth2-servers/access-tokens/client-credentials/
+  # https://curity.io/resources/learn/client-credentials/
+  # https://www.oauth.com/oauth2-servers/access-tokens/password-grant/
+  # https://curity.io/resources/learn/ropc/
+  # https://curity.io/resources/learn/implicit-flow/
+  # https://curity.io/resources/learn/oauth-implicit-flow/
+  # https://developer.okta.com/blog/2018/05/24/what-is-the-oauth2-implicit-grant-type
+  ####### realm config
+  # https://www.keycloak.org/docs/latest/authorization_services/
+  # https://stackoverflow.com/questions/42186537/resources-scopes-permissions-and-policies-in-keycloak
+  # https://www.keycloak.org/docs-api/latest/rest-api/index.html#RealmRepresentation
+  # https://www.keycloak.org/docs-api/latest/rest-api/index.html#ClientScopeRepresentation
+  # https://www.keycloak.org/docs-api/latest/rest-api/index.html#ClientRepresentation
+  # https://www.keycloak.org/docs-api/latest/rest-api/index.html#UserRepresentation
+  #######################################################
+  # use in-memory database (H2)
+  keycloak-dev-inmemory:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    restart: unless-stopped
+    networks:
+      - infrastructure
+    ports:
+      - "8080:8080"
+    #    command: start --import-realm  ## for production
+    command: start-dev --import-realm
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KC_BOOTSTRAP_ADMIN_USERNAME:-admin}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KC_BOOTSTRAP_ADMIN_PASSWORD:-admin}
+      - KC_LOG=console
+      - KC_HTTP_PORT=${KC_HTTP_PORT:-8080}
+      - KC_HTTP_ENABLED=true
+      - KC_HTTP_MANAGEMENT_PORT=${KC_HTTP_MANAGEMENT_PORT:-9000}
+      - KC_LOG_CONSOLE_LEVEL=info
+      - KC_LOG_CONSOLE_COLOR=true
+      - KC_DB=dev-mem
+      - KC_HOSTNAME=localhost
+      - KC_FILE=/opt/keycloak/data/import/food-delivery-microservices-realm.json
+      - KC_TRACING_ENABLED=true  # Enable tracing
+      - KC_TRACING_SAMPLER=always  # Sample all traces
+      - KC_TRACING_PROTOCOL=grpc
+      - KC_TRACING_ENDPOINT=http://otel-collector:4317  # OTel Collector OTLP endpoint
+      - KC_TRACING_SERVICE_NAME=keycloak
+      - KC_METRICS_ENABLED=true  # Enable metrics
+      - KC_METRICS_HISTOGRAMS_ENABLED=true  # Enable histogram metrics
+      - APP_ADMIN_PASSWORD=${APP_ADMIN_PASSWORD}
+      - USER_PASSWORD=${USER_PASSWORD}
+      - TEST_RESOURCE_OWNER_CLIENT_SECRET=${TEST_RESOURCE_OWNER_CLIENT_SECRET}
+      - TEST_CLIENT_CREDENTIALS_SECRET=${TEST_CLIENT_CREDENTIALS_SECRET}
+      - APP_CLIENT_CREDENTIALS_SECRET=${APP_CLIENT_CREDENTIALS_SECRET}
+      - API_GATEWAY_CLIENT_SECRET=${API_GATEWAY_CLIENT_SECRET}
+      - USERS_MICROSERVICE_CLIENT_SECRET=${USERS_MICROSERVICE_CLIENT_SECRET}
+      - CUSTOMERS_MICROSERVICE_CLIENT_SECRET=${CUSTOMERS_MICROSERVICE_CLIENT_SECRET}
+      - CATALOGS_MICROSERVICE_CLIENT_SECRET=${CATALOGS_MICROSERVICE_CLIENT_SECRET}
+      - ORDERS_MICROSERVICE_CLIENT_SECRET=${ORDERS_MICROSERVICE_CLIENT_SECRET}
+      - API_GATEWAY_CLIENT_SECRET=${API_GATEWAY_CLIENT_SECRET}
+      #     - KC_DB=postgres
+      #     - KC_DB_URL=jdbc:postgresql://postgres:5432/identity_service
+      #     - KC_DB_USERNAME=${KC_DB_USERNAME:-admin}
+      #     - KC_DB_PASSWORD=${KC_DB_PASSWORD:-admin}
+    volumes:
+      - ./../configs/food-delivery-microservices-realm.json:/opt/keycloak/data/import/food-delivery-microservices-realm.json  # Mount the realm file
+    depends_on:
+      - postgres
 
 networks:
   infrastructure:

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
 
 public class MessagePersistenceServiceImpl implements MessagePersistenceService {
@@ -23,19 +24,19 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
     private final MessagePersistenceRepository messagePersistenceRepository;
     private final MessageSerializer messageSerializer;
     private final Mediator mediator;
-    private final BusDirectPublisher busDirectPublisher;
+    private final ApplicationContext applicationContext;
     private final Serializer serializer;
 
     public MessagePersistenceServiceImpl(
             MessagePersistenceRepository messagePersistenceRepository,
             MessageSerializer messageSerializer,
             Mediator mediator,
-            BusDirectPublisher busDirectPublisher,
+            ApplicationContext applicationContext,
             Serializer serializer) {
         this.messagePersistenceRepository = messagePersistenceRepository;
         this.messageSerializer = messageSerializer;
         this.mediator = mediator;
-        this.busDirectPublisher = busDirectPublisher;
+        this.applicationContext = applicationContext;
         this.serializer = serializer;
     }
 
@@ -142,6 +143,10 @@ public class MessagePersistenceServiceImpl implements MessagePersistenceService 
 
         if (eventEnvelope == null) return;
 
+        // for preventing circular dependency, we don't inject BusDirectPublisher, directly to constructor, and we get
+        // it when we need with applicationContext. because for example rabbitmq is dependent to core module so we can't
+        // dependent to rabbitmq module for resolving DirectBus in the constructor
+        var busDirectPublisher = applicationContext.getBean(BusDirectPublisher.class);
         busDirectPublisher.publish(eventEnvelope);
 
         logger.atInfo()

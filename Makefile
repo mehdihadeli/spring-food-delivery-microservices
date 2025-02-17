@@ -3,7 +3,14 @@ PROJECT_GROUP := com.github.mehdihadeli
 CATALOGS_API := $(PROJECT_GROUP):catalogs-api
 CATALOGS := $(PROJECT_GROUP):catalogs
 CATALOGS_API_DIR=services/catalogs/api
+USERS_API_DIR=services/users/api
+CUSTOMERS_API_DIR=services/customers/api
+ORDERS_API_DIR=services/orders/api
 CATALOGS_DIR=services/catalogs
+CUSTOMERS_DIR=services/customers
+SHARED_DIR=services/shared
+USERS_DIR=services/users
+ORDERS_DIR=services/orders
 API_GATEWAY_DIR=api-gateway
 BUILDING_BLOCKS := $(PROJECT_GROUP):building-blocks
 BUILDING_BLOCKS_DIR := building-blocks
@@ -39,13 +46,29 @@ install-building-blocks:
 #	@mvn clean install -pl $(BUILDING_BLOCKS_DIR)
 
 #################################################################
+# Shared - install shared service before `build` and `install` other services
+#################################################################
+# Build shared
+.PHONY: build-shared
+build-shared:
+	@echo "Building shared..."
+	@mvn -f $(SHARED_DIR)/pom.xml clean package
+#	@mvn clean package -pl $(SHARED_DIR)
+
+# install shared
+.PHONY: install-shared
+install-shared:
+	@echo "Installing shared..."
+	@mvn -f $(SHARED_DIR)/pom.xml clean install
+#	@mvn clean install -pl $(SHARED_DIR)
+#################################################################
 # Catalogs
 #################################################################
 .PHONY: catalogs-dependency-tree
 catalogs-dependency-tree:
 	@echo "Writing dependency tree..."
-	@mvn -f $(CATALOGS_API_DIR)/pom.xml  dependency:tree -Dverbose
-#	@mvn dependency:tree -Dverbose -pl $(CATALOGS_API_DIR)
+	@mvn -f $(CATALOGS_DIR)/pom.xml  dependency:tree -Dverbose
+#	@mvn dependency:tree -Dverbose -pl $(CATALOGS_DIR)
 
 # Run catalogs
 .PHONY: run-catalogs
@@ -58,22 +81,22 @@ run-catalogs:
 .PHONY: build-catalogs
 build-catalogs:
 	@echo "Building catalogs service..."
-	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean package
-#	@mvn clean package -pl $(CATALOGS_API_DIR)
+	@mvn -f $(CATALOGS_DIR)/pom.xml package
+#	@mvn clean package -pl $(CATALOGS_DIR)
 
 # Clean catalogs
 .PHONY: clean-catalogs
 clean-catalogs:
 	@echo "Cleaning catalogs service..."
-	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean
-#	@mvn clean -pl $(CATALOGS_API_DIR)
+	@mvn -f $(CATALOGS_DIR)/pom.xml clean
+#	@mvn clean -pl $(CATALOGS_DIR)
 
 # install catalogs
 .PHONY: install-catalogs
 install-catalogs:
 	@echo "Installing catalogs service..."
-	@mvn -f $(CATALOGS_API_DIR)/pom.xml clean install
-#	@mvn clean install -pl $(CATALOGS_API_DIR)
+	@mvn -f $(CATALOGS_DIR)/pom.xml clean install
+#	@mvn clean install -pl $(CATALOGS_DIR)
 
 # test catalogs
 .PHONY: test-catalogs
@@ -86,6 +109,104 @@ test-catalogs:
 .PHONY: flyway-migrate-catalogs
 flyway-migrate-catalogs:
 	@mvn -f $(CATALOGS_API_DIR)/pom.xml flyway:migrate
+
+#################################################################
+# Users
+#################################################################
+.PHONY: users-dependency-tree
+users-dependency-tree:
+	@echo "Writing dependency tree..."
+	@mvn -f $(USERS_DIR)/pom.xml  dependency:tree -Dverbose
+#	@mvn dependency:tree -Dverbose -pl $(USERS_DIR)
+
+# Run users
+.PHONY: run-users
+run-users:
+	@echo "Starting users service..."
+	@mvn -f $(USERS_API_DIR)/pom.xml clean spring-boot:run
+#	@mvn spring-boot:run -pl $(USERS_API_DIR)
+
+# Build users
+.PHONY: build-users
+build-users:
+	@echo "Building users service..."
+	@mvn -f $(USERS_DIR)/pom.xml clean package
+#	@mvn clean package -pl $(USERS_DIR)
+
+# Clean users
+.PHONY: clean-users
+clean-users:
+	@echo "Cleaning users service..."
+	@mvn -f $(USERS_DIR)/pom.xml clean
+#	@mvn clean -pl $(USERS_DIR)
+
+# install users
+.PHONY: install-users
+install-users:
+	@echo "Installing users service..."
+	@mvn -f $(USERS_DIR)/pom.xml clean install
+#	@mvn clean install -pl $(USERS_DIR)
+
+# test users
+.PHONY: test-users
+test-users:
+	@echo "Testing users service..."
+	@mvn -f $(USERS_API_DIR)/pom.xml clean test
+#	@mvn clean test -pl $(USERS_API_DIR)
+
+# apply migrations users
+.PHONY: flyway-migrate-users
+flyway-migrate-users:
+	@mvn -f $(USERS_API_DIR)/pom.xml flyway:migrate
+
+#################################################################
+# Customers
+#################################################################
+.PHONY: customers-dependency-tree
+customers-dependency-tree:
+	@echo "Writing dependency tree..."
+	@mvn -f $(CUSTOMERS_DIR)/pom.xml  dependency:tree -Dverbose
+#	@mvn dependency:tree -Dverbose -pl $(CUSTOMERS_DIR)
+
+# Run customers
+.PHONY: run-customers
+run-customers:
+	@echo "Starting customers service..."
+	@mvn -f $(CUSTOMERS_API_DIR)/pom.xml clean spring-boot:run
+#	@mvn spring-boot:run -pl $(CUSTOMERS_API_DIR)
+
+# Build customers
+.PHONY: build-customers
+build-customers:
+	@echo "Building customers service..."
+	@mvn -f $(CUSTOMERS_DIR)/pom.xml clean package
+#	@mvn clean package -pl $(CUSTOMERS_DIR)
+
+# Clean customers
+.PHONY: clean-customers
+clean-customers:
+	@echo "Cleaning customers service..."
+	@mvn -f $(CUSTOMERS_DIR)/pom.xml clean
+#	@mvn clean -pl $(CUSTOMERS_DIR)
+
+# install customers
+.PHONY: install-customers
+install-customers:
+	@echo "Installing customers service..."
+	@mvn -f $(CUSTOMERS_DIR)/pom.xml clean install
+#	@mvn clean install -pl $(CUSTOMERS_DIR)
+
+# test customers
+.PHONY: test-customers
+test-users:
+	@echo "Testing customers service..."
+	@mvn -f $(CUSTOMERS_API_DIR)/pom.xml clean test
+#	@mvn clean test -pl $(CUSTOMERS_API_DIR)
+
+# apply migrations customers
+.PHONY: flyway-migrate-customers
+flyway-migrate-customers:
+	@mvn -f $(CUSTOMERS_API_DIR)/pom.xml flyway:migrate
 
 #################################################################
 # Api-Gateway
@@ -177,4 +298,6 @@ apply-spotless:
 # apply migrations
 .PHONY: flyway-migrate
 flyway-migrate:
-	@mvn flyway:migrate
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml flyway:migrate
+	@mvn -f $(USERS_API_DIR)/pom.xml flyway:migrate
+	@mvn -f $(CATALOGS_API_DIR)/pom.xml flyway:migrate

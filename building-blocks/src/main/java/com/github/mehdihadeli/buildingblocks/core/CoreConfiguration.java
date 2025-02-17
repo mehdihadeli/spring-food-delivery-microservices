@@ -4,7 +4,6 @@ import com.github.mehdihadeli.buildingblocks.abstractions.AbstractionRoot;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.bean.BeanScopeExecutor;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.events.*;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.id.IdGenerator;
-import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.BusDirectPublisher;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceRepository;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.messaging.messagepersistence.MessagePersistenceService;
 import com.github.mehdihadeli.buildingblocks.abstractions.core.request.AsyncCommandBus;
@@ -161,10 +160,11 @@ public class CoreConfiguration {
             MessagePersistenceRepository messagePersistenceRepository,
             MessageSerializer messageSerializer,
             Mediator mediator,
-            BusDirectPublisher busDirectPublisher,
+            // BusDirectPublisher busDirectPublisher,
+            ApplicationContext applicationContext,
             Serializer serializer) {
         return new MessagePersistenceServiceImpl(
-                messagePersistenceRepository, messageSerializer, mediator, busDirectPublisher, serializer);
+                messagePersistenceRepository, messageSerializer, mediator, applicationContext, serializer);
     }
 
     @Bean

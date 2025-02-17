@@ -66,14 +66,15 @@ Thanks a bunch for supporting me!
 
 > This project is in progress, new features will be added over time.
 
-| Feature          | Architecture Pattern | Status         | CI-CD |
-| ---------------- | -------------------- | -------------- | ----- |
-| Building Blocks  | -                    | ✅ Completed   | -     |
-| API Gateway      | -                    | ✅ Completed   | -     |
-| Catalogs Service | -                    | ✅ Completed   | -     |
-| Identity Service | -                    | ❌ Not Started | -     |
-| Customer Service | -                    | ❌ Not Started | -     |
-| Order Service    | -                    | ❌ Not Started | -     |
+| Feature           | Architecture Pattern | Status         | CI-CD |
+|-------------------|----------------------|----------------|-------|
+| Building Blocks   | -                    | ✅ Completed    | -     |
+| API Gateway       | -                    | ✅ Completed    | -     |
+| Catalogs Service  | Domain Driven Design | ✅ Completed    | -     |
+| Identity Service  | Using Keycloak       | ✅ Completed    | -     |
+| Users Service     | Data Centric Design  | 👷 In-Progress | -     |
+| Customers Service | Domain Driven Design | 👷 In-Progress | -     |
+| Orders Service    | Event Sourcing       | ❌ Not Started  | -     |
 
 ## Technologies - Libraries
 
@@ -132,7 +133,8 @@ All of these are optional in a application and we should only use what the servi
 
 Here I used [Outbox](http://www.kamilgrzybek.com/design/the-outbox-pattern/) for [Guaranteed Delivery](https://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html) and can be used as a landing zone for integration events before they are published to the message broker.
 
-[Outbox pattern](https://event-driven.io/en/outbox_inbox_patterns_and_delivery_guarantees_explained/) ensures that a message was sent (e.g. to a queue) successfully at least once. With this pattern, instead of directly publishing a message to the queue, we put it in the temporary storage (e.g. database table) for preventing missing any message and some retry mechanism in any failure ([At-least-once Delivery](https://www.cloudcomputingpatterns.org/at_least_once_delivery/)). For example When we save data as part of one transaction in our service, we also save messages (Integration Events) that we want to process later in another microservices. The list of messages to be processed is called a [PersistMessage](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/PersistMessage.java) with a [MessageDeliveryType](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessageDeliveryType.java) which can be `Outbox`, `Inbox` and `InternalCommand` and a [MessageStatus](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessageStatus.java) which can be `Stored` and `Delivered`. The [MessagePersistenceService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessagePersistenceService.java) service is responsible for doing this message processing internally.
+[Outbox pattern](https://event-driven.io/en/outbox_inbox_patterns_and_delivery_guarantees_explained/) ensures that a message was sent (e.g. to a queue) successfully at least once. With this pattern, instead of directly publishing a message to the queue, we put it in the temporary storage (e.g. database table) for preventing missing any message and some retry mechanism in any failure ([At-least-once Delivery](https://www.cloudcomputingpatterns.org/at_least_once_delivery/)). For example When we save data as part of one transaction in our service, we also save messages (Integration Events) that we want to process later in another microservices. The list of messages to be processed is called a [PersistMessage](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/PersistMessage.java) with
+a [MessageDeliveryType](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessageDeliveryType.java) which can be `Outbox`, `Inbox` and `InternalCommand` and a [MessageStatus](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessageStatus.java) which can be `Stored` and `Delivered`. The [MessagePersistenceService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessagePersistenceService.java) service is responsible for doing this message processing internally.
 
 Also we have a background service [MessagePersistenceBackgroundService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/core/messaging/messagepersistence/MessagePersistenceBackgroundService.java) that periodically checks the our [PersistMessages](./building-blocks//src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/PersistMessage.java) in the database and try to send the messages to the broker with using our [MessagePersistenceService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/abstractions/core/messaging/messagepersistence/MessagePersistenceService.java) service. After it gets confirmation of publishing (e.g. ACK from the broker) it marks the message as processed to avoid `resending` and `duplication`.
 However, it is possible that we will not be able to mark the message as processed due to communication error, for example `broker` is `unavailable`. In this case our [MessagePersistenceBackgroundService](./building-blocks/src/main/java/com/github/mehdihadeli/buildingblocks/core/messaging/messagepersistence/MessagePersistenceBackgroundService.jav) try to resend the messages that not processed and it is actually [At-Least-Once delivery](http://www.cloudcomputingpatterns.org/at_least_once_delivery/). We can be sure that message will be sent `once`, but can be sent `multiple times` too! That’s why another name for this approach is Once-Or-More delivery. We should remember this and try to design receivers of our messages as [Idempotents](https://www.enterpriseintegrationpatterns.com/patterns/messaging/IdempotentReceiver.html), which means:
@@ -202,54 +204,72 @@ docker-compose -f ./deployments/docker-compose/docker-compose.infrastructure.yam
 
 Now we can run our microservices with using `mvn` and `make` command and some predefined commands in our [Makefile](./Makefile):
 
-**Run Services:**
+### Build & Install Services
+
+For running services firstly we should build and install `building-blocks` and `shared service` modules:
 
 ```bash
-# run catalogs
+make build-building-blocks     
+make install-building-blocks     
+
+make build-shared   
+make install-shared   
+```
+
+Then we should build and install other microservices:
+
+```bash
+make build-catalogs 
+make install-catalogs  
+
+make build-users    
+make install-users
+
+make build-customers   
+make install-customers
+
+make build-api-gateway   
+make install-api-gateway
+
+make build-orders   
+make install-orders
+```
+
+### Run Services
+
+```bash
 make run-catalogs
 
-# run api-gateway
+make run-users
+
+make run-customers
+
 make run-api-gateway
 ```
 
-**Build Services:**
+### Test Services
 
 ```bash
-# build catalogs
-make build-catalogs
-
-# build api-gateway
-make build-api-gateway
-
-# build-all services
-make build-all
-```
-
-**Test Services:**
-
-```bash
-# test catalogs
 make test-catalogs
 
-# test api-gateway
-make test-api-gateway
+make test-customers
 
-# test-all services
+make test-users
+
 make test-all
 ```
 
-**Install Services:**
+### Run Migrations
 
 ```bash
-# install catalogs
-make install-catalogs
+flyway-migrate-catalogs
 
-# install api-gateway
-make install-api-gateway
+flyway-migrate-users
 
-# install-all services
-make install-all
+flyway-migrate-customers
 ```
+
+### Other Useful Commands
 
 Some useful commands with using `make` and `mvn`:
 

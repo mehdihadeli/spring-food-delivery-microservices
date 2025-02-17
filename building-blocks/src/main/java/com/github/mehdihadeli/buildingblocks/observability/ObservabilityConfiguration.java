@@ -7,9 +7,13 @@ import static io.opentelemetry.semconv.ServiceAttributes.SERVICE_VERSION;
 import com.github.mehdihadeli.buildingblocks.abstractions.observability.DiagnosticsProvider;
 import com.github.mehdihadeli.buildingblocks.core.utils.EnvironmentUtils;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerMetrics;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerMetricsImpl;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerSpan;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.command.CommandHandlerSpanImpl;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerMetrics;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerMetricsImpl;
 import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerSpan;
+import com.github.mehdihadeli.buildingblocks.observability.diagnostics.query.QueryHandlerSpanImpl;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.Tracer;
@@ -41,6 +45,8 @@ import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.samplers.Sampler;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,6 +59,7 @@ import org.springframework.core.env.Environment;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ObservabilityProperties.class)
 public class ObservabilityConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(ObservabilityConfiguration.class);
 
     @Bean
     public Tracer tracer(OpenTelemetry openTelemetry, ObservabilityProperties observabilityProperties) {
@@ -80,22 +87,22 @@ public class ObservabilityConfiguration {
 
     @Bean
     public CommandHandlerSpan commandHandlerActivity(DiagnosticsProvider diagnosticsProvider) {
-        return new CommandHandlerSpan(diagnosticsProvider);
+        return new CommandHandlerSpanImpl(diagnosticsProvider);
     }
 
     @Bean
     public QueryHandlerSpan queryHandlerActivity(DiagnosticsProvider diagnosticsProvider) {
-        return new QueryHandlerSpan(diagnosticsProvider);
+        return new QueryHandlerSpanImpl(diagnosticsProvider);
     }
 
     @Bean
     public QueryHandlerMetrics queryHandlerMetrics(Meter meter) {
-        return new QueryHandlerMetrics(meter);
+        return new QueryHandlerMetricsImpl(meter);
     }
 
     @Bean
     public CommandHandlerMetrics commandHandlerMetrics(Meter meter) {
-        return new CommandHandlerMetrics(meter);
+        return new CommandHandlerMetricsImpl(meter);
     }
 
     // https://opentelemetry.io/docs/zero-code/java/spring-boot-starter/sdk-configuration/#programmatic-configuration
@@ -152,110 +159,150 @@ public class ObservabilityConfiguration {
 
     private void configLogsExporters(
             SdkLoggerProviderBuilder loggerProviderBuilder, ObservabilityProperties observabilityProperties) {
-
         if (observabilityProperties.isUseOtlpGrpcExporter()) {
-            // Create an OTLP gRPC Log Exporter
-            // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/log-appender/src/main/java/io/opentelemetry/example/logappender/Application.java
-            OtlpGrpcLogRecordExporter otlpGrpcLogRecordExporter = OtlpGrpcLogRecordExporter.builder()
-                    .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
-                    .build();
+            try {
+                // Create an OTLP gRPC Log Exporter
+                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/log-appender/src/main/java/io/opentelemetry/example/logappender/Application.java
+                OtlpGrpcLogRecordExporter otlpGrpcLogRecordExporter = OtlpGrpcLogRecordExporter.builder()
+                        .setEndpoint(
+                                observabilityProperties.getOtlpOptions().getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
+                        .build();
 
-            loggerProviderBuilder.addLogRecordProcessor(
-                    BatchLogRecordProcessor.builder(otlpGrpcLogRecordExporter).build());
+                loggerProviderBuilder.addLogRecordProcessor(BatchLogRecordProcessor.builder(otlpGrpcLogRecordExporter)
+                        .build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register OTLP Grpc Log Exporter, error: {}", e.getMessage());
+            }
         }
         if (observabilityProperties.isUseOtlpHttpExporter()) {
-            // Create an OTLP http Log Exporter
-            OtlpHttpLogRecordExporter otlpHttpLogRecordExporter = OtlpHttpLogRecordExporter.builder()
-                    .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpHttpEndpoint()) // OTLP Http endpoint
-                    .build();
+            try {
+                // Create an OTLP http Log Exporter
+                OtlpHttpLogRecordExporter otlpHttpLogRecordExporter = OtlpHttpLogRecordExporter.builder()
+                        .setEndpoint(
+                                observabilityProperties.getOtlpOptions().getOtlpHttpEndpoint()) // OTLP Http endpoint
+                        .build();
 
-            loggerProviderBuilder.addLogRecordProcessor(
-                    BatchLogRecordProcessor.builder(otlpHttpLogRecordExporter).build());
+                loggerProviderBuilder.addLogRecordProcessor(BatchLogRecordProcessor.builder(otlpHttpLogRecordExporter)
+                        .build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register OTLP Http Log Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseAspireOtlpExporter()) {
             if (!StringUtils.isEmpty(
                     observabilityProperties.getAspireDashboardOtlpOptions().getOtlpGrpcEndpoint())) {
-                OtlpGrpcLogRecordExporter aspireOtlpGrpcLogRecordExporter = OtlpGrpcLogRecordExporter.builder()
-                        .setEndpoint(observabilityProperties
-                                .getAspireDashboardOtlpOptions()
-                                .getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
-                        .build();
+                try {
+                    OtlpGrpcLogRecordExporter aspireOtlpGrpcLogRecordExporter = OtlpGrpcLogRecordExporter.builder()
+                            .setEndpoint(observabilityProperties
+                                    .getAspireDashboardOtlpOptions()
+                                    .getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
+                            .build();
 
-                loggerProviderBuilder.addLogRecordProcessor(
-                        BatchLogRecordProcessor.builder(aspireOtlpGrpcLogRecordExporter)
-                                .build());
+                    loggerProviderBuilder.addLogRecordProcessor(
+                            BatchLogRecordProcessor.builder(aspireOtlpGrpcLogRecordExporter)
+                                    .build());
+                } catch (RuntimeException e) {
+                    logger.error("Could not register Aspire OTLP Log Exporter, error: {}", e.getMessage());
+                }
             }
         }
 
         if (observabilityProperties.isUseConsoleExporter()) {
-            // https://github.com/open-telemetry/opentelemetry-java/blob/main/exporters/logging/src/main/java/io/opentelemetry/exporter/logging/SystemOutLogRecordExporter.java
-            // Create a custom Console Log Exporter
-            SystemOutLogRecordExporter consoleLogExporter = SystemOutLogRecordExporter.create();
+            try {
+                // https://github.com/open-telemetry/opentelemetry-java/blob/main/exporters/logging/src/main/java/io/opentelemetry/exporter/logging/SystemOutLogRecordExporter.java
+                // Create a custom Console Log Exporter
+                SystemOutLogRecordExporter consoleLogExporter = SystemOutLogRecordExporter.create();
 
-            // Configure the SDK to use the custom Console Log Exporter
-            loggerProviderBuilder.addLogRecordProcessor(SimpleLogRecordProcessor.create(consoleLogExporter));
+                // Configure the SDK to use the custom Console Log Exporter
+                loggerProviderBuilder.addLogRecordProcessor(SimpleLogRecordProcessor.create(consoleLogExporter));
+            } catch (RuntimeException e) {
+                logger.error("Could not register Console Exporter, error: {}", e.getMessage());
+            }
         }
     }
 
     private void configMetricsExporters(
             SdkMeterProviderBuilder meterProviderBuilder, ObservabilityProperties observabilityProperties) {
         if (observabilityProperties.isUsePrometheusExporter()) {
-            // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/prometheus/src/main/java/io/opentelemetry/example/prometheus/ExampleConfiguration.java
-            // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/prometheus/src/main/java/io/opentelemetry/exporter/prometheus
-            // Create a Prometheus HTTP server exporter
-            // for exporting app metrics to `/metrics` endpoint
-            MetricReader prometheusReader = PrometheusHttpServer.builder()
-                    .setPort(observabilityProperties.getPrometheusPort())
-                    .build();
+            try {
+                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/prometheus/src/main/java/io/opentelemetry/example/prometheus/ExampleConfiguration.java
+                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/prometheus/src/main/java/io/opentelemetry/exporter/prometheus
+                // Create a Prometheus HTTP server exporter
+                // for exporting app metrics to `/metrics` endpoint
+                MetricReader prometheusReader = PrometheusHttpServer.builder()
+                        .setPort(observabilityProperties.getPrometheusPort())
+                        .build();
 
-            meterProviderBuilder.registerMetricReader(prometheusReader);
+                meterProviderBuilder.registerMetricReader(prometheusReader);
+            } catch (RuntimeException e) {
+                logger.error("Could not register Prometheus Metrics Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseConsoleExporter()) {
-            // write metrics to logs
-            // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/logging
-            // https://github.com/open-telemetry/opentelemetry-java/blob/main/exporters/logging/src/main/java/io/opentelemetry/exporter/logging/LoggingMetricExporter.java
-            // Create a Logging Metric Exporter
-            LoggingMetricExporter loggingMetricExporter = LoggingMetricExporter.create();
+            try {
+                // write metrics to logs
+                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/logging
+                // https://github.com/open-telemetry/opentelemetry-java/blob/main/exporters/logging/src/main/java/io/opentelemetry/exporter/logging/LoggingMetricExporter.java
+                // Create a Logging Metric Exporter
+                LoggingMetricExporter loggingMetricExporter = LoggingMetricExporter.create();
 
-            // Configure the SDK to use the Logging Metric Exporter
-            meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(loggingMetricExporter)
-                    .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
-                    .build());
+                // Configure the SDK to use the Logging Metric Exporter
+                meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(loggingMetricExporter)
+                        .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
+                        .build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register Console Metrics Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseOtlpGrpcExporter()) {
-            // Create an OTLP gRPC metric exporter
-            OtlpGrpcMetricExporter otlpGrpcMetricExporter = OtlpGrpcMetricExporter.builder()
-                    .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
-                    .build();
-            meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(otlpGrpcMetricExporter)
-                    .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
-                    .build());
+            try {
+                // Create an OTLP gRPC metric exporter
+                OtlpGrpcMetricExporter otlpGrpcMetricExporter = OtlpGrpcMetricExporter.builder()
+                        .setEndpoint(
+                                observabilityProperties.getOtlpOptions().getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
+                        .build();
+                meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(otlpGrpcMetricExporter)
+                        .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
+                        .build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register OTLP Grpc Metrics Exporter, error: {}", e.getMessage());
+            }
         }
         if (observabilityProperties.isUseOtlpHttpExporter()) {
-            // Create an OTLP http metric exporter
-            OtlpHttpMetricExporter otlpHttpMetricExporter = OtlpHttpMetricExporter.builder()
-                    .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpHttpEndpoint()) // OTLP Http endpoint
-                    .build();
-            meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(otlpHttpMetricExporter)
-                    .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
-                    .build());
+            try {
+                // Create an OTLP http metric exporter
+                OtlpHttpMetricExporter otlpHttpMetricExporter = OtlpHttpMetricExporter.builder()
+                        .setEndpoint(
+                                observabilityProperties.getOtlpOptions().getOtlpHttpEndpoint()) // OTLP Http endpoint
+                        .build();
+                meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(otlpHttpMetricExporter)
+                        .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
+                        .build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register OTLP Http Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseAspireOtlpExporter()) {
+
             // Create an OTLP gRPC metric exporter
             if (!StringUtils.isEmpty(
                     observabilityProperties.getAspireDashboardOtlpOptions().getOtlpGrpcEndpoint())) {
-                OtlpGrpcMetricExporter aspireOtlpGrpcMetricExporter = OtlpGrpcMetricExporter.builder()
-                        .setEndpoint(observabilityProperties
-                                .getAspireDashboardOtlpOptions()
-                                .getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
-                        .build();
-                meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(aspireOtlpGrpcMetricExporter)
-                        .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
-                        .build());
+                try {
+                    OtlpGrpcMetricExporter aspireOtlpGrpcMetricExporter = OtlpGrpcMetricExporter.builder()
+                            .setEndpoint(observabilityProperties
+                                    .getAspireDashboardOtlpOptions()
+                                    .getOtlpGrpcEndpoint()) // OTLP gRPC endpoint
+                            .build();
+                    meterProviderBuilder.registerMetricReader(PeriodicMetricReader.builder(aspireOtlpGrpcMetricExporter)
+                            .setInterval(5, java.util.concurrent.TimeUnit.SECONDS) // Export interval
+                            .build());
+                } catch (RuntimeException e) {
+                    logger.error("Could not register Aspire OTLP Metrics Exporter, error: {}", e.getMessage());
+                }
             }
         }
     }
@@ -264,72 +311,96 @@ public class ObservabilityConfiguration {
             SdkTracerProviderBuilder tracerProviderBuilder, ObservabilityProperties observabilityProperties) {
         // Create an OTLP gRPC trace exporter
         if (observabilityProperties.isUseJaegerExporter()) {
-            // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
-            // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/jaeger/src/main/java/io/opentelemetry/example/jaeger/ExampleConfiguration.java
-            OtlpGrpcSpanExporter jaegerOtlpExporter = OtlpGrpcSpanExporter.builder()
-                    .setEndpoint(observabilityProperties.getJaegerOptions().getOtlpGrpcEndpoint())
-                    .setTimeout(30, TimeUnit.SECONDS)
-                    .build();
-            tracerProviderBuilder.addSpanProcessor(
-                    BatchSpanProcessor.builder(jaegerOtlpExporter).build());
+            try {
+                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
+                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/jaeger/src/main/java/io/opentelemetry/example/jaeger/ExampleConfiguration.java
+                OtlpGrpcSpanExporter jaegerOtlpExporter = OtlpGrpcSpanExporter.builder()
+                        .setEndpoint(observabilityProperties.getJaegerOptions().getOtlpGrpcEndpoint())
+                        .setTimeout(30, TimeUnit.SECONDS)
+                        .build();
+                tracerProviderBuilder.addSpanProcessor(
+                        BatchSpanProcessor.builder(jaegerOtlpExporter).build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register Jaeger Metrics Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseZipkinExporter()) {
-            // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/zipkin/src/main/java/io/opentelemetry/example/zipkin/ExampleConfiguration.java
-            // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/zipkin
-            ZipkinSpanExporter zipkinExporter = ZipkinSpanExporter.builder()
-                    .setEndpoint(observabilityProperties.getZipkinOptions().getHttpEndpoint())
-                    .build();
-            tracerProviderBuilder.addSpanProcessor(
-                    SimpleSpanProcessor.builder(zipkinExporter).build());
+            try {
+                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/zipkin/src/main/java/io/opentelemetry/example/zipkin/ExampleConfiguration.java
+                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/zipkin
+                ZipkinSpanExporter zipkinExporter = ZipkinSpanExporter.builder()
+                        .setEndpoint(observabilityProperties.getZipkinOptions().getHttpEndpoint())
+                        .build();
+                tracerProviderBuilder.addSpanProcessor(
+                        SimpleSpanProcessor.builder(zipkinExporter).build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register Zipkin Metrics Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseConsoleExporter()) {
-            // write spans to logs
-            // https://github.com/open-telemetry/opentelemetry-java/blob/main/exporters/logging/src/main/java/io/opentelemetry/exporter/logging/LoggingSpanExporter.java
-            // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/logging
-            // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/http/src/main/java/io/opentelemetry/example/http/ExampleConfiguration.java
-            LoggingSpanExporter loggingSpanExporter = LoggingSpanExporter.create();
+            try {
+                // write spans to logs
+                // https://github.com/open-telemetry/opentelemetry-java/blob/main/exporters/logging/src/main/java/io/opentelemetry/exporter/logging/LoggingSpanExporter.java
+                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/logging
+                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/http/src/main/java/io/opentelemetry/example/http/ExampleConfiguration.java
+                LoggingSpanExporter loggingSpanExporter = LoggingSpanExporter.create();
 
-            tracerProviderBuilder.addSpanProcessor(SimpleSpanProcessor.create(loggingSpanExporter));
+                tracerProviderBuilder.addSpanProcessor(SimpleSpanProcessor.create(loggingSpanExporter));
+            } catch (RuntimeException e) {
+                logger.error("Could not register Console Metrics Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseOtlpGrpcExporter()) {
-            // Create an OTLP gRPC trace exporter
-            // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
-            // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
-            OtlpGrpcSpanExporter otlpGrpcExporter = OtlpGrpcSpanExporter.builder()
-                    .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpGrpcEndpoint())
-                    .setTimeout(30, TimeUnit.SECONDS)
-                    .build();
-            tracerProviderBuilder.addSpanProcessor(
-                    BatchSpanProcessor.builder(otlpGrpcExporter).build());
+            try {
+                // Create an OTLP gRPC trace exporter
+                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
+                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
+                OtlpGrpcSpanExporter otlpGrpcExporter = OtlpGrpcSpanExporter.builder()
+                        .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpGrpcEndpoint())
+                        .setTimeout(30, TimeUnit.SECONDS)
+                        .build();
+                tracerProviderBuilder.addSpanProcessor(
+                        BatchSpanProcessor.builder(otlpGrpcExporter).build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register OTLP Grpc Metrics Exporter, error: {}", e.getMessage());
+            }
         }
         if (observabilityProperties.isUseOtlpHttpExporter()) {
-            // Create an OTLP http trace exporter
-            // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
-            // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
-            OtlpHttpSpanExporter otlpHttpExporter = OtlpHttpSpanExporter.builder()
-                    .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpHttpEndpoint())
-                    .setTimeout(30, TimeUnit.SECONDS)
-                    .build();
-            tracerProviderBuilder.addSpanProcessor(
-                    BatchSpanProcessor.builder(otlpHttpExporter).build());
+            try {
+                // Create an OTLP http trace exporter
+                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
+                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
+                OtlpHttpSpanExporter otlpHttpExporter = OtlpHttpSpanExporter.builder()
+                        .setEndpoint(observabilityProperties.getOtlpOptions().getOtlpHttpEndpoint())
+                        .setTimeout(30, TimeUnit.SECONDS)
+                        .build();
+                tracerProviderBuilder.addSpanProcessor(
+                        BatchSpanProcessor.builder(otlpHttpExporter).build());
+            } catch (RuntimeException e) {
+                logger.error("Could not register OTLP Http Exporter, error: {}", e.getMessage());
+            }
         }
 
         if (observabilityProperties.isUseAspireOtlpExporter()) {
             if (!StringUtils.isEmpty(
                     observabilityProperties.getAspireDashboardOtlpOptions().getOtlpGrpcEndpoint())) {
-                // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
-                // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
-                OtlpGrpcSpanExporter aspireOtlpGrpcExporter = OtlpGrpcSpanExporter.builder()
-                        .setEndpoint(observabilityProperties
-                                .getAspireDashboardOtlpOptions()
-                                .getOtlpGrpcEndpoint())
-                        .setTimeout(30, TimeUnit.SECONDS)
-                        .build();
-                tracerProviderBuilder.addSpanProcessor(
-                        BatchSpanProcessor.builder(aspireOtlpGrpcExporter).build());
+                try {
+                    // https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
+                    // https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/otlp
+                    OtlpGrpcSpanExporter aspireOtlpGrpcExporter = OtlpGrpcSpanExporter.builder()
+                            .setEndpoint(observabilityProperties
+                                    .getAspireDashboardOtlpOptions()
+                                    .getOtlpGrpcEndpoint())
+                            .setTimeout(30, TimeUnit.SECONDS)
+                            .build();
+                    tracerProviderBuilder.addSpanProcessor(
+                            BatchSpanProcessor.builder(aspireOtlpGrpcExporter).build());
+                } catch (RuntimeException e) {
+                    logger.error("Could not register Aspire OTLP Metrics Exporter, error: {}", e.getMessage());
+                }
             }
         }
     }

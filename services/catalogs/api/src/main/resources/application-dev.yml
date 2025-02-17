@@ -28,7 +28,8 @@ spring:
     password: guest
     virtual-host: /
     use-outbox: true
-
+    enabled: true
+    
 logging:
   level:
     org: info

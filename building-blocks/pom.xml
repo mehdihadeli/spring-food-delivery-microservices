@@ -177,15 +177,6 @@
       <artifactId>opentelemetry-exporter-zipkin</artifactId>
     </dependency>
 
-    <!-- https://opentelemetry.io/docs/languages/java/intro/#dependencies-and-boms-->
-    <!-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/rabbitmq-2.7-->
-    <!--exists in the `opentelemetry-instrumentation-bom-alpha` pom.xml-->
-    <!-- auto instrumentation of rabbitmq-->
-    <dependency>
-      <groupId>io.opentelemetry.javaagent.instrumentation</groupId>
-      <artifactId>opentelemetry-javaagent-rabbitmq-2.7</artifactId>
-    </dependency>
-
     <!-- OpenTelemetry Prometheus Exporter -->
     <!-- https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/prometheus/src/main/java/io/opentelemetry/example/prometheus/ExampleConfiguration.java-->
     <!-- https://github.com/open-telemetry/opentelemetry-java/tree/main/exporters/prometheus-->
@@ -245,7 +236,33 @@
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
     </dependency>
+
+    <!-- Spring Security -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <!-- Spring Security OAuth2 Resource Server for jwt validation -->
+    <!-- The resource server validate jwt token using keycloak public key that provided in the `openid-connect/certs` endpoint that we configured in the settings-->
+    <!-- It checks the token's signature, expiration, issuer, and audience.-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-admin-client</artifactId>
+    </dependency>
+
   </dependencies>
+
 
   <build>
     <plugins>

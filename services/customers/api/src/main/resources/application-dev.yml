@@ -1,0 +1,40 @@
+# Development environment
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # create `customers_service` database in `init-postgres.sql` file of postgres container
+  datasource:
+    url: jdbc:postgresql://localhost:5432/customers_service
+    username: postgres
+    password: postgres
+    name: customers-connection
+
+  jpa:
+    database: postgresql
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      generate-statistics: false
+      # when we use flyway we should turn of hibernate `ddl-auto`
+      ddl-auto: none
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    use-outbox: true
+    enabled: true
+
+logging:
+  level:
+    org: info
+    com: info
+
+message-persistence:
+  interval: 3
+  message-persist-provider-type: postgresql
