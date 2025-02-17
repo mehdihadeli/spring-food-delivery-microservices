@@ -1,17 +1,19 @@
 package com.github.mehdihadeli.buildingblocks.security;
 
-import java.io.IOException;
+import com.github.mehdihadeli.buildingblocks.security.tokenaccessors.OAuthCustomClientTokenAccessor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
+import java.io.IOException;
+
 public class ClientOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
 
-    private final ClientTokenAccessor clientTokenAccessor;
+    private final OAuthCustomClientTokenAccessor clientTokenAccessor;
 
-    public ClientOAuthTokenInterceptor(ClientTokenAccessor tokenAccessor) {
+    public ClientOAuthTokenInterceptor(OAuthCustomClientTokenAccessor tokenAccessor) {
         this.clientTokenAccessor = tokenAccessor;
     }
 
@@ -19,7 +21,7 @@ public class ClientOAuthTokenInterceptor implements ClientHttpRequestInterceptor
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
         // Get or generate the token
-        String accessToken = clientTokenAccessor.getClientToken().getAccessToken();
+        String accessToken = clientTokenAccessor.getClientToken().accessToken();
 
         // Add the token to the request headers
         request.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);

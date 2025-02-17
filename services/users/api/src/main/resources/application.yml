@@ -3,7 +3,7 @@
 # Common configurations across all environments
 
 server:
-  port: 6000 # Port for the service
+  port: 6400 # Port for the service
 spring:
   application:
     name: users service api
@@ -16,12 +16,21 @@ spring:
     active: local  # Set the default active profile
     default: local # Set the default profile if none specified
 
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/auth/realms/food-delivery-microservices
           jwk-set-uri: http://localhost:8080/realms/food-delivery-microservices/protocol/openid-connect/certs
+      custom-client-options:
+        host-url: http://localhost:8080
+        client-id: ${CUSTOM_CLIENT_ID}
+        grant-type: ${CUSTOM_CLIENT_GRANT_TYPE}
+        user-name: ${USERS_CLIENT_USERNAME}
+        password: ${USERS_CLIENT_PASSWORD}
+        application-realm-name: food-delivery-microservices
+        admin-realm-name: master
 
   main:
     banner-mode: off
@@ -39,7 +48,6 @@ spring:
       # Disable Hibernate's automatic schema updates, when we use flyway we should turn of hibernate `ddl-auto`
       ddl-auto: none
       generate-statistics: false
-
 
   rabbitmq:
     host: localhost
@@ -59,12 +67,6 @@ spring:
   data:
     mongodb:
       enabled: false
-
-app:
-  version: "1.0.0"
-  name: "Users Service"
-  seed:
-    enabled: false
 
 swagger:
   title: "Users Service"

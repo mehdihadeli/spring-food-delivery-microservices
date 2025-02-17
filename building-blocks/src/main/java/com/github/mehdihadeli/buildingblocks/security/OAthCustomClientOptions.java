@@ -1,18 +1,21 @@
 package com.github.mehdihadeli.buildingblocks.security;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "spring.security.oauth2.keycloak-client-options")
-public class KeycloakClientOptions {
+import java.util.HashMap;
+import java.util.Map;
 
-    private String baseUrl;
-    private String tokenUri;
+@ConfigurationProperties(prefix = "spring.security.oauth2.custom-client-options")
+public class OAthCustomClientOptions {
+
+    private String hostUrl;
     private String clientId;
+    private String adminRealmName;
+    private String applicationRealmName;
     private String clientSecret;
+    private String userName;
+    private String password;
     private String grantType;
-    private String authUri; // For Authorization Code Flow
     private String redirectUri; // For Authorization Code Flow
     private String userInfoUri; // For fetching user info
 
@@ -20,14 +23,6 @@ public class KeycloakClientOptions {
     private Map<String, String> additionalConfigs = new HashMap<>();
 
     // Getters and setters
-
-    public String getTokenUri() {
-        return tokenUri;
-    }
-
-    public void setTokenUri(String tokenUri) {
-        this.tokenUri = tokenUri;
-    }
 
     public String getClientId() {
         return clientId;
@@ -43,14 +38,6 @@ public class KeycloakClientOptions {
 
     public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
-    }
-
-    public String getAuthUri() {
-        return authUri;
-    }
-
-    public void setAuthUri(String authUri) {
-        this.authUri = authUri;
     }
 
     public String getRedirectUri() {
@@ -93,11 +80,43 @@ public class KeycloakClientOptions {
         this.additionalConfigs = additionalConfigs;
     }
 
-    public String getBaseUrl() {
-        return baseUrl;
+    public String getHostUrl() {
+        return hostUrl;
     }
 
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
+    }
+
+    public String getAdminRealmName() {
+        return adminRealmName;
+    }
+
+    public void setAdminRealmName(String adminRealmName) {
+        this.adminRealmName = adminRealmName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getApplicationRealmName() {
+        return applicationRealmName;
+    }
+
+    public void setApplicationRealmName(String applicationRealmName) {
+        this.applicationRealmName = applicationRealmName;
     }
 }

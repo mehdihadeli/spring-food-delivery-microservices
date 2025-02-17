@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import;
 
 @AutoConfiguration
-@EnableConfigurationProperties(KeycloakClientOptions.class)
+@EnableConfigurationProperties(OAthCustomClientOptions.class)
 @Import(SecurityConfiguration.class)
 public class SecurityAutoConfiguration {}

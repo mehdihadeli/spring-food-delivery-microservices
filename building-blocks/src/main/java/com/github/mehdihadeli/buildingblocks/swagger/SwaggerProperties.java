@@ -1,10 +1,11 @@
 package com.github.mehdihadeli.buildingblocks.swagger;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.validation.annotation.Validated;
 
-@Validated
 @ConfigurationProperties(prefix = "swagger")
 public class SwaggerProperties {
 

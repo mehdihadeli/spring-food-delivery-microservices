@@ -1,7 +1,6 @@
-package com.github.mehdihadeli.buildingblocks.security;
+package com.github.mehdihadeli.buildingblocks.security.tokenaccessors;
 
-import java.time.Duration;
-import java.time.Instant;
+import com.github.mehdihadeli.buildingblocks.security.TokenRefresher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -10,29 +9,35 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 
+import java.time.Duration;
+import java.time.Instant;
+
 // ref:
 // https://github.com/thomasdarimont/keycloak-project-example/blob/main/apps/bff-springboot3/src/main/java/com/github/thomasdarimont/apps/bff3/oauth/TokenAccessor.java
 
 /**
  * Provides access to OAuth2 access- and refresh-tokens of an authenticated user.
  */
-public class RequestTokenAccessor {
+public class OAuthRequestTokenAccessorImpl implements OAuthRequestTokenAccessor {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
 
     private final TokenRefresher tokenRefresher;
 
-    public RequestTokenAccessor(OAuth2AuthorizedClientService authorizedClientService, TokenRefresher tokenRefresher) {
+    public OAuthRequestTokenAccessorImpl(
+            OAuth2AuthorizedClientService authorizedClientService, TokenRefresher tokenRefresher) {
         this.authorizedClientService = authorizedClientService;
         this.tokenRefresher = tokenRefresher;
     }
 
     private final Duration accessTokenExpiresSkew = Duration.ofSeconds(10);
 
+    @Override
     public OAuth2AccessToken getRequestAccessTokenForCurrentUser() {
         return getAccessToken(SecurityContextHolder.getContext().getAuthentication());
     }
 
+    @Override
     public OAuth2AccessToken getAccessToken(Authentication auth) {
 
         var client = getOAuth2AuthorizedClient(auth);
@@ -54,6 +59,7 @@ public class RequestTokenAccessor {
         return accessToken;
     }
 
+    @Override
     public OAuth2RefreshToken getRefreshToken(Authentication auth) {
 
         OAuth2AuthorizedClient client = getOAuth2AuthorizedClient(auth);

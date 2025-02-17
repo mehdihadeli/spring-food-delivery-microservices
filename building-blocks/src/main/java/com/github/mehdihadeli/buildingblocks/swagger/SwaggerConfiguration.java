@@ -8,9 +8,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.annotation.PostConstruct;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springdoc.webmvc.ui.SwaggerConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +20,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 // another internally.
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SwaggerProperties.class)
-@ConditionalOnClass({SwaggerConfig.class, OpenAPI.class, PropertiesService.class})
 @ConditionalOnBean({PropertiesService.class})
 // @ConditionalOnProperty(prefix = "swagger", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerConfiguration {

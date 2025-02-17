@@ -5,12 +5,12 @@ spring:
     activate:
       on-profile: dev
 
-  # create `catalogs_service` database in `init-postgres.sql` file of postgres container
+  # create `users_service` database in `init-postgres.sql` file of postgres container
   datasource:
-    url: jdbc:postgresql://localhost:5432/catalogs_service
+    url: jdbc:postgresql://localhost:5432/users_service
     username: postgres
     password: postgres
-    name: catalogs-connection
+    name: users-connection
 
   jpa:
     database: postgresql
@@ -28,6 +28,7 @@ spring:
     password: guest
     virtual-host: /
     use-outbox: true
+    enabled: true
 
 logging:
   level:

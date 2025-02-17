@@ -2,6 +2,10 @@ package com.github.mehdihadeli.buildingblocks.security;
 
 import com.github.mehdihadeli.buildingblocks.problemdetails.DefaultProblemDetailsExceptionHandler;
 import com.github.mehdihadeli.buildingblocks.problemdetails.ProblemDetailsConfiguration;
+import com.github.mehdihadeli.buildingblocks.security.tokenaccessors.OAuthCustomClientTokenAccessor;
+import com.github.mehdihadeli.buildingblocks.security.tokenaccessors.OAuthCustomClientTokenAccessorImpl;
+import com.github.mehdihadeli.buildingblocks.security.tokenaccessors.OAuthRequestTokenAccessor;
+import com.github.mehdihadeli.buildingblocks.security.tokenaccessors.OAuthRequestTokenAccessorImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
 
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableConfigurationProperties(KeycloakClientOptions.class)
+@EnableConfigurationProperties(OAthCustomClientOptions.class)
 @Configuration
 public class SecurityConfiguration {
 
@@ -53,7 +57,7 @@ public class SecurityConfiguration {
                 // Configure OAuth2 resource server for JWT validation
                 .oauth2ResourceServer(
                         oauth2 -> oauth2.jwt(jwt -> {
-                                    // - By default, Spring Security's default JwtAuthenticationConverter only extracts
+                                    // - By default, Spring Security's default JwtAuthenticationConverter onlyextracts
                                     // scopes (e.g., roles, profile, email) from the scope claim in the JWT token. It
                                     // does not automatically extract realm roles or client roles from the realm_access
                                     // and resource_access claims. To fix this, you need to customize the
@@ -80,37 +84,49 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public ClientTokenAccessor clientTokenService(KeycloakClientOptions keycloakClientOptions) {
-        return new ClientTokenAccessorImpl(keycloakClientOptions);
+    public KeycloakCustomClientFactory keycloakClientFactory(OAthCustomClientOptions keycloakClientOptions) {
+        return new KeycloakCustomClientFactoryImpl(keycloakClientOptions);
     }
 
     @Bean
-    @Qualifier("gatewayOauth")
-    public RestTemplate gatewayOauthRestTemplate(RequestTokenAccessor requestTokenAccessor) {
+    public OAuthCustomClientTokenAccessor customClientTokenAccessor(KeycloakCustomClientFactory keycloakClientFactory) {
+        return new OAuthCustomClientTokenAccessorImpl(keycloakClientFactory);
+    }
+
+    @Bean
+    public OAuthRequestTokenAccessor requestTokenAccessor(
+            OAuth2AuthorizedClientService oAuth2AuthorizedClientService, TokenRefresher tokenRefresher) {
+        return new OAuthRequestTokenAccessorImpl(oAuth2AuthorizedClientService, tokenRefresher);
+    }
+
+    @Bean
+    @Qualifier("oauthRequestToken")
+    public RestTemplate oauthRequestTokenRestTemplate(OAuthRequestTokenAccessor oAuthRequestTokenAccessor) {
         var restTemplate = new RestTemplate();
 
         // Add the custom interceptor
-        restTemplate.getInterceptors().add(new GatewayOAuthTokenInterceptor(requestTokenAccessor));
+        restTemplate.getInterceptors().add(new OAuthRequestTokenInterceptor(oAuthRequestTokenAccessor));
 
         return restTemplate;
     }
 
     @Bean
-    @Qualifier("clientOauth")
-    public RestTemplate clientOauthRestTemplate(ClientTokenAccessor clientTokenAccessor) {
+    @Qualifier("oauthCustomClientToken")
+    public RestTemplate oauthCustomClientTokenRestTemplate(
+            OAuthCustomClientTokenAccessor oauthCustomClientTokenAccessor) {
         RestTemplate restTemplate = new RestTemplate();
 
         // Add the custom interceptor
-        restTemplate.getInterceptors().add(new ClientOAuthTokenInterceptor(clientTokenAccessor));
+        restTemplate.getInterceptors().add(new ClientOAuthTokenInterceptor(oauthCustomClientTokenAccessor));
 
         return restTemplate;
     }
 
     @Bean
-    RestTemplateWithToken restTemplateWithToken(
-            @Qualifier("clientOauth") RestTemplate clientOauthRestTemplate,
-            @Qualifier("gatewayOauth") RestTemplate oauthRestTemplate) {
-        return new RestTemplateWithTokenImpl(clientOauthRestTemplate, oauthRestTemplate);
+    OAuthRestTemplate restTemplateWithToken(
+            @Qualifier("oauthRequestToken") RestTemplate oauthRequestTokenRestTemplate,
+            @Qualifier("oauthCustomClientToken") RestTemplate oauthCustomClientTokenRestTemplate) {
+        return new OAuthRestTemplateImpl(oauthCustomClientTokenRestTemplate, oauthRequestTokenRestTemplate);
     }
 
     @Bean
@@ -131,12 +147,6 @@ public class SecurityConfiguration {
     @Bean
     public TokenRefresher tokenRefresher(OAuth2AuthorizedClientService oAuth2AuthorizedClientService) {
         return new TokenRefresher(oAuth2AuthorizedClientService);
-    }
-
-    @Bean
-    public RequestTokenAccessor tokenAccessor(
-            OAuth2AuthorizedClientService oAuth2AuthorizedClientService, TokenRefresher tokenRefresher) {
-        return new RequestTokenAccessor(oAuth2AuthorizedClientService, tokenRefresher);
     }
 
     @Bean

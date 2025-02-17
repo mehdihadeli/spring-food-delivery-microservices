@@ -1,6 +1,6 @@
 package com.github.mehdihadeli.buildingblocks.security;
 
-import java.io.IOException;
+import com.github.mehdihadeli.buildingblocks.security.tokenaccessors.OAuthRequestTokenAccessor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -8,11 +8,13 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
-public class GatewayOAuthTokenInterceptor implements ClientHttpRequestInterceptor {
+import java.io.IOException;
 
-    private final RequestTokenAccessor requestTokenAccessor;
+public class OAuthRequestTokenInterceptor implements ClientHttpRequestInterceptor {
 
-    public GatewayOAuthTokenInterceptor(RequestTokenAccessor requestTokenAccessor) {
+    private final OAuthRequestTokenAccessor requestTokenAccessor;
+
+    public OAuthRequestTokenInterceptor(OAuthRequestTokenAccessor requestTokenAccessor) {
         this.requestTokenAccessor = requestTokenAccessor;
     }
 

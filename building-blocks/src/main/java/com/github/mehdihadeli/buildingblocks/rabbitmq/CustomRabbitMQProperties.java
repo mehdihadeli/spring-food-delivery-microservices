@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.rabbitmq")
 public class CustomRabbitMQProperties {
     private boolean useOutbox = true;
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     public boolean isUseOutbox() {
         return useOutbox;
