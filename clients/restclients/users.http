@@ -1,0 +1,86 @@
+### implicit-flow-client
+GET {{keycloakAddress}}/realms/food-delivery-microservices/protocol/openid-connect/auth?
+  client_id=implicit-flow-client&redirect_uri=http://localhost:3000&response_type=token&
+  scope=basic%20email%20profile%20roles&
+  state={{STATE}}
+
+> {%
+  client.global.set("token", response.body.access_token);
+%}
+
+### users-microservice-client
+POST {{keycloakAddress}}/realms/food-delivery-microservices/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id = users-microservice-client &
+client_secret = {{USERS_MICROSERVICE_CLIENT_SECRET}} &
+grant_type = client_credentials
+
+> {%
+  client.global.set("token", response.body.access_token);
+%}
+
+### Create User
+POST {{usersAddress}}/api/v1/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userName": "testuser",
+  "password": "password123",
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "testuser@example.com",
+  "emailVerified": true,
+  "enabled": true,
+  "roles": [
+    "user"
+  ],
+  "clientRoles": {
+    "client1": "role1"
+  },
+  "attributes": {
+    "attr1": [
+      "value1"
+    ]
+  }
+}
+
+### Create Customer User
+POST {{usersAddress}}/api/v1/users/customer-user
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userName": "customeruser",
+  "password": "password123",
+  "firstName": "Customer",
+  "lastName": "User",
+  "email": "customer@example.com",
+  "attributes": {
+    "attr1": [
+      "value1"
+    ]
+  }
+}
+
+### Create Admin User
+POST {{usersAddress}}/api/v1/users/admin-user
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userName": "adminuser",
+  "password": "password123",
+  "firstName": "Admin",
+  "lastName": "User",
+  "email": "admin@example.com",
+  "clientRoles": {
+    "client1": "role1"
+  },
+  "attributes": {
+    "attr1": [
+      "value1"
+    ]
+  }
+}
