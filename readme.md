@@ -4,7 +4,7 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mehdihadeli/spring-food-delivery-microservices)
 
-> `Spring Food Delivery Microservices` is a fictional food delivery microservices, built with .Net Core and different software architecture and technologies like **Microservices Architecture**, **Vertical Slice Architecture** , **CQRS Pattern**, **Domain Driven Design (DDD)**, **Event Driven Architecture**. For communication between independent services, we use asynchronous messaging with using rabbitmq on top of `spring amqp`, and sometimes we use synchronous communication for real-time communications with using REST calls.
+> `Spring Food Delivery Microservices` is a fictional food delivery microservices, built with Java, Spring and different software architecture and technologies like **Microservices Architecture**, **Vertical Slice Architecture** , **CQRS Pattern**, **Domain Driven Design (DDD)**, **Event Driven Architecture**. For communication between independent services, we use asynchronous messaging with using rabbitmq on top of `spring amqp`, and sometimes we use synchronous communication for real-time communications with using REST calls.
 
 > [!NOTE]
 > This application is not `business oriented` and my focus is mostly on technical part, I just want to implement a sample with using different technologies, software architecture design, principles and all the thing we need for creating a microservices app.
